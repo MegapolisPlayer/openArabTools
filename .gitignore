@@ -1,0 +1,13 @@
+.vs/
+**/temp/
+*.obj
+*.recipe
+*.exp
+*.ilk
+*.log
+*.idb
+*.pdb
+*.tlog
+*.lastbuildstate
+*.vcxproj.filters
+*.vcxproj.user
