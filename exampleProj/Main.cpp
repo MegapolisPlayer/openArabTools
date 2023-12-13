@@ -1,8 +1,13 @@
 #include <iostream>
 #include "OpenArabTools.hpp"
+#include <random>
+
+std::random_device sRandomDevice;
+std::mt19937_64 sRandomGenerator(sRandomDevice());
+std::uniform_real_distribution<double> DecDistrib(0, 1);
 
 int main() {
-	std::cout << ArabTools::Utils::Version() << "\n";
+	std::cout << ArabTools::Utils::Version() << "\n" << DecDistrib(sRandomGenerator);
 
 	glfwInit();
 	GLFWwindow* Window = glfwCreateWindow(500, 500, "ArabTools", NULL, NULL);
