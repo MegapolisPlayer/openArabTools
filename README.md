@@ -6,6 +6,8 @@ This library is designed as a programming exercise as well as to give students w
 
 # How to use it?
 
+Simply include the `OpenArabTools.hpp` header and link the library.
+
 # Comparison to ArabTools
 
 Example: Simple semaphore in Java (standard ArabTools)
@@ -22,7 +24,7 @@ class Main {
 ```
 In C++ with openArabTools
 ```cpp
-#include "openArabTools.hpp"
+#include "OpenArabTools.hpp"
 
 int main() {
   ArabTools::Semaphore s;
