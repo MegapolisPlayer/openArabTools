@@ -9,6 +9,8 @@ namespace OpenArabTools {
 		//Sleeps on this thread, returns true for compatibility with ArabTools
 		OPENARABTOOLS_OBJ bool Sleep(const U64 aMs) noexcept;
 
+		//NOTE: C style string must be null terminated.
+
 		//Returns if the string is empty (overload for C strings)
 		OPENARABTOOLS_OBJ bool IsEmpty(const char* aString) noexcept;
 		//Returns if the string is empty (overload for C++ strings)
@@ -21,5 +23,6 @@ namespace OpenArabTools {
 
 		//Runs function in [aFunction] on multiple threads [aCount] times, returns immediately or if aWaitReturn is set after the functions complete the tasks
 		OPENARABTOOLS_OBJ void RunConcurrently(const U64 aCount, const bool aWaitReturn, RunConcurrentlyCallback aFunction) noexcept;
+		//NOTE: returns immediately if another instance is already running, lambdas also possible
 	}
 }

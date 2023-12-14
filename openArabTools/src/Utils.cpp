@@ -2,6 +2,8 @@
 
 namespace OpenArabTools {
 	namespace Utils {
+		//General
+
 		const char* Version() noexcept {
 			return 
 				"OpenArabTools version 0.1 build 131223a, (C) Copyright 2023-2024 Martin/MegapolisPlayer and contributors.\n"
@@ -14,10 +16,13 @@ namespace OpenArabTools {
 			return true; //for compatibility
 		}
 
+		//String utils
+
 		bool IsEmpty(const char* aString) noexcept {
 			if (aString == nullptr) return true;
 			return (strlen(aString) == 0);
 		}
+
 		bool IsEmpty(const std::string& aString) noexcept {
 			return aString.empty();
 		}
@@ -30,6 +35,8 @@ namespace OpenArabTools {
 			if (aString == nullptr) return nullptr;
 			return (aString->empty() ? nullptr : aString);
 		}
+
+		//RunConcurrently
 
 		namespace Internal {
 			template<typename tType>
@@ -49,36 +56,50 @@ namespace OpenArabTools {
 					mAtomic.store(aOther.mAtomic.load());
 					return *this;
 				}
+				~AtomicWrapper() {}; //std::atomic has a destructor
 			};
 
+			static U08 ThreadAmount = std::thread::hardware_concurrency() - 1;
+			static std::mutex Mutex; //so that only 1 thread can access
 			static std::vector<AtomicWrapper<bool>> FunctionState; //bool true if is avaiable
+			static std::atomic<U08> ThreadAmountFinished = ThreadAmount;
 
 			void RunnerFunc(const U08 aMyThreadId, const U64 aCount, RunConcurrentlyCallback aFunction) noexcept {
 				for (U64 Id = 0; Id < aCount; Id++) {
+					std::unique_lock<std::mutex> LG(Mutex);
 					if (FunctionState[Id].mAtomic.load()) {
 						FunctionState[Id].mAtomic.store(false);
+						LG.unlock();
 						aFunction(aMyThreadId, Id);
 					}
-					else continue;
+					else {
+						LG.unlock();
+						continue;
+					};
 				}
+				ThreadAmountFinished++;
 			}
 		}
 
 		void RunConcurrently(const U64 aCount, const bool aWaitReturn, RunConcurrentlyCallback aFunction) noexcept {
+			if (Internal::ThreadAmount != Internal::ThreadAmountFinished) return; //if runConcurrently is running
+
 			Internal::FunctionState.clear();
+			Internal::ThreadAmountFinished = 0;
 			for (U64 Id = 0; Id < aCount; Id++) {
 				Internal::FunctionState.emplace_back(true);
 			}
 
 			std::thread TempThread;
-			for (U32 Id = 0; Id < std::thread::hardware_concurrency() - 1; Id++) {
+			for (U08 Id = 0; Id < Internal::ThreadAmount; Id++) {
 				TempThread = std::thread(Internal::RunnerFunc, Id, aCount, aFunction);
 				TempThread.detach();
 			}
 
-			if (aWaitReturn) return;
+			if (!aWaitReturn) return;
 
-			//TODO: wait for threads to finish
+			//wait
+			while (Internal::ThreadAmount != Internal::ThreadAmountFinished);
 		}
 	}
 }
