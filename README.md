@@ -45,5 +45,16 @@ Use it only if you want to extend the functionality.
 Everything is in the ArabTools::Internal namespace.
 
 # License
+Copyright (c) 2023-2024 Martin/MegapolisPlayer and contributors.
+
 Licensed under CC-BY 4.0.
+
 Full legal text [here](https://creativecommons.org/licenses/by/4.0/)
+
+### Original Author
+
+Based on Ing. Daniel Kahoun's ArabTools Library.
+
+Copyright (c) 2014-2020 Ing. Daniel Kahoun
+
+All rights reserved.

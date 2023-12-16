@@ -6,6 +6,9 @@ namespace OpenArabTools {
 		//Returns the OpenArabTools version (and the version of ArabTools it was based on) as a string literal
 		OPENARABTOOLS_OBJ const char* Version() noexcept;
 
+		//Returns the OpenArabTools build ID
+		OPENARABTOOLS_OBJ constexpr U64 BuildID() noexcept;
+
 		//Sleeps on this thread, returns true for compatibility with ArabTools
 		OPENARABTOOLS_OBJ bool Sleep(const U64 aMs) noexcept;
 
