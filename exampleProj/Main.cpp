@@ -23,16 +23,12 @@ int main() {
 	std::cout << "\nAmount executed 1: " << Test.load() << "\n";
 
 	glfwInit();
-	GLFWwindow* Window = glfwCreateWindow(500, 500, "ArabTools", NULL, NULL);
-	glfwMakeContextCurrent(Window);
-	glewInit();
 
-	while (!glfwWindowShouldClose(Window)) {
-		glClear(GL_COLOR_BUFFER_BIT);
-		glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+	ArabTools::Internal::GLWindow window;
 
-		glfwSwapBuffers(Window);
-		glfwPollEvents();
+	while (~window) {
+		window.SetBackground(0.5f, 0.5f, 0.5f, 0.5f);
+		window.Process();
 	}
 	
 	glfwTerminate();

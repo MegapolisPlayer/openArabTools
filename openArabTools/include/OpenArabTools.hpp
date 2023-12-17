@@ -8,6 +8,10 @@ ONLY INCLUDE THIS FILE - ALL OTHERS WILL BE INCLUDED AUTOMATICALLY
 */
 
 #include "../src/Utils.hpp"
+#include "../src/event/Event.hpp"
+#include "../src/graphics/Graphics.hpp"
+#include "../src/remote/Remote.hpp"
+#include "../src/types/LightColor.hpp"
 
 #ifndef OPENARABTOOLS_NO_NAMESPACE_OVERRIDE
 namespace ArabTools = OpenArabTools;
