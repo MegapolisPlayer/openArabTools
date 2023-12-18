@@ -6,11 +6,15 @@ namespace OpenArabTools {
 			this->mWidth = 500;
 			this->mHeight = 500;
 			this->mWindow = glfwCreateWindow(500, 500, "OpenArabTools", NULL, NULL);
+			glfwMakeContextCurrent(this->mWindow);
+			glewInit();
 		}
 		GLWindow::GLWindow(const U64 aWidth, const U64 aHeight) noexcept {
 			this->mWidth = aWidth;
 			this->mHeight = aHeight;
 			this->mWindow = glfwCreateWindow(this->mWidth, this->mHeight, "OpenArabTools", NULL, NULL);
+			glfwMakeContextCurrent(this->mWindow);
+			glewInit();
 		}
 		void GLWindow::ShowWindow() noexcept {
 			glfwShowWindow(this->mWindow);

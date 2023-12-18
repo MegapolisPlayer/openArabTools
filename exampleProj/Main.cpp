@@ -16,13 +16,13 @@ void Function(const ArabTools::U08 a, const ArabTools::U64 b) {
 }
 
 int main() {
+	ArabTools::Manager m;
+
 	std::cout << ArabTools::Utils::Version() << "\n";
 
-	ArabTools::Utils::RunConcurrently(10000000, true, Function);
+	ArabTools::Utils::RunConcurrently(100000, true, Function);
 
 	std::cout << "\nAmount executed 1: " << Test.load() << "\n";
-
-	glfwInit();
 
 	ArabTools::Internal::GLWindow window;
 
@@ -31,7 +31,5 @@ int main() {
 		window.Process();
 	}
 	
-	glfwTerminate();
-
 	std::cout << "\nAmount executed 2: " << Test.load() << "\n";
 }

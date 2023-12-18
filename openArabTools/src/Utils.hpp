@@ -2,6 +2,14 @@
 #include "StandardInclude.hpp"
 
 namespace OpenArabTools {
+	class OPENARABTOOLS_OBJ Manager {
+	public:
+		//Initialize openArabTools
+		Manager() noexcept;
+		//Terminate openArabTools
+		~Manager() noexcept;
+	private:
+	};
 	namespace Utils {
 		//Returns the OpenArabTools version (and the version of ArabTools it was based on) as a string literal
 		OPENARABTOOLS_OBJ const char* Version() noexcept;

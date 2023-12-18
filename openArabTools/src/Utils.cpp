@@ -1,6 +1,25 @@
 #include "Utils.hpp"
 
 namespace OpenArabTools {
+	//Manager
+	Manager::Manager() noexcept {
+		//GLFW validation
+		if (glfwInit() == GLFW_FALSE) {
+			std::cout << "OpenArabTools Error: GLFW window library initialization failed.\n";
+			return;
+		}
+		//GLEW validation by create fake 1x1 window
+		GLFWwindow* FakeWindow = glfwCreateWindow(1, 1, "temp", NULL, NULL);
+		glfwMakeContextCurrent(FakeWindow);
+		if (glewInit()) {
+			std::cout << "OpenArabTools Error: GLEW OpenGL loader library initialization failed.\n";
+			return;
+		}
+		glfwDestroyWindow(FakeWindow);
+	}
+	Manager::~Manager() noexcept {
+		glfwTerminate();
+	}
 	namespace Utils {
 		//General
 
