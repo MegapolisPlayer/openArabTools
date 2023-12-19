@@ -3,6 +3,7 @@
 namespace OpenArabTools {
 	namespace Internal {
 		GLWindow::GLWindow() noexcept {
+			Init();
 			this->mWidth = 500;
 			this->mHeight = 500;
 			this->mWindow = glfwCreateWindow(500, 500, "OpenArabTools", NULL, NULL);
@@ -10,6 +11,7 @@ namespace OpenArabTools {
 			glewInit();
 		}
 		GLWindow::GLWindow(const U64 aWidth, const U64 aHeight) noexcept {
+			Init();
 			this->mWidth = aWidth;
 			this->mHeight = aHeight;
 			this->mWindow = glfwCreateWindow(this->mWidth, this->mHeight, "OpenArabTools", NULL, NULL);
@@ -56,6 +58,7 @@ namespace OpenArabTools {
 		}
 		GLWindow::~GLWindow() noexcept {
 			glfwDestroyWindow(this->mWindow);
+			Terminate();
 		}
 	}
 }

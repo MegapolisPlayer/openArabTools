@@ -1,8 +1,10 @@
 #include "Utils.hpp"
 
 namespace OpenArabTools {
-	//Manager
-	Manager::Manager() noexcept {
+	static U64 gsInit = false;
+
+	void Init() noexcept {
+		if (gsInit != 0) return; //no double init
 		//GLFW validation
 		if (glfwInit() == GLFW_FALSE) {
 			std::cout << "OpenArabTools Error: GLFW window library initialization failed.\n";
@@ -16,10 +18,18 @@ namespace OpenArabTools {
 			return;
 		}
 		glfwDestroyWindow(FakeWindow);
+		gsInit++;
 	}
-	Manager::~Manager() noexcept {
-		glfwTerminate();
+
+	void Terminate() noexcept {
+		if (gsInit != 0) gsInit--; return; //no double terminate
+		glfwTerminate(); //only when everything freed
 	}
+
+	bool IsLibInit() noexcept {
+		return gsInit;
+	}
+
 	namespace Utils {
 		//General
 

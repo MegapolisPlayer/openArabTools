@@ -7,7 +7,6 @@ ONLY INCLUDE THIS FILE - ALL OTHERS WILL BE INCLUDED AUTOMATICALLY
 
 */
 
-#include "../src/Utils.hpp"
 #include "../src/event/Event.hpp"
 #include "../src/graphics/Graphics.hpp"
 #include "../src/remote/Remote.hpp"

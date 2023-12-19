@@ -1,5 +1,5 @@
 #pragma once
-#include "../StandardInclude.hpp"
+#include "../Utils.hpp"
 
 namespace OpenArabTools {
 	//LightColor defined colors

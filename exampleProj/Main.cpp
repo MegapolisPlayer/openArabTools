@@ -16,7 +16,9 @@ void Function(const ArabTools::U08 a, const ArabTools::U64 b) {
 }
 
 int main() {
-	ArabTools::Manager m;
+	ArabTools::Init();
+
+	//ArabTools::Utils::Sleep(1000);
 
 	std::cout << ArabTools::Utils::Version() << "\n";
 

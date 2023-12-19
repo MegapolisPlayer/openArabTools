@@ -2,14 +2,12 @@
 #include "StandardInclude.hpp"
 
 namespace OpenArabTools {
-	class OPENARABTOOLS_OBJ Manager {
-	public:
-		//Initialize openArabTools
-		Manager() noexcept;
-		//Terminate openArabTools
-		~Manager() noexcept;
-	private:
-	};
+	//Initializes the library
+	OPENARABTOOLS_OBJ void Init() noexcept;
+
+	//Terminates the library
+	OPENARABTOOLS_OBJ void Terminate() noexcept;
+
 	namespace Utils {
 		//Returns the OpenArabTools version (and the version of ArabTools it was based on) as a string literal
 		OPENARABTOOLS_OBJ const char* Version() noexcept;
