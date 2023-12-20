@@ -7,14 +7,64 @@
 
 namespace OpenArabTools {
 	namespace Internal {
+		typedef unsigned int GLHandle;
+
+		//OpenGL Vertex Array Object
+		class OPENARABTOOLS_OBJ GLVertexArray {
+		public:
+			//Constructor
+			GLVertexArray() noexcept;
+
+			//Create a VAO
+			void Create() noexcept;
+			//Bind
+			void Bind() noexcept;
+			//Unbind
+			void Unbind() noexcept;
+			//Reset
+			void Reset() noexcept;
+
+			//Gets the handle
+			GLHandle GetHandle() const noexcept;
+
+			//Destructor
+			~GLVertexArray() noexcept;
+		private:
+			GLHandle mArray;
+		};
+
+		//OpenGL Vertex Buffer Object
 		class OPENARABTOOLS_OBJ GLVertexBuffer {
 		public:
+			//Constructor
 			GLVertexBuffer() noexcept;
 			
+			//Set new data for vertex buffer
+			void Set() noexcept;
+
+			//Bind
+			void Bind() noexcept;
+			//Unbind
+			void Unbind() noexcept;
+			//Reset
+			void Reset() noexcept;
+
+			//Gets the handle
+			GLHandle GetHandle() const noexcept;
+			//Gets amount of numbers per vertex
+			U64 GetNumberAmount() const noexcept;
+			//Gets number of vertices in buffer
+			U64 GetVertexAmount() const noexcept;
+
+			//Destructor
 			~GLVertexBuffer() noexcept;
 		private:
-			unsigned int mBuffer;
+			GLHandle mBuffer;
+			U64 mNoPerVertex;
+			U64 mVertices;
 		};
+
+		//OpenGL Index Buffer Object
 		class OPENARABTOOLS_OBJ GLIndexBuffer {
 		public:
 			GLIndexBuffer() noexcept;
@@ -23,6 +73,8 @@ namespace OpenArabTools {
 		private:
 			unsigned int mBuffer;
 		};
+
+		//OpenGL Shader Object
 		class OPENARABTOOLS_OBJ GLShader {
 		public:
 			GLShader() noexcept;
@@ -31,6 +83,8 @@ namespace OpenArabTools {
 		private:
 			unsigned int mShader;
 		};
+
+		//OpenGL Transform Object
 		class OPENARABTOOLS_OBJ GLTransform {
 		public:
 			GLTransform() noexcept;
@@ -39,6 +93,8 @@ namespace OpenArabTools {
 		private:
 			
 		};
+
+		//OpenGL Camera Object
 		class OPENARABTOOLS_OBJ GLCamera {
 		public:
 			GLCamera() noexcept;
@@ -48,6 +104,7 @@ namespace OpenArabTools {
 			
 		};
 
+		//Main Window Class (for OpenGL)
 		class OPENARABTOOLS_OBJ GLWindow {
 		public:
 			//Creates a new OpenGL Window

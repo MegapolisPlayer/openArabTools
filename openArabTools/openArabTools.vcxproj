@@ -16,7 +16,10 @@
     <ClInclude Include="src\graphics\Chessboard.hpp" />
     <ClInclude Include="src\graphics\Dice.hpp" />
     <ClInclude Include="src\graphics\Graphics.hpp" />
+    <ClInclude Include="src\graphics\internal\GLBaseImplementaton.hpp" />
+    <ClInclude Include="src\graphics\internal\GLBatchRender.hpp" />
     <ClInclude Include="src\graphics\internal\GLInterface.hpp" />
+    <ClInclude Include="src\graphics\internal\GLWindow.hpp" />
     <ClInclude Include="src\graphics\Matrix.hpp" />
     <ClInclude Include="src\graphics\Semaphore.hpp" />
     <ClInclude Include="src\remote\Client.hpp" />
@@ -30,7 +33,10 @@
     <ClCompile Include="src\event\Event.cpp" />
     <ClCompile Include="src\graphics\Chessboard.cpp" />
     <ClCompile Include="src\graphics\Dice.cpp" />
+    <ClCompile Include="src\graphics\internal\GLBaseImplementation.cpp" />
+    <ClCompile Include="src\graphics\internal\GLBatchRender.cpp" />
     <ClCompile Include="src\graphics\internal\GLInterface.cpp" />
+    <ClCompile Include="src\graphics\internal\GLWindow.cpp" />
     <ClCompile Include="src\graphics\Matrix.cpp" />
     <ClCompile Include="src\graphics\Semaphore.cpp" />
     <ClCompile Include="src\remote\Client.cpp" />
