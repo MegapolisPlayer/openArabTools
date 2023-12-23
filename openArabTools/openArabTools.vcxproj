@@ -35,7 +35,6 @@
     <ClCompile Include="src\graphics\Dice.cpp" />
     <ClCompile Include="src\graphics\internal\GLBaseImplementation.cpp" />
     <ClCompile Include="src\graphics\internal\GLBatchRender.cpp" />
-    <ClCompile Include="src\graphics\internal\GLInterface.cpp" />
     <ClCompile Include="src\graphics\internal\GLWindow.cpp" />
     <ClCompile Include="src\graphics\Matrix.cpp" />
     <ClCompile Include="src\graphics\Semaphore.cpp" />

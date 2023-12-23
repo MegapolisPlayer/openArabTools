@@ -8,12 +8,14 @@ std::mt19937_64 sRandomGenerator(sRandomDevice());
 std::uniform_real_distribution<double> DecDistrib(0, 1);
 */
 
+
 std::atomic<uint64_t> Test = 0;
 
 void Function(const ArabTools::U08 a, const ArabTools::U64 b) {
 	Test++;
 	return;
 }
+
 
 int main() {
 	ArabTools::Init();
