@@ -77,21 +77,14 @@ namespace OpenArabTools {
 		};
 
 		OPENARABTOOLS_OBJ [[nodiscard]] GLHandle MakeShader(const char* aVertSource, const char* aFragSource) noexcept;
-		OPENARABTOOLS_OBJ void BindShader(const GLHandle aShader) noexcept;
-		OPENARABTOOLS_OBJ void UnbindShader(const GLHandle aShaderOptional = 0) noexcept;
-		OPENARABTOOLS_OBJ void DeleteShader(GLHandle aShader) noexcept;
 
 		OPENARABTOOLS_OBJ extern const char* const VertexPassthroughSource;
 		OPENARABTOOLS_OBJ extern const char* const FragmentPassthroughSource;
 		OPENARABTOOLS_OBJ extern const char* const FragmentCircleSource;
 
-		OPENARABTOOLS_OBJ extern GLHandle NormalShader;
-		OPENARABTOOLS_OBJ extern GLHandle CircleShader;
+		//Shaders defined in GLWindow.hpp and GLWindow.cpp (must be in OpenGL context!)
 
 		OPENARABTOOLS_OBJ GLHandle GetUniform(const GLHandle aShader, const char* aName) noexcept;
-
-		OPENARABTOOLS_OBJ extern GLHandle NormalShader_ResolutionUniform;
-		OPENARABTOOLS_OBJ extern GLHandle CircleShader_ResolutionUniform;
 
 		class OPENARABTOOLS_OBJ GLTransform {
 		public:

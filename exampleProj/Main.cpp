@@ -30,11 +30,19 @@ int main() {
 
 	ArabTools::Internal::GLWindow window;
 
+	/*
 	float Vertices[] = {
 		-0.5f,  0.5f,
 		 0.5f,  0.5f,
 		 0.5f, -0.5f,
 		-0.5f, -0.5f,
+	};
+	*/
+	float Vertices[] = {
+		-0.9f,  0.9f,
+		 0.9f,  0.9f,
+		 0.9f, -0.9f,
+		-0.9f, -0.9f,
 	};
 
 	ArabTools::Internal::GLVertexArray vao;
@@ -52,23 +60,14 @@ int main() {
 	ArabTools::Internal::GLIndexBuffer ibo;
 	ibo.Set(Indices, 6);
 
-	std::cout << "AT_SHD_SRC_V:\n" << ArabTools::Internal::VertexPassthroughSource << "\n";
-	std::cout << "AT_SHD_SRC_F:\n" << ArabTools::Internal::FragmentCircleSource << "\n";
+	window.BindCircleShader();
 
-	ArabTools::Internal::GLHandle ms = ArabTools::Internal::MakeShader(ArabTools::Internal::VertexPassthroughSource, ArabTools::Internal::FragmentCircleSource);
-	int ums = glGetUniformLocation(ms, "Resolution");
-
-	std::cout << "AT_SHD_HDL: " << ms << "\n";
-	std::cout << "AT_RES_UF_LOC: " << ums << "\n";
-
-	ArabTools::Internal::BindShader(ms);
-
-	glUniform2f(ums, 500, 500);
+	glUniform2f(window.GetCircleShaderResolutionUniform(), 500, 500);
 
 	while (~window) {
 		window.SetBackground(0.5f, 0.5f, 0.5f, 1.0f);
 		vao.Bind();
-		ArabTools::Internal::BindShader(ms);
+		window.BindCircleShader();
 		ibo.Draw();
 		window.Process();
 	}

@@ -189,15 +189,6 @@ namespace OpenArabTools {
 
 			return Shader;
 		}
-		void BindShader(const GLHandle aShader) noexcept {
-			glUseProgram(aShader);
-		}
-		void UnbindShader(const GLHandle aShader) noexcept {
-			glUseProgram(0);
-		}
-		void DeleteShader(GLHandle aShader) noexcept {
-			glDeleteProgram(aShader);
-		}
 
 		const char* const VertexPassthroughSource =
 			"#version 330 core\n"
@@ -227,18 +218,13 @@ namespace OpenArabTools {
 			"	float ActualDistance = distance(vec2(0.5, 0.5), UV);\n"
 			"	float ResultCircle = step(0.5 - 0.45, ActualDistance) * (1.0 - step(0.5, ActualDistance));\n"
 			"	color = vec4(ResultCircle, ResultCircle, ResultCircle, ResultCircle) * CircleColor;\n"
-			"	//color = CircleColor;\n"
 			"}\n"
 			;
 
-		GLHandle NormalShader = GLInvalidHandle;
-		GLHandle CircleShader = GLInvalidHandle;
-
 		GLHandle GetUniform(const GLHandle aShader, const char* aName) noexcept {
-			return glGetUniformLocation(aShader, aName);
+			S64 Temp = glGetUniformLocation(aShader, aName);
+			if (Temp == -1) return GLInvalidHandle;
+			else return Temp;
 		}
-
-		GLHandle NormalShader_ResolutionUniform = GLInvalidHandle;
-		GLHandle CircleShader_ResolutionUniform = GLInvalidHandle;
 	}
 }

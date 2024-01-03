@@ -12,6 +12,7 @@ namespace OpenArabTools {
 			this->mWindow = glfwCreateWindow(500, 500, "OpenArabTools", NULL, NULL);
 			glfwMakeContextCurrent(this->mWindow);
 			glewInit();
+			ShadersInit();
 		}
 		GLWindow::GLWindow(const U64 aWidth, const U64 aHeight) noexcept {
 			Init();
@@ -20,6 +21,7 @@ namespace OpenArabTools {
 			this->mWindow = glfwCreateWindow(this->mWidth, this->mHeight, "OpenArabTools", NULL, NULL);
 			glfwMakeContextCurrent(this->mWindow);
 			glewInit();
+			ShadersInit();
 		}
 		void GLWindow::ShowWindow() noexcept {
 			glfwShowWindow(this->mWindow);
@@ -59,9 +61,49 @@ namespace OpenArabTools {
 		GLFWwindow* GLWindow::GetWindow() noexcept {
 			return this->mWindow;
 		}
+
+		void GLWindow::BindNormalShader() const noexcept {
+			glUseProgram(this->NormalShader);
+		}
+		void GLWindow::BindCircleShader() const noexcept {
+			glUseProgram(this->CircleShader);
+		}
+
+		void GLWindow::UnbindShaders() const noexcept {
+			glUseProgram(0);
+		}
+
+		GLHandle GLWindow::GetNormalShader() noexcept {
+			return this->NormalShader;
+		}
+		GLHandle GLWindow::GetCircleShader() noexcept {
+			return this->CircleShader;
+		}
+
+		GLHandle GLWindow::GetNormalShaderResolutionUniform() noexcept {
+			return this->NormalShader_ResolutionUniform;
+		}
+		GLHandle GLWindow::GetCircleShaderResolutionUniform() noexcept {
+			return this->CircleShader_ResolutionUniform;
+		}
+
 		GLWindow::~GLWindow() noexcept {
+			ShadersDestroy();
 			glfwDestroyWindow(this->mWindow);
 			Terminate();
+		}
+
+		// PRIVATE
+
+		void GLWindow::ShadersInit() {
+			this->NormalShader = Internal::MakeShader(Internal::VertexPassthroughSource, Internal::FragmentPassthroughSource);
+			this->CircleShader = Internal::MakeShader(Internal::VertexPassthroughSource, Internal::FragmentCircleSource);
+			this->NormalShader_ResolutionUniform = Internal::GetUniform(NormalShader, "Resolution");
+			this->CircleShader_ResolutionUniform = Internal::GetUniform(CircleShader, "Resolution");
+		}
+		void GLWindow::ShadersDestroy() {
+			glDeleteProgram(this->NormalShader);
+			glDeleteProgram(this->CircleShader);
 		}
 	}
 }

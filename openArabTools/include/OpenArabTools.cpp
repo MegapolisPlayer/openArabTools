@@ -16,7 +16,7 @@ namespace OpenArabTools {
 			std::cout << "OpenArabTools Error: GLFW window library initialization failed.\n";
 			return;
 		}
-		//GLEW validation by create fake 1x1 window
+		//GLEW validation - create fake 1x1 window
 		GLFWwindow* FakeWindow = glfwCreateWindow(1, 1, "temp", NULL, NULL);
 		glfwMakeContextCurrent(FakeWindow);
 		if (glewInit()) {
@@ -25,19 +25,10 @@ namespace OpenArabTools {
 		}
 		glfwDestroyWindow(FakeWindow);
 		gsInit++;
-
-		Internal::NormalShader = Internal::MakeShader(Internal::VertexPassthroughSource, Internal::FragmentPassthroughSource);
-		Internal::CircleShader = Internal::MakeShader(Internal::VertexPassthroughSource, Internal::FragmentCircleSource);
-	
-		Internal::NormalShader_ResolutionUniform = Internal::GetUniform(Internal::NormalShader, "Resolution");
-		Internal::CircleShader_ResolutionUniform = Internal::GetUniform(Internal::CircleShader, "Resolution");
 	}
 
 	void Terminate() noexcept {
 		if (gsInit != 0) gsInit--; return; //no double terminate
-
-		Internal::DeleteShader(Internal::NormalShader);
-		Internal::DeleteShader(Internal::CircleShader);
 
 		glfwTerminate(); //only when everything freed
 	}
