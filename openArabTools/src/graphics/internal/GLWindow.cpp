@@ -1,5 +1,8 @@
 #include "GLWindow.hpp"
 
+//disable annoying "possible loss of data" warning
+#pragma warning( disable : 4244 ) 
+
 namespace OpenArabTools {
 	namespace Internal {
 		GLWindow::GLWindow() noexcept {

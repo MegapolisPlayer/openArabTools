@@ -16,7 +16,7 @@
     <ClInclude Include="src\graphics\Chessboard.hpp" />
     <ClInclude Include="src\graphics\Dice.hpp" />
     <ClInclude Include="src\graphics\Graphics.hpp" />
-    <ClInclude Include="src\graphics\internal\GLBaseImplementaton.hpp" />
+    <ClInclude Include="src\graphics\internal\GLBaseImplementation.hpp" />
     <ClInclude Include="src\graphics\internal\GLBatchRender.hpp" />
     <ClInclude Include="src\graphics\internal\GLInterface.hpp" />
     <ClInclude Include="src\graphics\internal\GLWindow.hpp" />
@@ -30,6 +30,7 @@
     <ClInclude Include="src\Utils.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="include\OpenArabTools.cpp" />
     <ClCompile Include="src\event\Event.cpp" />
     <ClCompile Include="src\graphics\Chessboard.cpp" />
     <ClCompile Include="src\graphics\Dice.cpp" />

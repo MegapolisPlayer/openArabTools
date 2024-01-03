@@ -1,5 +1,5 @@
 #pragma once
-#include "GLBaseImplementaton.hpp"
+#include "GLBaseImplementation.hpp"
 
 namespace OpenArabTools {
 	namespace Internal {

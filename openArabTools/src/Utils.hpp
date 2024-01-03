@@ -2,6 +2,11 @@
 #include "StandardInclude.hpp"
 
 namespace OpenArabTools {
+	extern S64 gsInit; //Amount of initializations
+
+	//Gets if library initialized
+	OPENARABTOOLS_OBJ bool IsLibInit() noexcept;
+
 	//Initializes the library
 	OPENARABTOOLS_OBJ void Init() noexcept;
 
@@ -26,12 +31,12 @@ namespace OpenArabTools {
 		OPENARABTOOLS_OBJ bool IsEmpty(const std::string& aString) noexcept;
 	
 		//Returns string if not empty, otherwise returns nullptr (overload for C strings)
-		OPENARABTOOLS_OBJ const char* NonEmpty(const char* aString) noexcept;
+		OPENARABTOOLS_OBJ const char* const NonEmpty(const char* aString) noexcept;
 		//Returns string if not empty, otherwise returns nullptr (overload for C++ strings)
 		OPENARABTOOLS_OBJ const std::string* NonEmpty(const std::string* const aString) noexcept;
 
 		//Runs function in [aFunction] on multiple threads [aCount] times, returns immediately or if aWaitReturn is set after the functions complete the tasks
-		OPENARABTOOLS_OBJ void RunConcurrently(const U64 aCount, const bool aWaitReturn, RunConcurrentlyCallback aFunction) noexcept;
 		//NOTE: returns immediately if another instance is already running, lambdas also possible
+		OPENARABTOOLS_OBJ void RunConcurrently(const U64 aCount, const bool aWaitReturn, RunConcurrentlyCallback aFunction) noexcept;
 	}
 }
