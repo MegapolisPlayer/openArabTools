@@ -29,28 +29,26 @@ int main() {
 	std::cout << "\nAmount executed 1: " << Test.load() << "\n";
 
 	ArabTools::Internal::GLWindow window;
-
-	/*
+	
 	float Vertices[] = {
 		-0.5f,  0.5f,
 		 0.5f,  0.5f,
 		 0.5f, -0.5f,
 		-0.5f, -0.5f,
 	};
-	*/
+	
+	/*
 	float Vertices[] = {
 		-0.9f,  0.9f,
 		 0.9f,  0.9f,
 		 0.9f, -0.9f,
 		-0.9f, -0.9f,
 	};
-
-	ArabTools::Internal::GLVertexArray vao;
-	vao.Bind();
+	*/
 
 	ArabTools::Internal::GLVertexBuffer vbo;
 	vbo.Set(Vertices, 4, 2);
-	vbo.EnableAttribute(2, &vao);
+	vbo.EnableAttribute(2, &window.glVAO);
 
 	unsigned int Indices[] = {
 		0, 1, 2,
@@ -60,14 +58,11 @@ int main() {
 	ArabTools::Internal::GLIndexBuffer ibo;
 	ibo.Set(Indices, 6);
 
-	window.BindCircleShader();
-
-	glUniform2f(window.GetCircleShaderResolutionUniform(), 500, 500);
+	glUseProgram(window.glCircleShader);
+	glUniform2f(window.glCSUResolution, 500, 500);
 
 	while (~window) {
 		window.SetBackground(0.5f, 0.5f, 0.5f, 1.0f);
-		vao.Bind();
-		window.BindCircleShader();
 		ibo.Draw();
 		window.Process();
 	}

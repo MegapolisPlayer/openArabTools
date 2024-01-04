@@ -5,22 +5,24 @@
 
 namespace OpenArabTools {
 	namespace Internal {
-		GLWindow::GLWindow() noexcept {
+		GLWindow::GLWindow() noexcept : mWidth(500), mHeight(500) {
 			Init();
-			this->mWidth = 500;
-			this->mHeight = 500;
+
 			this->mWindow = glfwCreateWindow(500, 500, "OpenArabTools", NULL, NULL);
 			glfwMakeContextCurrent(this->mWindow);
 			glewInit();
+			glGenVertexArrays(1, &this->glVAO);
+			glBindVertexArray(this->glVAO);
 			ShadersInit();
 		}
-		GLWindow::GLWindow(const U64 aWidth, const U64 aHeight) noexcept {
+		GLWindow::GLWindow(const U64 aWidth, const U64 aHeight) noexcept : mWidth(aWidth), mHeight(aHeight) {
 			Init();
-			this->mWidth = aWidth;
-			this->mHeight = aHeight;
+
 			this->mWindow = glfwCreateWindow(this->mWidth, this->mHeight, "OpenArabTools", NULL, NULL);
 			glfwMakeContextCurrent(this->mWindow);
 			glewInit();
+			glGenVertexArrays(1, &this->glVAO);
+			glBindVertexArray(this->glVAO);
 			ShadersInit();
 		}
 		void GLWindow::ShowWindow() noexcept {
@@ -58,36 +60,9 @@ namespace OpenArabTools {
 		bool GLWindow::operator~() noexcept {
 			return !glfwWindowShouldClose(this->mWindow);
 		}
-		GLFWwindow* GLWindow::GetWindow() noexcept {
-			return this->mWindow;
-		}
-
-		void GLWindow::BindNormalShader() const noexcept {
-			glUseProgram(this->NormalShader);
-		}
-		void GLWindow::BindCircleShader() const noexcept {
-			glUseProgram(this->CircleShader);
-		}
-
-		void GLWindow::UnbindShaders() const noexcept {
-			glUseProgram(0);
-		}
-
-		GLHandle GLWindow::GetNormalShader() noexcept {
-			return this->NormalShader;
-		}
-		GLHandle GLWindow::GetCircleShader() noexcept {
-			return this->CircleShader;
-		}
-
-		GLHandle GLWindow::GetNormalShaderResolutionUniform() noexcept {
-			return this->NormalShader_ResolutionUniform;
-		}
-		GLHandle GLWindow::GetCircleShaderResolutionUniform() noexcept {
-			return this->CircleShader_ResolutionUniform;
-		}
 
 		GLWindow::~GLWindow() noexcept {
+			glDeleteVertexArrays(1, &this->glVAO);
 			ShadersDestroy();
 			glfwDestroyWindow(this->mWindow);
 			Terminate();
@@ -96,14 +71,14 @@ namespace OpenArabTools {
 		// PRIVATE
 
 		void GLWindow::ShadersInit() {
-			this->NormalShader = Internal::MakeShader(Internal::VertexPassthroughSource, Internal::FragmentPassthroughSource);
-			this->CircleShader = Internal::MakeShader(Internal::VertexPassthroughSource, Internal::FragmentCircleSource);
-			this->NormalShader_ResolutionUniform = Internal::GetUniform(NormalShader, "Resolution");
-			this->CircleShader_ResolutionUniform = Internal::GetUniform(CircleShader, "Resolution");
+			this->glNormalShader = Internal::MakeShader(Internal::VertexPassthroughSource, Internal::FragmentPassthroughSource);
+			this->glCircleShader = Internal::MakeShader(Internal::VertexPassthroughSource, Internal::FragmentCircleSource);
+			this->glNSUResolution = glGetUniformLocation(this->glNormalShader, "Resolution");
+			this->glCSUResolution = glGetUniformLocation(this->glCircleShader, "Resolution");
 		}
 		void GLWindow::ShadersDestroy() {
-			glDeleteProgram(this->NormalShader);
-			glDeleteProgram(this->CircleShader);
+			glDeleteProgram(this->glNormalShader);
+			glDeleteProgram(this->glCircleShader);
 		}
 	}
 }

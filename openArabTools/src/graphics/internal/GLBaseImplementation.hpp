@@ -6,24 +6,6 @@ namespace OpenArabTools {
 		typedef uint32_t GLHandle;
 		constexpr static GLHandle GLInvalidHandle = INT32_MAX;
 
-		class OPENARABTOOLS_OBJ GLVertexArray {
-		public:
-			GLVertexArray() noexcept;
-
-			void Create() noexcept;
-
-			void Bind() noexcept;
-			void Unbind() noexcept;
-			void Reset() noexcept;
-
-			GLHandle GetHandle() const noexcept;
-			 
-			~GLVertexArray() noexcept;
-		private:
-			GLHandle mArray;
-			bool mInit;
-		};
-
 		class OPENARABTOOLS_OBJ GLVertexBuffer {
 		public:
 			GLVertexBuffer() noexcept;
@@ -31,8 +13,8 @@ namespace OpenArabTools {
 
 			void Set(float* const aData, const U64 aVertices, const U64 aVerticesSize) noexcept;
 
-			void EnableAttribute(const U64 aAmountValues, GLVertexArray* const aArray) noexcept;
-			void EnableAttribute(const U64 aCounterOverride, const U64 aAmountValues, GLVertexArray* const aArray) noexcept;
+			void EnableAttribute(const U64 aAmountValues, GLHandle* const aArray) noexcept;
+			void EnableAttribute(const U64 aCounterOverride, const U64 aAmountValues, GLHandle* const aArray) noexcept;
 
 			void Bind() noexcept;
 			void Unbind() noexcept;

@@ -29,32 +29,25 @@ namespace OpenArabTools {
 
 			bool operator~() noexcept; //returns if window still open
 
-			GLFWwindow* GetWindow() noexcept;
-
-			// SHADER MANAGEMENT
-
-			void BindNormalShader() const noexcept;
-			void BindCircleShader() const noexcept;
-
-			void UnbindShaders() const noexcept;
-
-			GLHandle GetNormalShader() noexcept;
-			GLHandle GetCircleShader() noexcept;
-
-			GLHandle GetNormalShaderResolutionUniform() noexcept;
-			GLHandle GetCircleShaderResolutionUniform() noexcept;
-
-			// MATRIX MANAGEMENT
-
 			~GLWindow() noexcept;
-		private:
-			GLFWwindow* mWindow;
-			U64 mWidth, mHeight;
+
+			//VARIABLES
+
+			//VAO, per window (must be in OpenGL context)
+
+			GLHandle glVAO;
 
 			//shaders, per window (must be in OpenGL context)
+			//NS = Normal/Passthrough Shader, CS = Circle Shader, U = Uniform
 
-			GLHandle NormalShader, CircleShader;
-			GLHandle NormalShader_ResolutionUniform, CircleShader_ResolutionUniform;
+			GLHandle glNormalShader, glCircleShader;
+			GLHandle glNSUResolution, glCSUResolution;
+			GLHandle glNSUBackground, glCSUBackground;
+			GLHandle glNSUForeground, glCSUForeground;
+
+		private: //PRIVATE SECTION
+			GLFWwindow* mWindow;
+			U64 mWidth, mHeight;
 
 			void ShadersInit();
 			void ShadersDestroy();

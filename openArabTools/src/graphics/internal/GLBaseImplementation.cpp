@@ -5,39 +5,6 @@
 
 namespace OpenArabTools {
 	namespace Internal {
-		GLVertexArray::GLVertexArray() noexcept {
-			glGenVertexArrays(1, &this->mArray);
-			this->mInit = true;
-		}
-
-		void GLVertexArray::Create() noexcept {
-			if (this->mInit) return;
-			glGenVertexArrays(1, &this->mArray);
-			this->mInit = true;
-		}
-		void GLVertexArray::Bind() noexcept {
-			if (!this->mInit) return;
-			glBindVertexArray(this->mArray);
-		}
-		void GLVertexArray::Unbind() noexcept {
-			glBindVertexArray(0);
-		}
-		void GLVertexArray::Reset() noexcept {
-			if (!this->mInit) return;
-			glDeleteVertexArrays(1, &this->mArray);
-			this->mInit = false;
-		}
-
-		GLHandle GLVertexArray::GetHandle() const noexcept {
-			if (!this->mInit) return GLInvalidHandle;
-			return this->mArray;
-		}
-
-		GLVertexArray::~GLVertexArray() noexcept {
-			if (!this->mInit) return;
-			glDeleteVertexArrays(1, &this->mArray);
-		}
-
 		GLVertexBuffer::GLVertexBuffer() noexcept {
 			this->mBuffer = GLInvalidHandle;
 			this->mVertices = 0;
@@ -59,15 +26,15 @@ namespace OpenArabTools {
 			this->mInit = true;
 		}
 
-		void GLVertexBuffer::EnableAttribute(const U64 aAmountValues, GLVertexArray* const aArray) noexcept {
-			aArray->Bind();
+		void GLVertexBuffer::EnableAttribute(const U64 aAmountValues, GLHandle* const aArray) noexcept {
+			glBindVertexArray(*aArray);
 			glEnableVertexAttribArray(this->mCounter);
 			glVertexAttribPointer(this->mCounter, aAmountValues, GL_FLOAT, GL_FALSE, this->mVertSize * sizeof(float), (const void*)(this->mVertCounter * sizeof(float)));
 			this->mCounter++;
 			this->mVertCounter += aAmountValues;
 		}
-		void GLVertexBuffer::EnableAttribute(const U64 aCounterOverride, const U64 aAmountValues, GLVertexArray* const aArray) noexcept {
-			aArray->Bind();
+		void GLVertexBuffer::EnableAttribute(const U64 aCounterOverride, const U64 aAmountValues, GLHandle* const aArray) noexcept {
+			glBindVertexArray(*aArray);
 			glEnableVertexAttribArray(aCounterOverride);
 			glVertexAttribPointer(aCounterOverride, aAmountValues, GL_FLOAT, GL_FALSE, this->mVertSize * sizeof(float), (const void*)(this->mVertCounter * sizeof(float)));
 		}
@@ -220,11 +187,5 @@ namespace OpenArabTools {
 			"	color = vec4(ResultCircle, ResultCircle, ResultCircle, ResultCircle) * CircleColor;\n"
 			"}\n"
 			;
-
-		GLHandle GetUniform(const GLHandle aShader, const char* aName) noexcept {
-			S64 Temp = glGetUniformLocation(aShader, aName);
-			if (Temp == -1) return GLInvalidHandle;
-			else return Temp;
-		}
 	}
 }

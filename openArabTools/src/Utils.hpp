@@ -23,7 +23,7 @@ namespace OpenArabTools {
 		//Sleeps on this thread, returns true for compatibility with ArabTools
 		OPENARABTOOLS_OBJ bool Sleep(const U64 aMs) noexcept;
 
-		//NOTE: C style string must be null terminated.
+		//NOTE: C style strings must be null terminated.
 
 		//Returns if the string is empty (overload for C strings)
 		OPENARABTOOLS_OBJ bool IsEmpty(const char* aString) noexcept;
