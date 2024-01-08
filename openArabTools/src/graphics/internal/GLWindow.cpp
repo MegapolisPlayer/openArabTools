@@ -6,7 +6,7 @@
 namespace OpenArabTools {
 	namespace Internal {
 		GLWindow::GLWindow() noexcept : mWidth(500), mHeight(500) {
-			Init();
+			init();
 
 			this->mWindow = glfwCreateWindow(500, 500, "OpenArabTools", NULL, NULL);
 			glfwMakeContextCurrent(this->mWindow);
@@ -16,7 +16,7 @@ namespace OpenArabTools {
 			ShadersInit();
 		}
 		GLWindow::GLWindow(const U64 aWidth, const U64 aHeight) noexcept : mWidth(aWidth), mHeight(aHeight) {
-			Init();
+			init();
 
 			this->mWindow = glfwCreateWindow(this->mWidth, this->mHeight, "OpenArabTools", NULL, NULL);
 			glfwMakeContextCurrent(this->mWindow);
@@ -35,8 +35,11 @@ namespace OpenArabTools {
 			glfwSetWindowTitle(this->mWindow, aTitle);
 		}
 		void GLWindow::Resize(const U64 aWidth, const U64 aHeight) noexcept {
-			glfwSetWindowSize(this->mWindow, aWidth, aHeight);
-			glViewport(0, 0, aWidth, aHeight);
+			this->mWidth = aWidth;
+			this->mHeight = aHeight;
+			glfwSetWindowSize(this->mWindow, this->mWidth, this->mHeight);
+			glViewport(0, 0, this->mWidth, this->mHeight);
+			glUniform2f(this->glCSUResolution, this->mWidth, this->mHeight);
 		}
 		void GLWindow::SetBackground(const Dec aAll) noexcept {
 			glClear(GL_COLOR_BUFFER_BIT);
@@ -65,7 +68,7 @@ namespace OpenArabTools {
 			glDeleteVertexArrays(1, &this->glVAO);
 			ShadersDestroy();
 			glfwDestroyWindow(this->mWindow);
-			Terminate();
+			terminate();
 		}
 
 		// PRIVATE
@@ -73,8 +76,11 @@ namespace OpenArabTools {
 		void GLWindow::ShadersInit() {
 			this->glNormalShader = Internal::MakeShader(Internal::VertexPassthroughSource, Internal::FragmentPassthroughSource);
 			this->glCircleShader = Internal::MakeShader(Internal::VertexPassthroughSource, Internal::FragmentCircleSource);
-			this->glNSUResolution = glGetUniformLocation(this->glNormalShader, "Resolution");
-			this->glCSUResolution = glGetUniformLocation(this->glCircleShader, "Resolution");
+			this->glCSUTopLeft = glGetUniformLocation(this->glCircleShader, "TopLeft");
+			this->glCSUSize = glGetUniformLocation(this->glCircleShader, "Size");
+			this->glCSUResolution = glGetUniformLocation(this->glCircleShader, "WindowResolution");
+			this->glCSUInternalRadius = glGetUniformLocation(this->glCircleShader, "IRadius");
+			this->glCSUExternalRadius = glGetUniformLocation(this->glCircleShader, "ERadius");
 		}
 		void GLWindow::ShadersDestroy() {
 			glDeleteProgram(this->glNormalShader);

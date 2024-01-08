@@ -133,6 +133,7 @@ namespace OpenArabTools {
 			if (CompiledVS == GL_FALSE) {
 				char Buffer[100]; int size;
 				glGetShaderInfoLog(VertexShader, 100, &size, Buffer);
+				std::cout << "openArabTools: Vertex Shader error: " << Buffer << "\n";
 				return GLInvalidHandle;
 			}
 			S32 CompiledFS;
@@ -140,6 +141,7 @@ namespace OpenArabTools {
 			if (CompiledFS == GL_FALSE) {
 				char Buffer[100]; int size;
 				glGetShaderInfoLog(FragmentShader, 100, &size, Buffer);
+				std::cout << "openArabTools: Fragment Shader error: " << Buffer << "\n";
 				return GLInvalidHandle;
 			}
 
@@ -173,17 +175,30 @@ namespace OpenArabTools {
 			"	color = vec4(1.0, 0.0, 1.0, 1.0);\n"
 			"}\n"
 			;
+		const char* const VertexCircleSource =
+			"#version 330 core\n"
+			"in vec2 Position;\n"
+			"void main()\n"
+			"{\n"
+			"	gl_Position = vec4(Position.x, Position.y, 1.0, 1.0);\n"
+			"}\n"
+			;
 		const char* const FragmentCircleSource =
 			"#version 330 core\n"
 			"in vec4 gl_FragCoord;\n"
 			"out vec4 color;\n"
-			"uniform vec2 Resolution;\n"
+			"uniform vec2 TopLeft;\n"
+			"uniform vec2 Size;\n"
+			"uniform vec2 WindowResolution;\n"
+			"uniform float IRadius;\n"
+			"uniform float ERadius;\n"
 			"void main()\n"
 			"{\n"
-			"	vec2 UV = vec2(gl_FragCoord.x/Resolution.x, gl_FragCoord.y/Resolution.y);\n"
+			"	vec2 CenterPoint = vec2((TopLeft.x+(Size.x/2))/2, (TopLeft.y+(Size.y/2))/2);\n"
+			"	vec2 UV = vec2(gl_FragCoord.x/WindowResolution.x, gl_FragCoord.y/WindowResolution.y);\n"
 			"	vec4 CircleColor = vec4(0.2, 0.2, 0.7, 1.0);\n"
-			"	float ActualDistance = distance(vec2(0.5, 0.5), UV);\n"
-			"	float ResultCircle = step(0.5 - 0.45, ActualDistance) * (1.0 - step(0.5, ActualDistance));\n"
+			"	float ActualDistance = distance(CenterPoint, UV);\n"
+			"	float ResultCircle = step(ERadius - (ERadius - IRadius), ActualDistance) * (1.0 - step(ERadius, ActualDistance));\n"
 			"	color = vec4(ResultCircle, ResultCircle, ResultCircle, ResultCircle) * CircleColor;\n"
 			"}\n"
 			;

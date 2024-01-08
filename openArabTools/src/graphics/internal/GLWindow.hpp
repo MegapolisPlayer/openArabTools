@@ -41,9 +41,7 @@ namespace OpenArabTools {
 			//NS = Normal/Passthrough Shader, CS = Circle Shader, U = Uniform
 
 			GLHandle glNormalShader, glCircleShader;
-			GLHandle glNSUResolution, glCSUResolution;
-			GLHandle glNSUBackground, glCSUBackground;
-			GLHandle glNSUForeground, glCSUForeground;
+			GLHandle glCSUTopLeft, glCSUSize, glCSUResolution, glCSUInternalRadius, glCSUExternalRadius;
 
 		private: //PRIVATE SECTION
 			GLFWwindow* mWindow;

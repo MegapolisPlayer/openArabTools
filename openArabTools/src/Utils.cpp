@@ -4,42 +4,27 @@ namespace OpenArabTools {
 	namespace Utils {
 		//General
 
-		//increment build for each update, major or minor
-
-		const char* Version() noexcept {
-			return 
-				"OpenArabTools version 0.1.0 build 0, (C) Copyright 2023-2024 Martin/MegapolisPlayer and contributors.\n"
-				"Licensed under the Creative Commons CC-BY 4.0 license.\n"
-				"Based on ArabTools 1.5.37 (19.03.2020), (C) Copyright 2014-2020 Ing. Daniel Kahoun. All rights reserved.\n";
-		}
-
-		constexpr U64 BuildID() noexcept {
-			return 0;
-			//0.1.0 in development -> builds 0-
-			//0.1.0 release        -> build  
-		}
-
-		bool Sleep(const U64 aMs) noexcept {
+		bool sleep(const U64 aMs) noexcept {
 			std::this_thread::sleep_for(std::chrono::milliseconds(aMs));
 			return true; //for compatibility
 		}
 
 		//String utils
 
-		bool IsEmpty(const char* aString) noexcept {
+		bool isEmpty(const char* aString) noexcept {
 			if (aString == nullptr) return true;
 			return (strlen(aString) == 0);
 		}
 
-		bool IsEmpty(const std::string& aString) noexcept {
+		bool isEmpty(const std::string& aString) noexcept {
 			return aString.empty();
 		}
 
-		const char* const NonEmpty(const char* aString) noexcept {
+		const char* const nonEmpty(const char* aString) noexcept {
 			if (aString == nullptr) return nullptr;
 			return ((strlen(aString) == 0) ? nullptr : aString);
 		}
-		const std::string* NonEmpty(const std::string* const aString) noexcept {
+		const std::string* nonEmpty(const std::string* const aString) noexcept {
 			if (aString == nullptr) return nullptr;
 			return (aString->empty() ? nullptr : aString);
 		}
@@ -89,7 +74,7 @@ namespace OpenArabTools {
 			}
 		}
 
-		void RunConcurrently(const U64 aCount, const bool aWaitReturn, RunConcurrentlyCallback aFunction) noexcept {
+		void runConcurrently(const U64 aCount, const bool aWaitReturn, RunConcurrentlyCallback aFunction) noexcept {
 			if (Internal::ThreadAmount != Internal::ThreadAmountFinished) return; //if runConcurrently is running
 
 			Internal::FunctionState.clear();
