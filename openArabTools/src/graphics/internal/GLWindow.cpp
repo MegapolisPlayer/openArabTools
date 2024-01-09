@@ -11,6 +11,10 @@ namespace OpenArabTools {
 			this->mWindow = glfwCreateWindow(500, 500, "OpenArabTools", NULL, NULL);
 			glfwMakeContextCurrent(this->mWindow);
 			glewInit();
+
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 			glGenVertexArrays(1, &this->glVAO);
 			glBindVertexArray(this->glVAO);
 			ShadersInit();
@@ -21,6 +25,10 @@ namespace OpenArabTools {
 			this->mWindow = glfwCreateWindow(this->mWidth, this->mHeight, "OpenArabTools", NULL, NULL);
 			glfwMakeContextCurrent(this->mWindow);
 			glewInit();
+
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 			glGenVertexArrays(1, &this->glVAO);
 			glBindVertexArray(this->glVAO);
 			ShadersInit();
@@ -81,6 +89,7 @@ namespace OpenArabTools {
 			this->glCSUResolution = glGetUniformLocation(this->glCircleShader, "WindowResolution");
 			this->glCSUInternalRadius = glGetUniformLocation(this->glCircleShader, "IRadius");
 			this->glCSUExternalRadius = glGetUniformLocation(this->glCircleShader, "ERadius");
+			this->glCSUColor = glGetUniformLocation(this->glCircleShader, "Color");
 		}
 		void GLWindow::ShadersDestroy() {
 			glDeleteProgram(this->glNormalShader);

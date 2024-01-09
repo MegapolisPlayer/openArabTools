@@ -20,7 +20,7 @@ void Function(const ArabTools::U08 a, const ArabTools::U64 b) {
 int main() {
 	ArabTools::init();
 
-	//ArabTools::Utils::Sleep(1000);
+	ArabTools::Utils::sleep(1000);
 
 	std::cout << ArabTools::Version() << "\n";
 
@@ -30,22 +30,24 @@ int main() {
 
 	ArabTools::Internal::GLWindow window;
 	
-	/*
+	
 	float Vertices[] = {
 		-0.5f,  0.5f,
 		 0.5f,  0.5f,
 		 0.5f, -0.5f,
 		-0.5f, -0.5f,
 	};
-	*/
 	
 	
+	
+	/*
 	float Vertices[] = {
 		-0.9f,  0.9f,
 		 0.9f,  0.9f,
 		 0.9f, -0.9f,
 		-0.9f, -0.9f,
 	};
+	*/
 	
 
 	ArabTools::Internal::GLVertexBuffer vbo;
@@ -61,13 +63,12 @@ int main() {
 	ibo.Set(Indices, 6);
 
 	glUseProgram(window.glCircleShader);
-	glUniform2f(window.glCSUSize, 1.8f, 1.8f);
-	glUniform1fv(window.glCSUTopLeft, 2, Vertices);
+	glUniform2f(window.glCSUSize, 1, 1);
+	glUniform2f(window.glCSUTopLeft, -0.5, 0.5);
 	glUniform2f(window.glCSUResolution, 500, 500);
-	glUniform1f(window.glCSUInternalRadius, 0.1f);
+	glUniform1f(window.glCSUInternalRadius, 0.0f);
 	glUniform1f(window.glCSUExternalRadius, 0.3f);
-
-	//TODO: add color and stuff
+	glUniform4f(window.glCSUColor, 0.2f, 0.2f, 0.7f, 1.0f);
 
 	while (~window) {
 		window.SetBackground(0.5f, 0.5f, 0.5f, 1.0f);
