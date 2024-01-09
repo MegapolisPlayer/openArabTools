@@ -46,7 +46,7 @@ namespace OpenArabTools {
 			void Unbind() noexcept;
 			void Reset() noexcept;
 
-			void Draw() noexcept;
+			void Draw(const U64 aOffsetNumbers = 0, const U64 aAmountToDraw = 0) noexcept;
 
 			GLHandle GetHandle() const noexcept;
 			U64 GetNumberOfIndices() const noexcept;

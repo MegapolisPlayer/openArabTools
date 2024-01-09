@@ -103,8 +103,8 @@ namespace OpenArabTools {
 			this->mInit = false;
 		}
 
-		void GLIndexBuffer::Draw() noexcept {
-			glDrawElements(GL_TRIANGLES, this->mAmount, GL_UNSIGNED_INT, nullptr);
+		void GLIndexBuffer::Draw(const U64 aOffsetNumbers, const U64 aAmountToDraw) noexcept {
+			glDrawElements(GL_TRIANGLES, aAmountToDraw == 0 ? this->mAmount : aAmountToDraw, GL_UNSIGNED_INT, (const void*)(aOffsetNumbers * sizeof(unsigned int)));
 		}
 
 		GLHandle GLIndexBuffer::GetHandle() const noexcept {

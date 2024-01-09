@@ -17,22 +17,6 @@
 #define OPENARABTOOLS_OBJ _declspec(dllimport)
 #endif
 
-#ifndef OPENARABTOOLS_NO_EXTENSIONS
-//Extension specific to openArabTools, enabled
-#define OPENARABTOOLS_EXTENSION(x) x
-#else
-//Extension specific to openArabTools, disabled
-#define OPENARABTOOLS_EXTENSION(x) 
-#endif
-
-#ifndef OPENARABTOOLS_NO_SOLUTIONS
-//Solution of complex problem in openArabTools, enabled
-#define OPENARABTOOLS_SOLUTION(x) x
-#else
-//Solution of complex problem in openArabTools, disabled
-#define OPENARABTOOLS_SOLUTION(x)
-#endif
-
 namespace OpenArabTools {
 	//General declarations of shorthand fixed-width types
 

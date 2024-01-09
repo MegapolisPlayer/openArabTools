@@ -23,12 +23,6 @@ OPENARABTOOLS configuration macros
 DEFINE THESE MACROS BEFORE INCLUDING
 --
 
-OPENARABTOOLS_NO_EXTENSIONS
-Disables extensions specific for openArabTools
-
-OPENARABTOOLS_NO_SOLUTIONS
-Disables solutions (classes with implement a particular finished thing e.g. Cube, Semaphore)
-
 OPENARABTOOLS_NO_STANDARD_INCLUDE
 Disables openArabTools specific includes
 

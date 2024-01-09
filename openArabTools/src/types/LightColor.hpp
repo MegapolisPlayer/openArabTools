@@ -3,24 +3,52 @@
 
 namespace OpenArabTools {
 	//LightColor defined colors
-	enum struct LightColorD {
-		LIGHTCOLOR_RED,
+	enum LightColorD : uint8_t {
+		LIGHTCOLOR_BLACK = 0,
 		LIGHTCOLOR_BLUE,
-		//TODO: finish
+		LIGHTCOLOR_CYAN,
+		LIGHTCOLOR_DARK_GRAY,
+		LIGHTCOLOR_GRAY,
+		LIGHTCOLOR_GREEN,
+		LIGHTCOLOR_CHESSBOARD_BLACK,
+		LIGHTCOLOR_CHESSBOARD_DARK,
+		LIGHTCOLOR_CHESSBOARD_LIGHT,
+		LIGHTCOLOR_CHESSBOARD_WHITE,
+		LIGHTCOLOR_LIGHT_GRAY,
+		LIGHTCOLOR_MAGENTA,
+		LIGHTCOLOR_ORANGE,
+		LIGHTCOLOR_PINK,
+		LIGHTCOLOR_RED,
+		LIGHTCOLOR_TRAFFIC_GREEN_OFF,
+		LIGHTCOLOR_TRAFFIC_GREEN_ON,
+		LIGHTCOLOR_TRAFFIC_RED_OFF,
+		LIGHTCOLOR_TRAFFIC_RED_ON,
+		LIGHTCOLOR_YELLOW_OFF,
+		LIGHTCOLOR_YELLOW_ON,
+		LIGHTCOLOR_WHITE,
+		LIGHTCOLOR_YELLOW
 	};
 
 	//LightColor structure
 	struct OPENARABTOOLS_OBJ LightColor {
 		Dec R = 0.0, G = 0.0, B = 0.0;
 
-		void RGB(const Dec aR, const Dec aG, const Dec aB) noexcept;
+		LightColor (const LightColorD aColor) noexcept;
 
-		void Darken();
+		LightColor (const Dec aR, const Dec aG, const Dec aB) noexcept;
 
-		void Lighten();
+		LightColor* Set(const LightColorD aColor) noexcept;
 
-		LightColor& operator=(LightColorD aColor) noexcept;
+		LightColor* RGB(const Dec aR, const Dec aG, const Dec aB) noexcept;
 
-		OPENARABTOOLS_EXTENSION(void RGB255(const U08 aR, const U08 aG, const U08 aB) noexcept);
+		LightColor* RGB255(const U08 aR, const U08 aG, const U08 aB) noexcept;
+
+		LightColor* Darken();
+
+		LightColor* Lighten();
+
+		LightColor* operator=(const LightColor aColor) noexcept;
+
+		~LightColor() noexcept;
 	};
 }

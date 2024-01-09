@@ -19,7 +19,7 @@ namespace OpenArabTools {
 		//Setup constructor
 		Matrix(const U64 aWidth, const U64 aHeight) noexcept;
 
-		OPENARABTOOLS_EXTENSION(void ResizeMatrix(const U64 aNewWidth, const U64 aNewHeight) noexcept);
+		void ResizeMatrix(const U64 aNewWidth, const U64 aNewHeight) noexcept;
 
 		//Shows the window
 		void ShowWindow() noexcept;
@@ -33,9 +33,9 @@ namespace OpenArabTools {
 		void DisableInteration() noexcept;
 
 		//Transfers resources if we want to reuse
-		OPENARABTOOLS_EXTENSION(void TransferResources(Matrix* aOther) noexcept);
+		void TransferResources(Matrix* aOther) noexcept;
 		//Gets if resources transferred
-		OPENARABTOOLS_EXTENSION(bool GetIfTransferedResources() const noexcept);
+		bool GetIfTransferedResources() const noexcept;
 
 		~Matrix() noexcept;
 	private:
