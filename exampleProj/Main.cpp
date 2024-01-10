@@ -24,32 +24,35 @@ int main() {
 
 	std::cout << ArabTools::Version() << "\n";
 
-	ArabTools::Utils::runConcurrently(100000, true, Function);
+	ArabTools::Utils::runConcurrently(100000, false, Function);
 
 	std::cout << "\nAmount executed 1: " << Test.load() << "\n";
 
 	ArabTools::Internal::GLWindow window;
 	
-	
+	//2 for position, 4 for color+alpha, 2 for top left vertex
+	//make AutoGen function in GLBaseImpl
 	float Vertices[] = {
-		-0.5f,  1.0f,
-		 0.5f,  1.0f,
-		 0.5f,  0.5f,
-		-0.5f,  0.5f,
+		-0.5f,  1.0f, 0.5f, 0.0f, 0.0f, 1.0f, -0.5, 1.0,
+		 0.5f,  1.0f, 0.5f, 0.0f, 0.0f, 1.0f, -0.5, 1.0,
+		 0.5f,  0.5f, 0.5f, 0.0f, 0.0f, 1.0f, -0.5, 1.0,
+		-0.5f,  0.5f, 0.5f, 0.0f, 0.0f, 1.0f, -0.5, 1.0,
 
-		-0.5f,  0.5f, 
-		 0.5f,  0.5f,
-		 0.5f,  0.0f,
-		-0.5f,  0.0f,
+		-0.5f,  0.5f, 0.5f, 0.5f, 0.0f, 1.0f, -0.5, 0.5,
+		 0.5f,  0.5f, 0.5f, 0.5f, 0.0f, 1.0f, -0.5, 0.5,
+		 0.5f,  0.0f, 0.5f, 0.5f, 0.0f, 1.0f, -0.5, 0.5, 
+		-0.5f,  0.0f, 0.5f, 0.5f, 0.0f, 1.0f, -0.5, 0.5,
 
-		-0.5f,  0.0f,
-		 0.5f,  0.0f,
-		 0.5f, -0.5f,
-		-0.5f, -0.5f
+		-0.5f,  0.0f, 0.0f, 0.5f, 0.0f, 1.0f, -0.5, 0.0,
+		 0.5f,  0.0f, 0.0f, 0.5f, 0.0f, 1.0f, -0.5, 0.0,
+		 0.5f, -0.5f, 0.0f, 0.5f, 0.0f, 1.0f, -0.5, 0.0,
+		-0.5f, -0.5f, 0.0f, 0.5f, 0.0f, 1.0f, -0.5, 0.0,
 	};
 	
 	ArabTools::Internal::GLVertexBuffer vbo;
-	vbo.Set(Vertices, 12, 2);
+	vbo.Set(Vertices, 12, 8);
+	vbo.EnableAttribute(2, &window.glVAO);
+	vbo.EnableAttribute(4, &window.glVAO);
 	vbo.EnableAttribute(2, &window.glVAO);
 
 	unsigned int Indices[] = {
@@ -66,26 +69,23 @@ int main() {
 	ArabTools::Internal::GLIndexBuffer ibo;
 	ibo.Set(Indices, 18);
 
+	//things that are set for multiple objects: uniform!
+	//things unique to every object: attribute!
+	//in OpenArabTools - all circles have same size, radius, window resolution (this will be moved to Renderer, Window)
+	//TODO: move to renderer, window
 	glUseProgram(window.glCircleShader);
-	glUniform2f(window.glCSUSize, 1.0, 0.5);
 	glUniform2f(window.glCSUResolution, 500, 500);
 	glUniform1f(window.glCSUInternalRadius, 0.0f);
 	glUniform1f(window.glCSUExternalRadius, 0.25f);
+	glUniform2f(window.glCSUSize, 1.0, 0.5);
 
 	while (~window) {
 		window.SetBackground(0.5f, 0.5f, 0.5f, 1.0f);
-		//optimize, batch together, pass data into vertices and autogen them
-		glUniform2f(window.glCSUTopLeft, -0.5, 1.0);
-		glUniform4f(window.glCSUColor, 0.5f, 0.0f, 0.0f, 1.0f);
-		ibo.Draw(0, 6); 
-		glUniform2f(window.glCSUTopLeft, -0.5, 0.5);
-		glUniform4f(window.glCSUColor, 0.5f, 0.5f, 0.0f, 1.0f);
-		ibo.Draw(6, 6);
-		glUniform2f(window.glCSUTopLeft, -0.5, 0.0);
-		glUniform4f(window.glCSUColor, 0.0f, 0.5f, 0.0f, 1.0f);
-		ibo.Draw(12, 6);
+		ibo.Draw(); 
 		window.Process();
 	}
+
+	std::cout << "\nAmount executed 2: " << Test.load() << "\n";
 	
 	ArabTools::terminate();
 }

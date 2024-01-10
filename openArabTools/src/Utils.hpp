@@ -20,7 +20,6 @@ namespace OpenArabTools {
 	OPENARABTOOLS_OBJ constexpr U64 buildID() noexcept;
 
 	namespace Utils {
-
 		//Sleeps on this thread, returns true for compatibility with ArabTools
 		OPENARABTOOLS_OBJ bool sleep(const U64 aMs) noexcept;
 

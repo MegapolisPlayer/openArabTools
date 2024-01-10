@@ -1,6 +1,11 @@
 #pragma once
 #include "internal/GLInterface.hpp"
 
+//TODO: before starting matrix:
+//VertexAutoGeneration
+//IndexAutoGeneration
+//Sorting, better renderer (InternalMatrixRenderer)
+
 namespace OpenArabTools {
 	//Matrix creation helpers
 

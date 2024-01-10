@@ -16,10 +16,10 @@ import cz.gyarab.util.Utils;
 import cz.gyarab.util.light.Semaphore;
 
 class Main {
-  public static void Main(String[] Args) {
-    Semaphore s = Semaphore.createSemaphore();
-    s.showWindow();
-  }
+	public static void Main(String[] Args) {
+		Semaphore s = Semaphore.createSemaphore();
+    	s.showWindow();
+	}
 }
 ```
 In C++ with openArabTools
@@ -27,8 +27,25 @@ In C++ with openArabTools
 #include "OpenArabTools.hpp"
 
 int main() {
-  ArabTools::Semaphore s;
-  s.showWindow();
+	ArabTools::init();
+	ArabTools::Semaphore s;
+	s.showWindow();
+}
+```
+
+Example: Running concurrently in C++ with openArabTools
+```cpp
+#include "OpenArabTools.hpp"
+
+void Function(const ArabTools::U08 ThreadId, const ArabTools::U64 Id) {
+	//do something
+	return;
+}
+
+int main() {
+	ArabTools::init();
+	ArabTools::Utils::runConcurrently(100000, true, Function);
+	s.showWindow();
 }
 ```
 

@@ -159,47 +159,62 @@ namespace OpenArabTools {
 			return Shader;
 		}
 
-		const char* const VertexPassthroughSource =
+		//Circle backgrounds
+		//2 POS, 4 COLOR+ALPHA
+		const char* const VertexBackgroundSource =
 			"#version 330 core\n"
-			"in vec2 Position;\n"
+			"layout(location = 0) in vec2 Position;\n"
+			"layout(location = 1) in vec4 Color;\n"
+			"out vec4 FragColor;\n"
 			"void main()\n"
 			"{\n"
 			"	gl_Position = vec4(Position.x, Position.y, 1.0, 1.0);\n"
+			"	FragColor = Color;\n"
 			"}\n"
 			;
-		const char* const FragmentPassthroughSource =
+		const char* const FragmentBackgroundSource =
 			"#version 330 core\n"
 			"out vec4 color;\n"
+			"in vec4 FragColor;\n"
 			"void main()\n"
 			"{\n"
-			"	color = vec4(1.0, 0.0, 1.0, 1.0);\n"
+			"	color = FragColor;\n"
 			"}\n"
 			;
+
+		//Circles
+		//2 POS, 4 COLOR+ALPHA, 2 TOPLEFT
 		const char* const VertexCircleSource =
 			"#version 330 core\n"
-			"in vec2 Position;\n"
+			"layout(location = 0) in vec2 Position;\n"
+			"layout(location = 1) in vec4 Color;\n"
+			"layout(location = 2) in vec2 TopLeft;\n"
+			"out vec4 FragColor;\n"
+			"out vec2 FragTopLeft;\n"
 			"void main()\n"
 			"{\n"
 			"	gl_Position = vec4(Position.x, Position.y, 1.0, 1.0);\n"
+			"	FragColor = Color;\n"
+			"	FragTopLeft = TopLeft;\n"
 			"}\n"
 			;
 		const char* const FragmentCircleSource =
 			"#version 330 core\n"
-			"in vec4       gl_FragCoord;\n"
+			"in vec4 gl_FragCoord;\n"
+			"in vec4 FragColor;\n"
+			"in vec2 FragTopLeft;\n"
 			"out vec4      OutColor;\n"
-			"uniform vec2  TopLeft;\n"
 			"uniform vec2  Size;\n"
 			"uniform vec2  WindowResolution;\n"
 			"uniform float IRadius;\n"
 			"uniform float ERadius;\n"
-			"uniform vec4  Color;\n"
 			"void main()\n"
 			"{\n"
-			"	vec2 CenterPoint = vec2(TopLeft.x+(Size.x/2), TopLeft.y-(Size.y/2));\n"
+			"	vec2 CenterPoint = vec2(FragTopLeft.x+(Size.x/2), FragTopLeft.y-(Size.y/2));\n"
 			"	vec2 UV = vec2(((gl_FragCoord.x/WindowResolution.x)-0.5)*2, ((gl_FragCoord.y/WindowResolution.y)-0.5)*2);\n"
 			"	float ActualDistance = distance(CenterPoint, UV);\n"
 			"	float ResultCircle = step(ERadius - (ERadius - IRadius), ActualDistance) * (1.0 - step(ERadius, ActualDistance));\n"
-			"	OutColor = vec4(vec3(ResultCircle) * Color.xyz, ResultCircle);\n"
+			"	OutColor = vec4(vec3(ResultCircle) * FragColor.xyz, ResultCircle * FragColor.w);\n"
 			"}\n"
 			;
 	}

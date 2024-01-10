@@ -82,14 +82,12 @@ namespace OpenArabTools {
 		// PRIVATE
 
 		void GLWindow::ShadersInit() {
-			this->glNormalShader = Internal::MakeShader(Internal::VertexPassthroughSource, Internal::FragmentPassthroughSource);
-			this->glCircleShader = Internal::MakeShader(Internal::VertexPassthroughSource, Internal::FragmentCircleSource);
-			this->glCSUTopLeft = glGetUniformLocation(this->glCircleShader, "TopLeft");
+			this->glNormalShader = Internal::MakeShader(Internal::VertexBackgroundSource, Internal::FragmentBackgroundSource);
+			this->glCircleShader = Internal::MakeShader(Internal::VertexCircleSource, Internal::FragmentCircleSource);
 			this->glCSUSize = glGetUniformLocation(this->glCircleShader, "Size");
 			this->glCSUResolution = glGetUniformLocation(this->glCircleShader, "WindowResolution");
 			this->glCSUInternalRadius = glGetUniformLocation(this->glCircleShader, "IRadius");
 			this->glCSUExternalRadius = glGetUniformLocation(this->glCircleShader, "ERadius");
-			this->glCSUColor = glGetUniformLocation(this->glCircleShader, "Color");
 		}
 		void GLWindow::ShadersDestroy() {
 			glDeleteProgram(this->glNormalShader);

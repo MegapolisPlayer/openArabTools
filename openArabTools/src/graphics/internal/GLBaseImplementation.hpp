@@ -60,10 +60,10 @@ namespace OpenArabTools {
 
 		OPENARABTOOLS_OBJ [[nodiscard]] GLHandle MakeShader(const char* aVertSource, const char* aFragSource) noexcept;
 
-		OPENARABTOOLS_OBJ extern const char* const VertexPassthroughSource;
+		OPENARABTOOLS_OBJ extern const char* const VertexBackgroundSource;
 		OPENARABTOOLS_OBJ extern const char* const VertexCircleSource;
 
-		OPENARABTOOLS_OBJ extern const char* const FragmentPassthroughSource;
+		OPENARABTOOLS_OBJ extern const char* const FragmentBackgroundSource;
 		OPENARABTOOLS_OBJ extern const char* const FragmentCircleSource;
 
 		//Shaders defined in GLWindow.hpp and GLWindow.cpp (must be in OpenGL context!)
