@@ -35,6 +35,23 @@ namespace OpenArabTools {
 			bool mInit;
 		};
 
+		//VBO generation utils
+
+		//Generates vertices as:
+		//POSX, POSY, COLORR, COLORG, COLORB, COLORA, BGR, BGG, BGB, BGA, TLX, TLY
+		// Position ,       Foreground (circle)     ,     Background    , Top Left
+		 
+
+		OPENARABTOOLS_OBJ void SetColorOfVertex(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB) noexcept;
+		OPENARABTOOLS_OBJ void SetBackgroundOfVertex(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB) noexcept;
+		OPENARABTOOLS_OBJ void SetColorOfSquare(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB) noexcept;
+		OPENARABTOOLS_OBJ void SetBackgroundOfSquare(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB) noexcept;
+
+		//Allocates memory, returns amount of vertices.
+		OPENARABTOOLS_OBJ U64 GenerateTileVertices(float** const aBuffer, const U64 aCircleAmountX, const U64 aCircleAmountY) noexcept;
+		//Frees memory allocated by GenerateTileVertices
+		OPENARABTOOLS_OBJ void ApplyChanges(float** const aBuffer, U64* const aAmount, GLVertexBuffer* const aObject) noexcept;
+
 		class OPENARABTOOLS_OBJ GLIndexBuffer {
 		public:
 			GLIndexBuffer() noexcept;
@@ -58,7 +75,17 @@ namespace OpenArabTools {
 			bool mInit;
 		};
 
+		//IBO generation
+
+		//Allocates memory!
+		OPENARABTOOLS_OBJ void GenerateTileIndices(unsigned int** aBuffer, const U64 aAmount);
+
+		//Frees memory allocated by GenerateTileIndices
+		OPENARABTOOLS_OBJ void ApplyChanges(float** const aBuffer, GLIndexBuffer* const aObject) noexcept;
+
 		OPENARABTOOLS_OBJ [[nodiscard]] GLHandle MakeShader(const char* aVertSource, const char* aFragSource) noexcept;
+
+		//Shader variables, instantiated by Init() in OpenArabTools.cpp
 
 		OPENARABTOOLS_OBJ extern const char* const VertexBackgroundSource;
 		OPENARABTOOLS_OBJ extern const char* const VertexCircleSource;
@@ -69,23 +96,5 @@ namespace OpenArabTools {
 		//Shaders defined in GLWindow.hpp and GLWindow.cpp (must be in OpenGL context!)
 
 		OPENARABTOOLS_OBJ GLHandle GetUniform(const GLHandle aShader, const char* aName) noexcept;
-
-		class OPENARABTOOLS_OBJ GLTransform {
-		public:
-			GLTransform() noexcept;
-
-			~GLTransform() noexcept;
-		private:
-
-		};
-
-		class OPENARABTOOLS_OBJ GLCamera {
-		public:
-			GLCamera() noexcept;
-
-			~GLCamera() noexcept;
-		private:
-
-		};
 	}
 }

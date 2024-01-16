@@ -3,6 +3,8 @@
 
 namespace OpenArabTools {
 	namespace Internal {
+
+
 		class OPENARABTOOLS_OBJ BatchRenderer {
 		public:
 			BatchRenderer() noexcept;

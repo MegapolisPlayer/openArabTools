@@ -73,6 +73,44 @@ namespace OpenArabTools {
 			this->Reset();
 		}
 
+		void SetColorOfVertex(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB) noexcept {
+
+		}
+		void SetBackgroundOfVertex(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB) noexcept {
+		
+		}
+		void SetColorOfSquare(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB) noexcept {
+
+		}
+		void SetBackgroundOfSquare(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB) noexcept {
+		
+		}
+
+		U64 GenerateTileVertices(float** const aBuffer, const U64 aCircleAmountX, const U64 aCircleAmountY) noexcept {
+			U64 VerticesAmount = aCircleAmountX * aCircleAmountY * 4;
+
+			*aBuffer = (float*)malloc(sizeof(float) * VerticesAmount * 12);
+			if (*aBuffer == nullptr) {
+				std::cout << "openArabTools: Vertex Generation error: allocation failed" << "\n";
+				return INT_MAX;
+			}
+
+			//use 0,0 to 2,2 - we offset everything by -1
+
+			for (U64 i = 0; i < VerticesAmount; i+=4) {
+				
+				//TODO: generate vertices
+				//first X, then Y, then TOPLEFT, then colors
+
+			}
+
+			return VerticesAmount;
+		}
+		void ApplyChanges(float** const aBuffer, U64* const aAmount, GLVertexBuffer* const aObject) noexcept {
+			aObject->Set(*aBuffer, *aAmount, 12);
+			free(*aBuffer);
+		}
+
 		GLIndexBuffer::GLIndexBuffer() noexcept {
 			this->mBuffer = GLInvalidHandle;
 			this->mAmount = 0;
