@@ -41,7 +41,6 @@ namespace OpenArabTools {
 		//POSX, POSY, COLORR, COLORG, COLORB, COLORA, BGR, BGG, BGB, BGA, TLX, TLY
 		// Position ,       Foreground (circle)     ,     Background    , Top Left
 		 
-
 		OPENARABTOOLS_OBJ void SetColorOfVertex(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB) noexcept;
 		OPENARABTOOLS_OBJ void SetBackgroundOfVertex(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB) noexcept;
 		OPENARABTOOLS_OBJ void SetColorOfSquare(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB) noexcept;
@@ -50,7 +49,7 @@ namespace OpenArabTools {
 		//Allocates memory, returns amount of vertices.
 		OPENARABTOOLS_OBJ U64 GenerateTileVertices(float** const aBuffer, const U64 aCircleAmountX, const U64 aCircleAmountY) noexcept;
 		//Frees memory allocated by GenerateTileVertices
-		OPENARABTOOLS_OBJ void ApplyChanges(float** const aBuffer, U64* const aAmount, GLVertexBuffer* const aObject) noexcept;
+		OPENARABTOOLS_OBJ void ApplyChangesV(float** const aBuffer, U64* const aAmount, GLVertexBuffer* const aObject) noexcept;
 
 		class OPENARABTOOLS_OBJ GLIndexBuffer {
 		public:
@@ -81,7 +80,7 @@ namespace OpenArabTools {
 		OPENARABTOOLS_OBJ void GenerateTileIndices(unsigned int** aBuffer, const U64 aAmount);
 
 		//Frees memory allocated by GenerateTileIndices
-		OPENARABTOOLS_OBJ void ApplyChanges(float** const aBuffer, GLIndexBuffer* const aObject) noexcept;
+		OPENARABTOOLS_OBJ void ApplyChangesI(float** const aBuffer, GLIndexBuffer* const aObject) noexcept;
 
 		OPENARABTOOLS_OBJ [[nodiscard]] GLHandle MakeShader(const char* aVertSource, const char* aFragSource) noexcept;
 

@@ -86,6 +86,10 @@ namespace OpenArabTools {
 		
 		}
 
+		//Generates vertices as:
+		//POSX, POSY, COLORR, COLORG, COLORB, COLORA, BGR, BGG, BGB, BGA, TLX, TLY
+		// Position ,       Foreground (circle)     ,     Background    , Top Left
+
 		U64 GenerateTileVertices(float** const aBuffer, const U64 aCircleAmountX, const U64 aCircleAmountY) noexcept {
 			U64 VerticesAmount = aCircleAmountX * aCircleAmountY * 4;
 
@@ -96,17 +100,36 @@ namespace OpenArabTools {
 			}
 
 			//use 0,0 to 2,2 - we offset everything by -1
+			//i - beginning vertex
+			//j - local vertex
+			//k - local incrementer
+
+			float CircleSizeX = (2.0 / aCircleAmountX);
+			float CircleSizeY = (2.0 / aCircleAmountY);
 
 			for (U64 i = 0; i < VerticesAmount; i+=4) {
-				
-				//TODO: generate vertices
-				//first X, then Y, then TOPLEFT, then colors
+				for (U64 j = 0; j < 4; j++) {
+					(*aBuffer)[(i + j) * 12 + 0] = CircleSizeX * (i % aCircleAmountX)        + (j % 2 != 0 ? CircleSizeX : 0); //x - size of circle * column (remove extra rows)
+					(*aBuffer)[(i + j) * 12 + 1] = CircleSizeY * (float(i) / aCircleAmountY) + (j > 1 ? CircleSizeY : 0); //y - size of circle * row (remove extra columns)
 
+					//FG color
+					for (U64 k = 0; k < 4; k++) {
+						(*aBuffer)[(i + j) * 12 + 2 + k] = 0.5f;
+					}
+					//BG color
+					for (U64 k = 0; k < 4; k++) {
+						(*aBuffer)[(i + j) * 12 + 6 + k] = 1.0f;
+					}
+
+					//top left coords
+					(*aBuffer)[(i + j) * 12 + 10] = (*aBuffer)[i * 12 + 0];
+					(*aBuffer)[(i + j) * 12 + 11] = (*aBuffer)[i * 12 + 1];
+				}
 			}
 
 			return VerticesAmount;
 		}
-		void ApplyChanges(float** const aBuffer, U64* const aAmount, GLVertexBuffer* const aObject) noexcept {
+		void ApplyChangesV(float** const aBuffer, U64* const aAmount, GLVertexBuffer* const aObject) noexcept {
 			aObject->Set(*aBuffer, *aAmount, 12);
 			free(*aBuffer);
 		}

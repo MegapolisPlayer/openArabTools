@@ -1,6 +1,7 @@
 #include <iostream>
 #include "OpenArabTools.hpp"
 #include <random>
+#include <iomanip>
 
 /*
 std::random_device sRandomDevice;
@@ -28,8 +29,22 @@ int main() {
 
 	std::cout << "\nAmount executed 1: " << Test.load() << "\n";
 
+	float* a;
+	uint64_t sz = ArabTools::Internal::GenerateTileVertices(&a, 5, 5);
+	ArabTools::Internal::GLVertexBuffer vbo2;
+	std::cout << std::fixed;
+	std::cout << std::setprecision(2);
+	for (int i = 0; i < sz * 12; i++) {
+		if (i % 12 == 0 && i != 0) {
+			std::cout << "\n";
+		}
+		std::cout << a[i] << ",";
+	}
+	ArabTools::Internal::ApplyChangesV(&a, &sz, &vbo2);
+	std::cout << std::resetiosflags(std::ios_base::basefield);
+
 	ArabTools::Internal::GLWindow window;
-	
+
 	//2 for position, 4 for color+alpha, 2 for top left vertex
 	//make AutoGen function in GLBaseImpl
 	float Vertices[] = {
