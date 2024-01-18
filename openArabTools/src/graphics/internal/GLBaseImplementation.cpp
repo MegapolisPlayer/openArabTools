@@ -122,13 +122,16 @@ namespace OpenArabTools {
 					(*aBuffer)[(i + j) * 12 + 1] = -((CircleSizeY * int((i/4) / aCircleAmountY)) + ((j == 2 || j == 3) ? CircleSizeY : 0) - 1.0);
 
 					//FG color
-					for (U64 k = 0; k < 4; k++) {
+					for (U64 k = 0; k < 3; k++) {
 						(*aBuffer)[(i + j) * 12 + 2 + k] = 0.5f;
 					}
 					//BG color
-					for (U64 k = 0; k < 4; k++) {
-						(*aBuffer)[(i + j) * 12 + 6 + k] = 1.0f;
+					for (U64 k = 0; k < 3; k++) {
+						(*aBuffer)[(i + j) * 12 + 6 + k] = 0.0f;
 					}
+					//Alpha
+					(*aBuffer)[(i + j) * 12 + 5] = 1.0f; //FG
+					(*aBuffer)[(i + j) * 12 + 9] = 0.0f; //BG
 
 					//top left coords
 					(*aBuffer)[(i + j) * 12 + 10] = (*aBuffer)[i * 12 + 0];

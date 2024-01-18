@@ -36,6 +36,10 @@ int main() {
 	float* verticesdata;
 	uint64_t vertsize = ArabTools::Internal::GenerateTileVertices(&verticesdata, 5, 5);
 
+	ArabTools::Internal::GLIndexBuffer ibo;
+	unsigned int* indicesdata;
+	ArabTools::Internal::GenerateTileIndices(&indicesdata, vertsize / 4);
+
 	std::cout << std::fixed;
 	std::cout << std::setprecision(2);
 	for (int i = 0; i < vertsize * 12; i++) {
@@ -44,10 +48,6 @@ int main() {
 		}
 		std::cout << verticesdata[i] << ",";
 	}
-
-	ArabTools::Internal::GLIndexBuffer ibo;
-	unsigned int* indicesdata;
-	ArabTools::Internal::GenerateTileIndices(&indicesdata, vertsize / 4);
 
 	std::cout << "\n";
 	for (int i = 0; i < vertsize /4*6; i++) {
@@ -76,8 +76,8 @@ int main() {
 	glUniform1f(window.glCSUExternalRadius, 0.2f);
 	glUniform2f(window.glCSUSize, 0.4, 0.4);
 
-	while (~window) {
-		//window.SetBackground(1.0f, 1.0f, 1.0f, 1.0f);
+	while(~window) {
+		//window.SetBackground(1.0f, 1.0f, 1.0f, 1.0f); //TODO: fix background breaking things
 		ibo.Draw(); 
 		window.Process();
 	}
