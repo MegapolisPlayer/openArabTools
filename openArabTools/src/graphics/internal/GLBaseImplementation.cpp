@@ -5,6 +5,8 @@
 
 namespace OpenArabTools {
 	namespace Internal {
+		//VBO object
+
 		GLVertexBuffer::GLVertexBuffer() noexcept {
 			this->mBuffer = GLInvalidHandle;
 			this->mVertices = 0;
@@ -73,6 +75,8 @@ namespace OpenArabTools {
 			this->Reset();
 		}
 
+		//Vertices Generation
+
 		void SetColorOfVertex(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB) noexcept {
 
 		}
@@ -107,10 +111,13 @@ namespace OpenArabTools {
 			float CircleSizeX = (2.0 / aCircleAmountX);
 			float CircleSizeY = (2.0 / aCircleAmountY);
 
+			//for each object
 			for (U64 i = 0; i < VerticesAmount; i+=4) {
+				//for each vertex in object
 				for (U64 j = 0; j < 4; j++) {
-					(*aBuffer)[(i + j) * 12 + 0] = CircleSizeX * (i % aCircleAmountX)        + (j % 2 != 0 ? CircleSizeX : 0); //x - size of circle * column (remove extra rows)
-					(*aBuffer)[(i + j) * 12 + 1] = CircleSizeY * (float(i) / aCircleAmountY) + (j > 1 ? CircleSizeY : 0); //y - size of circle * row (remove extra columns)
+					//size * cleaned id + if right/bottom - offset
+					(*aBuffer)[(i + j) * 12]     = (CircleSizeX * int((i/4) % aCircleAmountX)) + ((j == 1 || j == 2) ? CircleSizeX : 0) - 1.0;
+					(*aBuffer)[(i + j) * 12 + 1] = (CircleSizeY * int((i/4) / aCircleAmountY)) + ((j == 2 || j == 3) ? CircleSizeY : 0) - 1.0;
 
 					//FG color
 					for (U64 k = 0; k < 4; k++) {
@@ -123,16 +130,18 @@ namespace OpenArabTools {
 
 					//top left coords
 					(*aBuffer)[(i + j) * 12 + 10] = (*aBuffer)[i * 12 + 0];
-					(*aBuffer)[(i + j) * 12 + 11] = (*aBuffer)[i * 12 + 1];
+					(*aBuffer)[(i + j) * 12 + 11] = (*aBuffer)[i * 12 + 1] + 0.4;
 				}
 			}
 
 			return VerticesAmount;
 		}
-		void ApplyChangesV(float** const aBuffer, U64* const aAmount, GLVertexBuffer* const aObject) noexcept {
-			aObject->Set(*aBuffer, *aAmount, 12);
+		void ApplyChangesV(float** const aBuffer, const U64 aAmount, GLVertexBuffer* const aObject) noexcept {
+			aObject->Set(*aBuffer, aAmount, 12);
 			free(*aBuffer);
 		}
+
+		//IBO object
 
 		GLIndexBuffer::GLIndexBuffer() noexcept {
 			this->mBuffer = GLInvalidHandle;
@@ -177,6 +186,34 @@ namespace OpenArabTools {
 
 		GLIndexBuffer::~GLIndexBuffer() noexcept {
 			this->Reset();
+		}
+
+		//Indices generation
+
+		void GenerateTileIndices(unsigned int** aBuffer, const U64 aAmount) {
+			*aBuffer = (unsigned int*)malloc(sizeof(unsigned int) * aAmount * 6);
+			if (*aBuffer == nullptr) {
+				std::cout << "openArabTools: Index Generation error: allocation failed" << "\n";
+				return;
+			}
+
+			// 6 indices per object (4 vertices)
+			// pattern:
+			// 0,1,2,2,3,0
+
+			for (U64 i = 0; i < aAmount; i++) {
+				(*aBuffer)[i * 6]     = i * 4;
+				(*aBuffer)[i * 6 + 1] = i * 4 + 1;
+				(*aBuffer)[i * 6 + 2] = i * 4 + 2;
+				(*aBuffer)[i * 6 + 3] = (*aBuffer)[i * 6 + 2];
+				(*aBuffer)[i * 6 + 4] = i * 4 + 3;
+				(*aBuffer)[i * 6 + 5] = (*aBuffer)[i * 6];
+			}
+
+		}
+		void ApplyChangesI(unsigned int** const aBuffer, const U64 aAmount, GLIndexBuffer* const aObject) noexcept {
+			aObject->Set(*aBuffer, aAmount*6);
+			free(*aBuffer);
 		}
 
 		[[nodiscard]] GLHandle MakeShader(const char* aVertSource, const char* aFragSource) noexcept {
@@ -226,6 +263,8 @@ namespace OpenArabTools {
 			"#version 330 core\n"
 			"layout(location = 0) in vec2 Position;\n"
 			"layout(location = 1) in vec4 Color;\n"
+			"layout(location = 2) in vec4 Background;\n"
+			"layout(location = 3) in vec2 TopLeft;\n"
 			"out vec4 FragColor;\n"
 			"void main()\n"
 			"{\n"
@@ -249,8 +288,10 @@ namespace OpenArabTools {
 			"#version 330 core\n"
 			"layout(location = 0) in vec2 Position;\n"
 			"layout(location = 1) in vec4 Color;\n"
-			"layout(location = 2) in vec2 TopLeft;\n"
+			"layout(location = 2) in vec4 Background;\n"
+			"layout(location = 3) in vec2 TopLeft;\n"
 			"out vec4 FragColor;\n"
+			"out vec4 FragBColor;\n"
 			"out vec2 FragTopLeft;\n"
 			"void main()\n"
 			"{\n"
@@ -263,6 +304,7 @@ namespace OpenArabTools {
 			"#version 330 core\n"
 			"in vec4 gl_FragCoord;\n"
 			"in vec4 FragColor;\n"
+			"in vec4 FragBColor;\n"
 			"in vec2 FragTopLeft;\n"
 			"out vec4      OutColor;\n"
 			"uniform vec2  Size;\n"
