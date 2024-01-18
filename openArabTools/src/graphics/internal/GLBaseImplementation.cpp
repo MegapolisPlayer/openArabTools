@@ -116,8 +116,10 @@ namespace OpenArabTools {
 				//for each vertex in object
 				for (U64 j = 0; j < 4; j++) {
 					//size * cleaned id + if right/bottom - offset
-					(*aBuffer)[(i + j) * 12]     = (CircleSizeX * int((i/4) % aCircleAmountX)) + ((j == 1 || j == 2) ? CircleSizeX : 0) - 1.0;
-					(*aBuffer)[(i + j) * 12 + 1] = (CircleSizeY * int((i/4) / aCircleAmountY)) + ((j == 2 || j == 3) ? CircleSizeY : 0) - 1.0;
+					//X generation: X size * column + if right
+					(*aBuffer)[(i + j) * 12]     =   (CircleSizeX * int((i/4) % aCircleAmountX)) + ((j == 1 || j == 2) ? CircleSizeX : 0) - 1.0;
+					//Y generation: Y size * row + if bottom * -1 because OpenGL Y coords is flipped
+					(*aBuffer)[(i + j) * 12 + 1] = -((CircleSizeY * int((i/4) / aCircleAmountY)) + ((j == 2 || j == 3) ? CircleSizeY : 0) - 1.0);
 
 					//FG color
 					for (U64 k = 0; k < 4; k++) {
@@ -130,7 +132,7 @@ namespace OpenArabTools {
 
 					//top left coords
 					(*aBuffer)[(i + j) * 12 + 10] = (*aBuffer)[i * 12 + 0];
-					(*aBuffer)[(i + j) * 12 + 11] = (*aBuffer)[i * 12 + 1] + 0.4;
+					(*aBuffer)[(i + j) * 12 + 11] = (*aBuffer)[i * 12 + 1];
 				}
 			}
 
