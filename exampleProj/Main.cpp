@@ -30,13 +30,11 @@ int main() {
 	std::cout << "\nAmount executed 1: " << Test.load() << "\n";
 
 	ArabTools::Internal::GLWindow window;
-	
 	ArabTools::Internal::GLVertexBuffer vbo;
+	ArabTools::Internal::GLIndexBuffer ibo;
 
 	float* verticesdata;
 	uint64_t vertsize = ArabTools::Internal::GenerateTileVertices(&verticesdata, 5, 5);
-
-	ArabTools::Internal::GLIndexBuffer ibo;
 	unsigned int* indicesdata;
 	ArabTools::Internal::GenerateTileIndices(&indicesdata, vertsize / 4);
 
@@ -74,10 +72,10 @@ int main() {
 	glUniform2f(window.glCSUResolution, 500, 500);
 	glUniform1f(window.glCSUInternalRadius, 0.05f);
 	glUniform1f(window.glCSUExternalRadius, 0.2f);
-	glUniform2f(window.glCSUSize, 0.4, 0.4);
+	glUniform2f(window.glCSUSize, 0.4f, 0.4f);
 
 	while(~window) {
-		//window.SetBackground(1.0f, 1.0f, 1.0f, 1.0f); //TODO: fix background breaking things
+		window.SetBackground(1.0f, 1.0f, 1.0f, 1.0f); //TODO: fix background breaking things
 		ibo.Draw(); 
 		window.Process();
 	}

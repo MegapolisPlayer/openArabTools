@@ -1,4 +1,4 @@
-### README for Graphics
+### README for Event
 
 - file to include: Event.hpp
 

@@ -127,11 +127,11 @@ namespace OpenArabTools {
 					}
 					//BG color
 					for (U64 k = 0; k < 3; k++) {
-						(*aBuffer)[(i + j) * 12 + 6 + k] = 0.0f;
+						(*aBuffer)[(i + j) * 12 + 6 + k] = 1.0f;
 					}
 					//Alpha
 					(*aBuffer)[(i + j) * 12 + 5] = 1.0f; //FG
-					(*aBuffer)[(i + j) * 12 + 9] = 0.0f; //BG
+					(*aBuffer)[(i + j) * 12 + 9] = 1.0f; //BG
 
 					//top left coords
 					(*aBuffer)[(i + j) * 12 + 10] = (*aBuffer)[i * 12 + 0];
@@ -302,6 +302,7 @@ namespace OpenArabTools {
 			"{\n"
 			"	gl_Position = vec4(Position.x, Position.y, 1.0, 1.0);\n"
 			"	FragColor = Color;\n"
+			"	FragBColor = Background;\n"
 			"	FragTopLeft = TopLeft;\n"
 			"}\n"
 			;
@@ -314,15 +315,15 @@ namespace OpenArabTools {
 			"out vec4      OutColor;\n"
 			"uniform vec2  Size;\n"
 			"uniform vec2  WindowResolution;\n"
-			"uniform float IRadius;\n"
-			"uniform float ERadius;\n"
+			"uniform float IRadius;\n" //internal radius
+			"uniform float ERadius;\n" //external radius
 			"void main()\n"
 			"{\n"
 			"	vec2 CenterPoint = vec2(FragTopLeft.x+(Size.x/2), FragTopLeft.y-(Size.y/2));\n"
 			"	vec2 UV = vec2(((gl_FragCoord.x/WindowResolution.x)-0.5)*2, ((gl_FragCoord.y/WindowResolution.y)-0.5)*2);\n"
 			"	float ActualDistance = distance(CenterPoint, UV);\n"
 			"	float ResultCircle = step(ERadius - (ERadius - IRadius), ActualDistance) * (1.0 - step(ERadius, ActualDistance));\n"
-			"	OutColor = vec4(vec3(ResultCircle) * FragColor.xyz, ResultCircle * FragColor.w);\n"
+			"	OutColor = vec4(vec4(ResultCircle) * FragColor) + vec4(vec4(1.0 - ResultCircle) * FragBColor);\n"
 			"}\n"
 			;
 	}

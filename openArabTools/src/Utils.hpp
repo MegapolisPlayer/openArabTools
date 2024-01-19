@@ -1,5 +1,5 @@
 #pragma once
-#include "StandardInclude.hpp"
+#include "debug/Debug.hpp"
 
 namespace OpenArabTools {
 	extern S64 gsInit; //Amount of initializations
