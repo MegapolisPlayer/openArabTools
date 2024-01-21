@@ -77,17 +77,33 @@ namespace OpenArabTools {
 
 		//Vertices Generation
 
-		void SetColorOfVertex(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB) noexcept {
-
+		void SetColorOfVertex(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB, const U64 aA) noexcept {
+			(*aBuffer)[aId * 12 + 2] = aR;
+			(*aBuffer)[aId * 12 + 3] = aG;
+			(*aBuffer)[aId * 12 + 4] = aB;
+			(*aBuffer)[aId * 12 + 5] = aA;
 		}
-		void SetBackgroundOfVertex(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB) noexcept {
-		
+		void SetBackgroundOfVertex(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB, const U64 aA) noexcept {
+			(*aBuffer)[aId * 12 + 6] = aR;
+			(*aBuffer)[aId * 12 + 7] = aG;
+			(*aBuffer)[aId * 12 + 8] = aB;
+			(*aBuffer)[aId * 12 + 9] = aA;
 		}
-		void SetColorOfSquare(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB) noexcept {
-
+		void SetColorOfCircle(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB, const U64 aA) noexcept {
+			for (U08 i = 0; i < 4; i++) {
+				(*aBuffer)[(aId * 4 + i) * 12 + 2] = aR;
+				(*aBuffer)[(aId * 4 + i) * 12 + 3] = aG;
+				(*aBuffer)[(aId * 4 + i) * 12 + 4] = aB;
+				(*aBuffer)[(aId * 4 + i) * 12 + 5] = aA;
+			}
 		}
-		void SetBackgroundOfSquare(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB) noexcept {
-		
+		void SetBackgroundOfCircle(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB, const U64 aA) noexcept {
+			for (U08 i = 0; i < 4; i++) {
+				(*aBuffer)[(aId * 4 + i) * 12 + 6] = aR;
+				(*aBuffer)[(aId * 4 + i) * 12 + 7] = aG;
+				(*aBuffer)[(aId * 4 + i) * 12 + 8] = aB;
+				(*aBuffer)[(aId * 4 + i) * 12 + 9] = aA;
+			}
 		}
 
 		//Generates vertices as:
@@ -112,14 +128,14 @@ namespace OpenArabTools {
 			float CircleSizeY = (2.0 / aCircleAmountY);
 
 			//for each object
-			for (U64 i = 0; i < VerticesAmount; i+=4) {
+			for (U64 i = 0; i < VerticesAmount; i += 4) {
 				//for each vertex in object
 				for (U64 j = 0; j < 4; j++) {
 					//size * cleaned id + if right/bottom - offset
 					//X generation: X size * column + if right
-					(*aBuffer)[(i + j) * 12]     =   (CircleSizeX * int((i/4) % aCircleAmountX)) + ((j == 1 || j == 2) ? CircleSizeX : 0) - 1.0;
+					(*aBuffer)[(i + j) * 12] = (CircleSizeX * int((i / 4) % aCircleAmountX)) + ((j == 1 || j == 2) ? CircleSizeX : 0) - 1.0;
 					//Y generation: Y size * row + if bottom * -1 because OpenGL Y coords is flipped
-					(*aBuffer)[(i + j) * 12 + 1] = -((CircleSizeY * int((i/4) / aCircleAmountY)) + ((j == 2 || j == 3) ? CircleSizeY : 0) - 1.0);
+					(*aBuffer)[(i + j) * 12 + 1] = -((CircleSizeY * int((i / 4) / aCircleAmountY)) + ((j == 2 || j == 3) ? CircleSizeY : 0) - 1.0);
 
 					//FG color
 					for (U64 k = 0; k < 3; k++) {
@@ -207,7 +223,7 @@ namespace OpenArabTools {
 			// 0,1,2,2,3,0
 
 			for (U64 i = 0; i < aAmount; i++) {
-				(*aBuffer)[i * 6]     = i * 4;
+				(*aBuffer)[i * 6] = i * 4;
 				(*aBuffer)[i * 6 + 1] = i * 4 + 1;
 				(*aBuffer)[i * 6 + 2] = i * 4 + 2;
 				(*aBuffer)[i * 6 + 3] = (*aBuffer)[i * 6 + 2];
@@ -217,7 +233,7 @@ namespace OpenArabTools {
 
 		}
 		void ApplyChangesI(unsigned int** const aBuffer, const U64 aAmount, GLIndexBuffer* const aObject) noexcept {
-			aObject->Set(*aBuffer, aAmount*6);
+			aObject->Set(*aBuffer, aAmount * 6);
 			free(*aBuffer);
 		}
 
@@ -326,5 +342,25 @@ namespace OpenArabTools {
 			"	OutColor = vec4(vec4(ResultCircle) * FragColor) + vec4(vec4(1.0 - ResultCircle) * FragBColor);\n"
 			"}\n"
 			;
+
+		namespace Debug {
+			void PrintVertexArray(float** aArray, const U64 aAmountOfVertices, const U64 aVertexSize, const U64 aVertexPrecisionOverride) noexcept {
+				std::ios DefaultCout(nullptr); std::cout.copyfmt(DefaultCout);
+				std::cout << std::fixed << std::setprecision(aVertexPrecisionOverride);
+				for (uint64_t i = 0; i < aAmountOfVertices * aVertexSize; i++) {
+					if (i % aVertexSize == 0 && i != 0) std::cout << '\n';
+					std::cout << (*aArray)[i] << ',';
+				}
+				std::cout << '\n';
+				std::cout.copyfmt(DefaultCout);
+			}
+			void PrintIndexArray(unsigned int** aArray, const U64 aAmountOfObjects, const U64 aIndicesPerObject, const U64 aNumberWidthOverride) noexcept {
+				for (uint64_t i = 0; i < aAmountOfObjects * aIndicesPerObject; i++) {
+					if (i % aIndicesPerObject == 0 && i != 0) std::cout << '\n';
+					std::cout << std::setw(aNumberWidthOverride) << std::setfill('0') << (*aArray)[i] << ',';
+				}
+				std::cout << '\n';
+			}
+		}
 	}
 }

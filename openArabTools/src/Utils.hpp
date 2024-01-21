@@ -1,5 +1,5 @@
 #pragma once
-#include "debug/Debug.hpp"
+#include "error/Error.hpp"
 
 namespace OpenArabTools {
 	extern S64 gsInit; //Amount of initializations
@@ -14,7 +14,7 @@ namespace OpenArabTools {
 	OPENARABTOOLS_OBJ void terminate() noexcept;
 
 	//Returns the OpenArabTools version (and the version of ArabTools it was based on) as a string literal
-	OPENARABTOOLS_OBJ const char* Version() noexcept;
+	OPENARABTOOLS_OBJ constexpr const char* Version() noexcept;
 
 	//Returns the OpenArabTools build ID
 	OPENARABTOOLS_OBJ constexpr U64 buildID() noexcept;

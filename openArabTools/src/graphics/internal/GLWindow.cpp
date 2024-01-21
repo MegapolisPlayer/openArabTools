@@ -5,7 +5,7 @@
 
 namespace OpenArabTools {
 	namespace Internal {
-		GLWindow::GLWindow() noexcept : mWidth(500), mHeight(500) {
+		GLWindow::GLWindow() noexcept : mWidth(500), mHeight(500), mFrameNo(0) {
 			init();
 
 			this->mWindow = glfwCreateWindow(500, 500, "OpenArabTools", NULL, NULL);
@@ -19,7 +19,7 @@ namespace OpenArabTools {
 			glBindVertexArray(this->glVAO);
 			ShadersInit();
 		}
-		GLWindow::GLWindow(const U64 aWidth, const U64 aHeight) noexcept : mWidth(aWidth), mHeight(aHeight) {
+		GLWindow::GLWindow(const U64 aWidth, const U64 aHeight) noexcept : mWidth(aWidth), mHeight(aHeight), mFrameNo(0) {
 			init();
 
 			this->mWindow = glfwCreateWindow(this->mWidth, this->mHeight, "OpenArabTools", NULL, NULL);
@@ -49,6 +49,12 @@ namespace OpenArabTools {
 			glViewport(0, 0, this->mWidth, this->mHeight);
 			glUniform2f(this->glCSUResolution, this->mWidth, this->mHeight);
 		}
+		U64 GLWindow::SizeX() const noexcept {
+			return this->mWidth;
+		}
+		U64 GLWindow::SizeY() const noexcept {
+			return this->mHeight;
+		}
 		void GLWindow::SetBackground(const Dec aAll) noexcept {
 			glClear(GL_COLOR_BUFFER_BIT);
 			glClearColor(aAll, aAll, aAll, aAll);
@@ -64,14 +70,20 @@ namespace OpenArabTools {
 		void GLWindow::Process() noexcept {
 			glfwSwapBuffers(this->mWindow);
 			glfwPollEvents();
+			this->mFrameNo++;
 		}
-		bool GLWindow::IsWindowOpen() noexcept {
+		bool GLWindow::IsWindowOpen() const noexcept {
 			return !glfwWindowShouldClose(this->mWindow);
 		}
-		bool GLWindow::operator~() noexcept {
+		bool GLWindow::operator~() const noexcept {
 			return !glfwWindowShouldClose(this->mWindow);
 		}
-
+		U64 GLWindow::FrameNo() const noexcept {
+			return this->mFrameNo;
+		}
+		void GLWindow::FrameNoReset() noexcept {
+			this->mFrameNo = 0;
+		}
 		GLWindow::~GLWindow() noexcept {
 			glDeleteVertexArrays(1, &this->glVAO);
 			ShadersDestroy();

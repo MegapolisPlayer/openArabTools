@@ -41,3 +41,10 @@ namespace OpenArabTools {
 	//Callback for an interation with the Matrix class (params: X and Y of light, return SUCCESSCODE or FAILURECODE)
 	typedef bool(MatrixInteractionCallback)(const U64, const U64);
 }
+
+//Utility macros
+
+//Normalize 0-255 range to 0-1
+#define NORMAL255(x) x/255.0
+//Normalize 0-1023 range to 0-1
+#define NORMAL1023(x) x/1023.0

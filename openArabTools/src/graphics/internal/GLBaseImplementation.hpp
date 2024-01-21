@@ -41,10 +41,12 @@ namespace OpenArabTools {
 		//POSX, POSY, COLORR, COLORG, COLORB, COLORA, BGR, BGG, BGB, BGA, TLX, TLY
 		// Position ,       Foreground (circle)     ,     Background    , Top Left
 		 
-		OPENARABTOOLS_OBJ void SetColorOfVertex(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB) noexcept;
-		OPENARABTOOLS_OBJ void SetBackgroundOfVertex(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB) noexcept;
-		OPENARABTOOLS_OBJ void SetColorOfSquare(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB) noexcept;
-		OPENARABTOOLS_OBJ void SetBackgroundOfSquare(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB) noexcept;
+		OPENARABTOOLS_OBJ void SetColorOfVertex(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB, const U64 aA = 1.0) noexcept;
+		OPENARABTOOLS_OBJ void SetBackgroundOfVertex(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB, const U64 aA = 1.0) noexcept;
+		OPENARABTOOLS_OBJ void SetColorOfCircle(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB, const U64 aA = 1.0) noexcept;
+		OPENARABTOOLS_OBJ void SetBackgroundOfCircle(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB, const U64 aA = 1.0) noexcept;
+
+		//TODO: SetGradientOfCircle, SetGradientBackgroundOfCircle
 
 		//Allocates memory, returns amount of vertices.
 		OPENARABTOOLS_OBJ U64 GenerateTileVertices(float** const aBuffer, const U64 aCircleAmountX, const U64 aCircleAmountY) noexcept;
@@ -94,5 +96,11 @@ namespace OpenArabTools {
 		//Shaders defined in GLWindow.hpp and GLWindow.cpp (must be in OpenGL context!)
 
 		OPENARABTOOLS_OBJ GLHandle GetUniform(const GLHandle aShader, const char* aName) noexcept;
+
+		//Debug functions, not user-facing
+		namespace Debug {
+			OPENARABTOOLS_OBJ void PrintVertexArray(float** aArray, const U64 aAmountOfVertices, const U64 aVertexSize, const U64 aVertexPrecisionOverride = 2) noexcept;
+			OPENARABTOOLS_OBJ void PrintIndexArray(unsigned int** aArray, const U64 aAmountOfObjects, const U64 aIndicesPerObject, const U64 aNumberWidthOverride = 4) noexcept;
+		}
 	}
 }

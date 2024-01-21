@@ -35,7 +35,7 @@ namespace OpenArabTools {
 
 	//increment build for each update, major or minor
 
-	const char* Version() noexcept {
+	constexpr const char* Version() noexcept {
 		return
 			"OpenArabTools version 0.1.0 build 0, (C) Copyright 2023-2024 Martin/MegapolisPlayer and contributors.\n"
 			"Licensed under the Creative Commons CC-BY 4.0 license.\n"

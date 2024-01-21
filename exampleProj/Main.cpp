@@ -38,23 +38,13 @@ int main() {
 	unsigned int* indicesdata;
 	ArabTools::Internal::GenerateTileIndices(&indicesdata, vertsize / 4);
 
-	std::cout << std::fixed;
-	std::cout << std::setprecision(2);
-	for (int i = 0; i < vertsize * 12; i++) {
-		if (i % 12 == 0 && i != 0) {
-			std::cout << "\n";
-		}
-		std::cout << verticesdata[i] << ",";
+	for (int i = 0; i < 25; i++) {
+		ArabTools::Internal::SetBackgroundOfCircle(&verticesdata, i, NORMAL255(0), NORMAL255(0), NORMAL255(128));
+		ArabTools::Internal::SetColorOfCircle(&verticesdata, i, NORMAL255(200), NORMAL255(200), NORMAL255(255));
 	}
 
-	std::cout << "\n";
-	for (int i = 0; i < vertsize /4*6; i++) {
-		if (i % 6 == 0 && i != 0) {
-			std::cout << "\n";
-		}
-		std::cout << indicesdata[i] << ",";
-	}
-	std::cout << "\n";
+	ArabTools::Internal::Debug::PrintVertexArray(&verticesdata, vertsize, 12);
+	ArabTools::Internal::Debug::PrintIndexArray(&indicesdata, vertsize / 4, 6);
 
 	ArabTools::Internal::ApplyChangesV(&verticesdata, vertsize, &vbo);
 	vbo.EnableAttribute(2, &window.glVAO);
@@ -74,13 +64,16 @@ int main() {
 	glUniform1f(window.glCSUExternalRadius, 0.2f);
 	glUniform2f(window.glCSUSize, 0.4f, 0.4f);
 
-	while(~window) {
-		window.SetBackground(1.0f, 1.0f, 1.0f, 1.0f); //TODO: fix background breaking things
-		ibo.Draw(); 
+	while (~window) {
+		std::cout << "Tick " << window.FrameNo() << "\n";
+		window.SetBackground(1.0f, 1.0f, 1.0f, 1.0f);
+		ibo.Draw();
 		window.Process();
 	}
 
 	std::cout << "\nAmount executed 2: " << Test.load() << "\n";
-	
+
 	ArabTools::terminate();
+
+	char a; std::cin >> a;
 }

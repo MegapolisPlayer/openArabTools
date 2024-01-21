@@ -12,12 +12,13 @@ namespace OpenArabTools {
 			// WINDOW MANAGEMENT
 
 			void ShowWindow() noexcept;
-
 			void HideWindow() noexcept;
 
 			void SetTitle(const char* aTitle) noexcept;
 
 			void Resize(const U64 aWidth, const U64 aHeight) noexcept;
+			U64 SizeX() const noexcept;
+			U64 SizeY() const noexcept;
 
 			void SetBackground(const Dec aAll) noexcept;
 			void SetBackground(const Dec aRGB, const Dec aA) noexcept;
@@ -25,9 +26,11 @@ namespace OpenArabTools {
 
 			void Process() noexcept;
 
-			bool IsWindowOpen() noexcept;
+			bool IsWindowOpen() const noexcept;
+			bool operator~() const noexcept; //returns if window still open
 
-			bool operator~() noexcept; //returns if window still open
+			U64 FrameNo() const noexcept; //gets. no of frame
+			void FrameNoReset() noexcept; //resets frame no
 
 			~GLWindow() noexcept;
 
@@ -46,6 +49,7 @@ namespace OpenArabTools {
 		private: //PRIVATE SECTION
 			GLFWwindow* mWindow;
 			U64 mWidth, mHeight;
+			U64 mFrameNo;
 
 			void ShadersInit();
 			void ShadersDestroy();
