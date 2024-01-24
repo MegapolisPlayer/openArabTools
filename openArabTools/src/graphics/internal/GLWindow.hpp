@@ -1,8 +1,11 @@
 #pragma once
-#include "GLBatchRender.hpp"
+#include "GLBaseImplementation.hpp"
+
+template class OPENARABTOOLS_OBJ std::basic_string<char>;
 
 namespace OpenArabTools {
 	namespace Internal {
+
 		//Main Window Class (for OpenGL)
 		class OPENARABTOOLS_OBJ GLWindow {
 		public:
@@ -24,6 +27,9 @@ namespace OpenArabTools {
 			void SetBackground(const Dec aRGB, const Dec aA) noexcept;
 			void SetBackground(const Dec aR, const Dec aG, const Dec aB, const Dec aA) noexcept;
 
+			//Internal radius - radius of empty space in middle of circle, almost never used, if debug mode true and DEBUG defined - just prints arrays
+			void PrepareUniforms(U64 aAmountCirclesX, U64 aAmountCirclesY, Dec aInternalRadius = 0.0, bool aDebugMode = false) noexcept;
+
 			void Process() noexcept;
 
 			bool IsWindowOpen() const noexcept;
@@ -36,20 +42,30 @@ namespace OpenArabTools {
 
 			//VARIABLES
 
-			//VAO, per window (must be in OpenGL context)
+			//VAO, VBO, IBO, per window (must be in OpenGL context)
 
-			GLHandle glVAO;
+			GLVertexArray glVAO;
+			GLVertexBuffer glVBO;
+			GLIndexBuffer glIBO;
 
 			//shaders, per window (must be in OpenGL context)
-			//NS = Normal/Passthrough Shader, CS = Circle Shader, U = Uniform
+			//CS = Circle Shader, U = Uniform, S = SSBO
 
-			GLHandle glNormalShader, glCircleShader;
-			GLHandle glCSUSize, glCSUResolution, glCSUInternalRadius, glCSUExternalRadius;
+			GLHandle glCircleShader;
+
+			//glCSUSize - 2 floats, size of circle boundary
+			//glCSUResolution - 2 ints, resolution of window
+			//glCSUInternalRadius - float, internal radius
+			//glCSUExternalRadius - float, radius
+			//glCSSBitmapOnOff 
+
+			GLHandle glCSUSize, glCSUResolution, glCSUInternalRadius, glCSUExternalRadius, GLCSSBitmapOnOff;
 
 		private: //PRIVATE SECTION
 			GLFWwindow* mWindow;
 			U64 mWidth, mHeight;
 			U64 mFrameNo;
+			std::string mTitle;
 
 			void ShadersInit();
 			void ShadersDestroy();

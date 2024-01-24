@@ -6,6 +6,19 @@ namespace OpenArabTools {
 		typedef uint32_t GLHandle;
 		constexpr static GLHandle GLInvalidHandle = INT32_MAX;
 
+		class OPENARABTOOLS_OBJ GLVertexArray {
+		public:
+			GLVertexArray() noexcept;
+
+			void Bind() noexcept;
+			void Unbind() noexcept;
+
+			~GLVertexArray() noexcept;
+
+			GLHandle Array;
+			U64 Counter;
+		};
+
 		class OPENARABTOOLS_OBJ GLVertexBuffer {
 		public:
 			GLVertexBuffer() noexcept;
@@ -13,8 +26,8 @@ namespace OpenArabTools {
 
 			void Set(float* const aData, const U64 aVertices, const U64 aVerticesSize) noexcept;
 
-			void EnableAttribute(const U64 aAmountValues, GLHandle* const aArray) noexcept;
-			void EnableAttribute(const U64 aCounterOverride, const U64 aAmountValues, GLHandle* const aArray) noexcept;
+			void EnableAttribute(const U64 aAmountValues, GLVertexArray* const aArray) noexcept;
+			void EnableAttribute(const U64 aCounterOverride, const U64 aAmountValues, GLVertexArray* const aArray) noexcept;
 
 			void Bind() noexcept;
 			void Unbind() noexcept;
@@ -30,7 +43,7 @@ namespace OpenArabTools {
 			GLHandle mBuffer;
 			U64 mVertices;
 			U64 mVertSize;
-			U64 mCounter;
+			U64 mCounter;    //TODO: move counter to VAO!
 			U64 mVertCounter;
 			bool mInit;
 		};
@@ -85,17 +98,40 @@ namespace OpenArabTools {
 
 		OPENARABTOOLS_OBJ [[nodiscard]] GLHandle MakeShader(const char* aVertSource, const char* aFragSource) noexcept;
 
-		//Shader variables, instantiated by Init() in OpenArabTools.cpp
+		//Shader variables, instantiated by window classes
 
-		OPENARABTOOLS_OBJ extern const char* const VertexBackgroundSource;
 		OPENARABTOOLS_OBJ extern const char* const VertexCircleSource;
-
-		OPENARABTOOLS_OBJ extern const char* const FragmentBackgroundSource;
 		OPENARABTOOLS_OBJ extern const char* const FragmentCircleSource;
 
 		//Shaders defined in GLWindow.hpp and GLWindow.cpp (must be in OpenGL context!)
 
 		OPENARABTOOLS_OBJ GLHandle GetUniform(const GLHandle aShader, const char* aName) noexcept;
+
+		//SSBO
+
+		template<typename DataType>
+		class GLShaderBuffer {
+		public:
+			GLShaderBuffer() noexcept;
+			GLShaderBuffer(DataType* aData, const U64 aAmount, GLVertexArray* const aArray) noexcept;
+
+			void Set(DataType* aData, const U64 aAmount, GLVertexArray* const aArray) noexcept;
+
+			void Bind() noexcept;
+			void BindBuffer() noexcept; //bind only the buffer
+			void Unbind() noexcept;
+			void Reset() noexcept;
+
+			GLHandle GetHandle() const noexcept;
+			U64 GetSize() const noexcept;
+
+			~GLShaderBuffer() noexcept;
+		private:
+			GLHandle mBuffer;
+			U64 mSize;
+			U64 mVAOCount;
+			bool mInit;
+		};
 
 		//Debug functions, not user-facing
 		namespace Debug {
@@ -104,3 +140,5 @@ namespace OpenArabTools {
 		}
 	}
 }
+
+#include "template/GLShaderBuffer.hpp"

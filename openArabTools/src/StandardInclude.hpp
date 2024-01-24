@@ -38,7 +38,7 @@ namespace OpenArabTools {
 
 	//Callback for a function called by RunConcurrently (params: No. of thread from 0 (main), Id of job, do not return)
 	typedef void(RunConcurrentlyCallback)(const U08, const U64);
-	//Callback for an interation with the Matrix class (params: X and Y of light, return SUCCESSCODE or FAILURECODE)
+	//Callback for an interaction with the Matrix class (params: X and Y of light, return SUCCESSCODE or FAILURECODE)
 	typedef bool(MatrixInteractionCallback)(const U64, const U64);
 }
 

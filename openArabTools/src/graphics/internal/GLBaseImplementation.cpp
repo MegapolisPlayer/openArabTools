@@ -5,6 +5,25 @@
 
 namespace OpenArabTools {
 	namespace Internal {
+		//VAO object
+
+		GLVertexArray::GLVertexArray() noexcept {
+			glGenVertexArrays(1, &this->Array);
+			glBindVertexArray(this->Array);
+			this->Counter = 0;
+		}
+
+		void GLVertexArray::Bind() noexcept {
+			glBindVertexArray(this->Array);
+		}
+		void GLVertexArray::Unbind() noexcept {
+			glBindVertexArray(0);
+		}
+
+		GLVertexArray::~GLVertexArray() noexcept {
+			glDeleteVertexArrays(1, &this->Array);
+		}
+
 		//VBO object
 
 		GLVertexBuffer::GLVertexBuffer() noexcept {
@@ -28,15 +47,15 @@ namespace OpenArabTools {
 			this->mInit = true;
 		}
 
-		void GLVertexBuffer::EnableAttribute(const U64 aAmountValues, GLHandle* const aArray) noexcept {
-			glBindVertexArray(*aArray);
-			glEnableVertexAttribArray(this->mCounter);
-			glVertexAttribPointer(this->mCounter, aAmountValues, GL_FLOAT, GL_FALSE, this->mVertSize * sizeof(float), (const void*)(this->mVertCounter * sizeof(float)));
-			this->mCounter++;
+		void GLVertexBuffer::EnableAttribute(const U64 aAmountValues, GLVertexArray* const aArray) noexcept {
+			aArray->Bind();
+			glEnableVertexAttribArray(aArray->Counter);
+			glVertexAttribPointer(aArray->Counter, aAmountValues, GL_FLOAT, GL_FALSE, this->mVertSize * sizeof(float), (const void*)(this->mVertCounter * sizeof(float)));
+			aArray->Counter++;
 			this->mVertCounter += aAmountValues;
 		}
-		void GLVertexBuffer::EnableAttribute(const U64 aCounterOverride, const U64 aAmountValues, GLHandle* const aArray) noexcept {
-			glBindVertexArray(*aArray);
+		void GLVertexBuffer::EnableAttribute(const U64 aCounterOverride, const U64 aAmountValues, GLVertexArray* const aArray) noexcept {
+			aArray->Bind();
 			glEnableVertexAttribArray(aCounterOverride);
 			glVertexAttribPointer(aCounterOverride, aAmountValues, GL_FLOAT, GL_FALSE, this->mVertSize * sizeof(float), (const void*)(this->mVertCounter * sizeof(float)));
 		}
@@ -278,35 +297,11 @@ namespace OpenArabTools {
 			return Shader;
 		}
 
-		//Circle backgrounds
-		//2 POS, 4 COLOR+ALPHA
-		const char* const VertexBackgroundSource =
-			"#version 330 core\n"
-			"layout(location = 0) in vec2 Position;\n"
-			"layout(location = 1) in vec4 Color;\n"
-			"layout(location = 2) in vec4 Background;\n"
-			"layout(location = 3) in vec2 TopLeft;\n"
-			"out vec4 FragColor;\n"
-			"void main()\n"
-			"{\n"
-			"	gl_Position = vec4(Position.x, Position.y, 1.0, 1.0);\n"
-			"	FragColor = Color;\n"
-			"}\n"
-			;
-		const char* const FragmentBackgroundSource =
-			"#version 330 core\n"
-			"out vec4 color;\n"
-			"in vec4 FragColor;\n"
-			"void main()\n"
-			"{\n"
-			"	color = FragColor;\n"
-			"}\n"
-			;
-
 		//Circles
-		//2 POS, 4 COLOR+ALPHA, 2 TOPLEFT
+		//2 POS, 4 COLOR+ALPHA, 4 BG, 2 TOPLEFT
 		const char* const VertexCircleSource =
-			"#version 330 core\n"
+			"#version 460 core\n"
+			"in int gl_VertexID;\n"
 			"layout(location = 0) in vec2 Position;\n"
 			"layout(location = 1) in vec4 Color;\n"
 			"layout(location = 2) in vec4 Background;\n"
@@ -314,32 +309,39 @@ namespace OpenArabTools {
 			"out vec4 FragColor;\n"
 			"out vec4 FragBColor;\n"
 			"out vec2 FragTopLeft;\n"
+			"flat out int ObjectID;\n"
 			"void main()\n"
 			"{\n"
 			"	gl_Position = vec4(Position.x, Position.y, 1.0, 1.0);\n"
 			"	FragColor = Color;\n"
 			"	FragBColor = Background;\n"
 			"	FragTopLeft = TopLeft;\n"
+			"	ObjectID = int(gl_VertexID / 4);\n"
 			"}\n"
 			;
 		const char* const FragmentCircleSource =
-			"#version 330 core\n"
+			"#version 460 core\n"
 			"in vec4 gl_FragCoord;\n"
 			"in vec4 FragColor;\n"
 			"in vec4 FragBColor;\n"
 			"in vec2 FragTopLeft;\n"
+			"flat in int ObjectID;\n"
 			"out vec4      OutColor;\n"
 			"uniform vec2  Size;\n"
 			"uniform vec2  WindowResolution;\n"
 			"uniform float IRadius;\n" //internal radius
 			"uniform float ERadius;\n" //external radius
+			"layout(std430, binding = 4) buffer PerObject\n"
+			"{\n"
+			"	bool IsLightOn[];\n"
+			"};\n"
 			"void main()\n"
 			"{\n"
 			"	vec2 CenterPoint = vec2(FragTopLeft.x+(Size.x/2), FragTopLeft.y-(Size.y/2));\n"
 			"	vec2 UV = vec2(((gl_FragCoord.x/WindowResolution.x)-0.5)*2, ((gl_FragCoord.y/WindowResolution.y)-0.5)*2);\n"
 			"	float ActualDistance = distance(CenterPoint, UV);\n"
 			"	float ResultCircle = step(ERadius - (ERadius - IRadius), ActualDistance) * (1.0 - step(ERadius, ActualDistance));\n"
-			"	OutColor = vec4(vec4(ResultCircle) * FragColor) + vec4(vec4(1.0 - ResultCircle) * FragBColor);\n"
+			"	OutColor = vec4(vec4(ResultCircle) * FragColor * vec4(IsLightOn[ObjectID])) + vec4(vec4(1.0 - ResultCircle) * FragBColor);\n"
 			"}\n"
 			;
 

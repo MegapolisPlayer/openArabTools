@@ -5,7 +5,7 @@
 
 namespace OpenArabTools {
 	namespace Internal {
-		GLWindow::GLWindow() noexcept : mWidth(500), mHeight(500), mFrameNo(0) {
+		GLWindow::GLWindow() noexcept : mWidth(500), mHeight(500), mFrameNo(0), mTitle() {
 			init();
 
 			this->mWindow = glfwCreateWindow(500, 500, "OpenArabTools", NULL, NULL);
@@ -15,11 +15,10 @@ namespace OpenArabTools {
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-			glGenVertexArrays(1, &this->glVAO);
-			glBindVertexArray(this->glVAO);
+			this->glVAO.Bind();
 			ShadersInit();
 		}
-		GLWindow::GLWindow(const U64 aWidth, const U64 aHeight) noexcept : mWidth(aWidth), mHeight(aHeight), mFrameNo(0) {
+		GLWindow::GLWindow(const U64 aWidth, const U64 aHeight) noexcept : mWidth(aWidth), mHeight(aHeight), mFrameNo(0), mTitle() {
 			init();
 
 			this->mWindow = glfwCreateWindow(this->mWidth, this->mHeight, "OpenArabTools", NULL, NULL);
@@ -29,8 +28,7 @@ namespace OpenArabTools {
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-			glGenVertexArrays(1, &this->glVAO);
-			glBindVertexArray(this->glVAO);
+			this->glVAO.Bind();
 			ShadersInit();
 		}
 		void GLWindow::ShowWindow() noexcept {
@@ -40,7 +38,8 @@ namespace OpenArabTools {
 			glfwHideWindow(this->mWindow);
 		}
 		void GLWindow::SetTitle(const char* aTitle) noexcept {
-			glfwSetWindowTitle(this->mWindow, aTitle);
+			this->mTitle = aTitle;
+			glfwSetWindowTitle(this->mWindow, this->mTitle.c_str());
 		}
 		void GLWindow::Resize(const U64 aWidth, const U64 aHeight) noexcept {
 			this->mWidth = aWidth;
@@ -65,7 +64,18 @@ namespace OpenArabTools {
 		}
 		void GLWindow::SetBackground(const Dec aR, const Dec aG, const Dec aB, const Dec aA) noexcept {
 			glClear(GL_COLOR_BUFFER_BIT);
-			glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+			glClearColor(aR, aG, aB, aA);
+		}
+		void GLWindow::PrepareUniforms(U64 aAmountCirclesX, U64 aAmountCirclesY, Dec aInternalRadius, bool aDebugMode) noexcept {
+			glUseProgram(this->glCircleShader);
+			glUniform2f(this->glCSUResolution, this->mWidth, this->mHeight);
+			glUniform1f(this->glCSUInternalRadius, aInternalRadius);
+			//pick half of SMALLER size = more circles
+			glUniform1f(
+				this->glCSUExternalRadius, 
+				(aAmountCirclesX > aAmountCirclesY) ? (2.0 / aAmountCirclesX / 2.0) : (2.0 / aAmountCirclesY / 2.0)
+			);
+			glUniform2f(this->glCSUSize, 2.0 / aAmountCirclesX, 2.0 / aAmountCirclesY);
 		}
 		void GLWindow::Process() noexcept {
 			glfwSwapBuffers(this->mWindow);
@@ -85,7 +95,6 @@ namespace OpenArabTools {
 			this->mFrameNo = 0;
 		}
 		GLWindow::~GLWindow() noexcept {
-			glDeleteVertexArrays(1, &this->glVAO);
 			ShadersDestroy();
 			glfwDestroyWindow(this->mWindow);
 			terminate();
@@ -94,7 +103,6 @@ namespace OpenArabTools {
 		// PRIVATE
 
 		void GLWindow::ShadersInit() {
-			this->glNormalShader = Internal::MakeShader(Internal::VertexBackgroundSource, Internal::FragmentBackgroundSource);
 			this->glCircleShader = Internal::MakeShader(Internal::VertexCircleSource, Internal::FragmentCircleSource);
 			this->glCSUSize = glGetUniformLocation(this->glCircleShader, "Size");
 			this->glCSUResolution = glGetUniformLocation(this->glCircleShader, "WindowResolution");
@@ -102,7 +110,6 @@ namespace OpenArabTools {
 			this->glCSUExternalRadius = glGetUniformLocation(this->glCircleShader, "ERadius");
 		}
 		void GLWindow::ShadersDestroy() {
-			glDeleteProgram(this->glNormalShader);
 			glDeleteProgram(this->glCircleShader);
 		}
 	}

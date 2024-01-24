@@ -19,23 +19,47 @@ namespace OpenArabTools {
 		//Setup constructor
 		Matrix(const U64 aWidth, const U64 aHeight) noexcept;
 
-		void ResizeMatrix(const U64 aNewWidth, const U64 aNewHeight) noexcept;
-
 		//Shows the window
-		void ShowWindow() noexcept;
+		void showWindow() noexcept;
 		//Hides the windows
-		void HideWindow() noexcept;
+		void hideWindow() noexcept;
+
+		//Shows a basic example of the semaphore class
+		static void main() noexcept;
+
+		//
+		// Setters
+		//
+
+		void setBackground(LightColor aColor);
+
+		void setBackground(U64 aColumn, U64 aRow, LightColor aColor);
+
+		void setColor(LightColor color);
+
+		void setColor(U64 aColumn, U64 aRow, LightColor aColor);
+
+		//
+		// Getters
+		//
+
+
+
+		//
+		// OPENARABTOOLS extensions
+		//
+
+		void resizeMatrix(const U64 aNewWidth, const U64 aNewHeight) noexcept;
 
 		//Enables callback to Matrix
-		void EnableInteraction(MatrixInteractionCallback aCallback) noexcept;
-
+		void enableInteraction(MatrixInteractionCallback aCallback) noexcept;
 		//Disables callback to Matrix
-		void DisableInteration() noexcept;
+		void disableInteration() noexcept;
 
 		//Transfers resources if we want to reuse
-		void TransferResources(Matrix* aOther) noexcept;
+		void transferResources(Matrix* aOther) noexcept;
 		//Gets if resources transferred
-		bool GetIfTransferedResources() const noexcept;
+		bool getIfResourcesTransferred() const noexcept;
 
 		~Matrix() noexcept;
 	private:

@@ -18,9 +18,9 @@
     <ClInclude Include="src\graphics\Dice.hpp" />
     <ClInclude Include="src\graphics\Graphics.hpp" />
     <ClInclude Include="src\graphics\internal\GLBaseImplementation.hpp" />
-    <ClInclude Include="src\graphics\internal\GLBatchRender.hpp" />
     <ClInclude Include="src\graphics\internal\GLInterface.hpp" />
     <ClInclude Include="src\graphics\internal\GLWindow.hpp" />
+    <ClInclude Include="src\graphics\internal\template\GLShaderBuffer.hpp" />
     <ClInclude Include="src\graphics\Matrix.hpp" />
     <ClInclude Include="src\graphics\Semaphore.hpp" />
     <ClInclude Include="src\remote\Client.hpp" />
@@ -37,7 +37,6 @@
     <ClCompile Include="src\graphics\Chessboard.cpp" />
     <ClCompile Include="src\graphics\Dice.cpp" />
     <ClCompile Include="src\graphics\internal\GLBaseImplementation.cpp" />
-    <ClCompile Include="src\graphics\internal\GLBatchRender.cpp" />
     <ClCompile Include="src\graphics\internal\GLWindow.cpp" />
     <ClCompile Include="src\graphics\Matrix.cpp" />
     <ClCompile Include="src\graphics\Semaphore.cpp" />
@@ -47,6 +46,7 @@
     <ClCompile Include="src\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\README.md" />
     <None Include="src\error\README.md" />
     <None Include="src\event\README.md" />
     <None Include="src\graphics\README.md" />
