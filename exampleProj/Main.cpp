@@ -18,6 +18,8 @@ void Function(const ArabTools::U08 a, const ArabTools::U64 b) {
 }
 
 
+#define MT_AMOUNT 100000
+
 int main() {
 	ArabTools::init();
 
@@ -25,11 +27,10 @@ int main() {
 
 	std::cout << ArabTools::Version() << "\n";
 
-	ArabTools::Utils::runConcurrently(100000, false, Function);
+	ArabTools::Utils::runConcurrently(MT_AMOUNT, false, Function);
 
 	std::cout << "\nAmount executed 1: " << Test.load() << "\n";
 
-	{
 	ArabTools::Internal::GLWindow window;
 
 	float* verticesdata;
@@ -66,14 +67,21 @@ int main() {
 	ssbo.Set(IsOn, 25, &window.glVAO);
 	ssbo.Bind();
 
+	//TODO: move colors into SSBO, will be easier!
+
 	while (~window) {
 		window.SetBackground(0.5f, 1.0f, 0.5f, 1.0f);
 		window.glIBO.Draw();
 		window.Process();
 	}
-	}
 
+	window.Destroy();
+	
 	std::cout << "\nAmount executed 2: " << Test.load() << "\n";
+
+	while (Test.load() != MT_AMOUNT);
+
+	std::cout << "Terminating..." << "\n";
 
 	ArabTools::terminate();
 

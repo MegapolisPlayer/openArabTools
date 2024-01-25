@@ -9,6 +9,8 @@ namespace OpenArabTools {
 			init();
 
 			this->mWindow = glfwCreateWindow(500, 500, "OpenArabTools", NULL, NULL);
+			glfwSetWindowUserPointer(this->mWindow, this);
+			glfwSetWindowSizeCallback(this->mWindow, SizeCallback);
 			glfwMakeContextCurrent(this->mWindow);
 			glewInit();
 
@@ -22,6 +24,8 @@ namespace OpenArabTools {
 			init();
 
 			this->mWindow = glfwCreateWindow(this->mWidth, this->mHeight, "OpenArabTools", NULL, NULL);
+			glfwSetWindowUserPointer(this->mWindow, this);
+			glfwSetWindowSizeCallback(this->mWindow, SizeCallback);
 			glfwMakeContextCurrent(this->mWindow);
 			glewInit();
 
@@ -42,11 +46,8 @@ namespace OpenArabTools {
 			glfwSetWindowTitle(this->mWindow, this->mTitle.c_str());
 		}
 		void GLWindow::Resize(const U64 aWidth, const U64 aHeight) noexcept {
-			this->mWidth = aWidth;
-			this->mHeight = aHeight;
+			this->HandleResize(aWidth, aHeight);
 			glfwSetWindowSize(this->mWindow, this->mWidth, this->mHeight);
-			glViewport(0, 0, this->mWidth, this->mHeight);
-			glUniform2f(this->glCSUResolution, this->mWidth, this->mHeight);
 		}
 		U64 GLWindow::SizeX() const noexcept {
 			return this->mWidth;
@@ -88,6 +89,15 @@ namespace OpenArabTools {
 		bool GLWindow::operator~() const noexcept {
 			return !glfwWindowShouldClose(this->mWindow);
 		}
+		void GLWindow::Destroy() noexcept {
+			if (this->mWindow == NULL) return;
+
+			this->Process();
+			glfwDestroyWindow(this->mWindow);
+			ShadersDestroy();
+			this->mWindow = NULL;
+			terminate();
+		}
 		U64 GLWindow::FrameNo() const noexcept {
 			return this->mFrameNo;
 		}
@@ -95,21 +105,29 @@ namespace OpenArabTools {
 			this->mFrameNo = 0;
 		}
 		GLWindow::~GLWindow() noexcept {
-			ShadersDestroy();
-			glfwDestroyWindow(this->mWindow);
-			terminate();
+			this->Destroy();
 		}
 
 		// PRIVATE
 
-		void GLWindow::ShadersInit() {
+		void GLWindow::SizeCallback(GLFWwindow* aWindow, const int aWidth, const int aHeight) noexcept {
+			((GLWindow*)glfwGetWindowUserPointer(aWindow))->HandleResize(aWidth, aHeight);
+		}
+		void GLWindow::HandleResize(const U64 aWidth, const U64 aHeight) noexcept {
+			this->mWidth = aWidth;
+			this->mHeight = aHeight;
+			glViewport(0, 0, this->mWidth, this->mHeight);
+			glUniform2f(this->glCSUResolution, this->mWidth, this->mHeight);
+		}
+
+		void GLWindow::ShadersInit() noexcept {
 			this->glCircleShader = Internal::MakeShader(Internal::VertexCircleSource, Internal::FragmentCircleSource);
 			this->glCSUSize = glGetUniformLocation(this->glCircleShader, "Size");
 			this->glCSUResolution = glGetUniformLocation(this->glCircleShader, "WindowResolution");
 			this->glCSUInternalRadius = glGetUniformLocation(this->glCircleShader, "IRadius");
 			this->glCSUExternalRadius = glGetUniformLocation(this->glCircleShader, "ERadius");
 		}
-		void GLWindow::ShadersDestroy() {
+		void GLWindow::ShadersDestroy() noexcept {
 			glDeleteProgram(this->glCircleShader);
 		}
 	}

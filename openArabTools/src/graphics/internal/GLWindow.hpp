@@ -35,6 +35,8 @@ namespace OpenArabTools {
 			bool IsWindowOpen() const noexcept;
 			bool operator~() const noexcept; //returns if window still open
 
+			void Destroy() noexcept;
+
 			U64 FrameNo() const noexcept; //gets. no of frame
 			void FrameNoReset() noexcept; //resets frame no
 
@@ -67,8 +69,11 @@ namespace OpenArabTools {
 			U64 mFrameNo;
 			std::string mTitle;
 
-			void ShadersInit();
-			void ShadersDestroy();
+			static void SizeCallback(GLFWwindow* aWindow, const int aWidth, const int aHeight) noexcept;
+			void HandleResize(const U64 aWidth, const U64 aHeight) noexcept;
+
+			void ShadersInit() noexcept;
+			void ShadersDestroy() noexcept;
 		};
 	}
 }

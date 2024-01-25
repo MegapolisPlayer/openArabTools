@@ -30,7 +30,6 @@ namespace OpenArabTools {
 			this->mBuffer = GLInvalidHandle;
 			this->mVertices = 0;
 			this->mVertSize = 0;
-			this->mCounter = 0;
 			this->mVertCounter = 0;
 			this->mInit = false;
 		}

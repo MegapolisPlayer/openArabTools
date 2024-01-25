@@ -4,7 +4,7 @@
 namespace OpenArabTools {
 	//Matrix creation helpers
 
-	//Creates a single 1x1 matrix
+	//Creates a single 1x1 matrix (a simple light)
 	#define OPENARABTOOLS_SINGLE        1,1
 	//Creates a vertical single-column matrix
 	#define OPENARABTOOLS_VERTICAL(y)   1,y
@@ -31,19 +31,63 @@ namespace OpenArabTools {
 		// Setters
 		//
 
-		void setBackground(LightColor aColor);
+		void setBackground(const LightColor aColor) noexcept;
 
-		void setBackground(U64 aColumn, U64 aRow, LightColor aColor);
+		void setBackground(const U64 aColumn, const U64 aRow, const LightColor& aColor) noexcept;
 
-		void setColor(LightColor color);
+		void setColor(const LightColor& color) noexcept;
 
-		void setColor(U64 aColumn, U64 aRow, LightColor aColor);
+		void setColor(const U64 aColumn, const U64 aRow, const LightColor& aColor) noexcept;
+
+		void setOff() noexcept;
+
+		bool setOff(const U64 aId) noexcept;
+
+		bool setOff(const U64 aColumn, const U64 aRow) noexcept;
+
+		void setOn() noexcept;
+
+		bool setOn(const U64 aId) noexcept;
+
+		bool setOn(const U64 aColumn, const U64 aRow) noexcept;
+
+		void seOnOff(const bool aOnOff) noexcept;
+
+		bool setOnOff(const U64 aId, const bool aOnOff) noexcept;
+
+		bool setOnOff(const U64 aColumn, const U64 aRow, const bool aOnOff) noexcept;
 
 		//
 		// Getters
 		//
 
+		LightColor getBackground() const noexcept;
 
+		LightColor getBackground(const U64 aColumn, const U64 aRow) const noexcept;
+
+		LightColor getColor() const noexcept;
+
+		LightColor getColor(const U64 aColumn, const U64 aRow) const noexcept;
+
+		std::string getTitle() const noexcept;
+
+		U64 getWidth() const noexcept;
+
+		U64 getHeight() const noexcept;
+
+		U64 getSize() const noexcept;
+
+		bool isOff() const noexcept;
+
+		bool isOff(const U64 aId) const noexcept;
+
+		bool isOff(const U64 aColumn, const U64 aRow) const noexcept;
+
+		bool isOn() const noexcept;
+
+		bool isOn(const U64 aId) const noexcept;
+
+		bool isOn(const U64 aColumn, const U64 aRow) const noexcept;
 
 		//
 		// OPENARABTOOLS extensions
@@ -63,8 +107,16 @@ namespace OpenArabTools {
 
 		~Matrix() noexcept;
 	private:
+		U64 mSizeX, mSizeY;
+
+		int* mIsOn; //array if lights on/off
+		LightColor mPanelBG;
+
 		Internal::GLWindow mWindow;
-		MatrixInteractionCallback mCallback;
+		Internal::GLShaderBuffer<int> mShaderBuf;
+
 		bool mResourcesTransferred;
+
+		MatrixInteractionCallback mCallback;
 	};
 }

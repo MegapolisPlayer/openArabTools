@@ -43,7 +43,6 @@ namespace OpenArabTools {
 			GLHandle mBuffer;
 			U64 mVertices;
 			U64 mVertSize;
-			U64 mCounter;    //TODO: move counter to VAO!
 			U64 mVertCounter;
 			bool mInit;
 		};

@@ -3,7 +3,7 @@
 namespace OpenArabTools {
 	//declared in Utils.hpp
 
-	S64 gsInit = false;
+	U64 gsInit = 0;
 
 	bool isLibInit() noexcept {
 		return gsInit;
@@ -28,9 +28,11 @@ namespace OpenArabTools {
 	}
 
 	void terminate() noexcept {
-		if (gsInit != 0) gsInit--; return; //no double terminate
+		if (gsInit == 0) { return; } //if zero: no init
+		if (gsInit > 1) { gsInit--; return; } //if more than one: just decrement 
 
 		glfwTerminate(); //only when everything freed
+		gsInit--;
 	}
 
 	//increment build for each update, major or minor
