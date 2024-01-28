@@ -3,8 +3,23 @@
 
 namespace OpenArabTools {
 	namespace Internal {
+
 		typedef uint32_t GLHandle;
 		constexpr static GLHandle GLInvalidHandle = INT32_MAX;
+
+		//Fx - foreground on, Ox - foreground off, Bx - background
+		struct CircleColor {
+			float FR = 0.0, FG = 0.0, FB = 0.0, FA = 0.0;
+			float OR = 0.0, OG = 0.0, OB = 0.0, OA = 0.0;
+			float BR = 0.0, BG = 0.0, BB = 0.0, BA = 0.0;
+
+			CircleColor() {}
+
+			CircleColor(float aFR, float aFG, float aFB, float aFA, float aOR, float aOG, float aOB, float aOA, float aBR, float aBG, float aBB, float aBA)
+			: FR(aFR), FG(aFG), FB(aFB), FA(aFA), OR(aOR), OG(aOG), OB(aOB), OA(aOA), BR(aBR), BG(aBG), BB(aBB), BA(aBA) {}
+
+			~CircleColor() {}
+		};
 
 		class OPENARABTOOLS_OBJ GLVertexArray {
 		public:
@@ -50,16 +65,9 @@ namespace OpenArabTools {
 		//VBO generation utils
 
 		//Generates vertices as:
-		//POSX, POSY, COLORR, COLORG, COLORB, COLORA, BGR, BGG, BGB, BGA, TLX, TLY
-		// Position ,       Foreground (circle)     ,     Background    , Top Left
-		 
-		OPENARABTOOLS_OBJ void SetColorOfVertex(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB, const U64 aA = 1.0) noexcept;
-		OPENARABTOOLS_OBJ void SetBackgroundOfVertex(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB, const U64 aA = 1.0) noexcept;
-		OPENARABTOOLS_OBJ void SetColorOfCircle(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB, const U64 aA = 1.0) noexcept;
-		OPENARABTOOLS_OBJ void SetBackgroundOfCircle(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB, const U64 aA = 1.0) noexcept;
-
-		//TODO: SetGradientOfCircle, SetGradientBackgroundOfCircle
-
+		//POSX, POSY, TLX, TLY
+		// Position , Top Left
+		
 		//Allocates memory, returns amount of vertices.
 		OPENARABTOOLS_OBJ U64 GenerateTileVertices(float** const aBuffer, const U64 aCircleAmountX, const U64 aCircleAmountY) noexcept;
 		//Frees memory allocated by GenerateTileVertices
@@ -108,7 +116,7 @@ namespace OpenArabTools {
 
 		//SSBO
 
-		template<typename DataType>
+		template<typename DataType, U64 Multiplier = 1>
 		class GLShaderBuffer {
 		public:
 			GLShaderBuffer() noexcept;

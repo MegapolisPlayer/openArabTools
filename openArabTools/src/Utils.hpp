@@ -2,7 +2,7 @@
 #include "error/Error.hpp"
 
 namespace OpenArabTools {
-	extern S64 gsInit; //Amount of initializations
+	extern U64 gsInit; //Amount of initializations
 
 	//Gets if library initialized
 	OPENARABTOOLS_OBJ bool isLibInit() noexcept;

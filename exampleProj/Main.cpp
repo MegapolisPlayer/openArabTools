@@ -17,7 +17,6 @@ void Function(const ArabTools::U08 a, const ArabTools::U64 b) {
 	return;
 }
 
-
 #define MT_AMOUNT 100000
 
 int main() {
@@ -38,22 +37,26 @@ int main() {
 	unsigned int* indicesdata;
 	ArabTools::Internal::GenerateTileIndices(&indicesdata, vertsize / 4);
 
-	for (int i = 0; i < 25; i++) {
-		ArabTools::Internal::SetBackgroundOfCircle(&verticesdata, i, NORMAL255(0), NORMAL255(0), NORMAL255(128));
-		ArabTools::Internal::SetColorOfCircle(&verticesdata, i, NORMAL255(200), NORMAL255(200), NORMAL255(255));
-	}
-
-	ArabTools::Internal::Debug::PrintVertexArray(&verticesdata, vertsize, 12);
+	ArabTools::Internal::Debug::PrintVertexArray(&verticesdata, vertsize, 4);
 	ArabTools::Internal::Debug::PrintIndexArray(&indicesdata, vertsize / 4, 6);
 
 	ArabTools::Internal::ApplyChangesV(&verticesdata, vertsize, &window.glVBO);
 	window.glVBO.EnableAttribute(2, &window.glVAO);
-	window.glVBO.EnableAttribute(4, &window.glVAO);
-	window.glVBO.EnableAttribute(4, &window.glVAO);
 	window.glVBO.EnableAttribute(2, &window.glVAO);
 	ArabTools::Internal::ApplyChangesI(&indicesdata, vertsize / 4, &window.glIBO);
 
 	window.PrepareUniforms(5, 5);
+
+	ArabTools::Internal::CircleColor cca[25];
+
+	for (int i = 0; i < 25; i++) {
+		//FG-ON, FG-OFF, BG
+		cca[i] = { 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0 };
+	}
+
+	ArabTools::Internal::GLShaderBuffer<ArabTools::Internal::CircleColor> ssbo;
+	ssbo.Set(cca, 25, &window.glVAO);
+	ssbo.Bind();
 
 	unsigned int IsOn[] = {
 		0, 1, 0, 1, 0,
@@ -63,14 +66,12 @@ int main() {
 		0, 1, 0, 1, 0
 	};
 
-	ArabTools::Internal::GLShaderBuffer<unsigned int> ssbo;
-	ssbo.Set(IsOn, 25, &window.glVAO);
-	ssbo.Bind();
-
-	//TODO: move colors into SSBO, will be easier!
+	ArabTools::Internal::GLShaderBuffer<unsigned int> ssbo2;
+	ssbo2.Set(IsOn, 25, &window.glVAO);
+	ssbo2.Bind();
 
 	while (~window) {
-		window.SetBackground(0.5f, 1.0f, 0.5f, 1.0f);
+		window.SetBackground(1.0f, 0.0f, 1.0f, 1.0f); //purple bg if something wrong
 		window.glIBO.Draw();
 		window.Process();
 	}

@@ -71,7 +71,6 @@ namespace OpenArabTools {
 			this->mBuffer = GLInvalidHandle;
 			this->mVertices = 0;
 			this->mVertSize = 0;
-			this->mCounter = 0;
 			this->mVertCounter = 0;
 			this->mInit = false;
 		}
@@ -95,43 +94,15 @@ namespace OpenArabTools {
 
 		//Vertices Generation
 
-		void SetColorOfVertex(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB, const U64 aA) noexcept {
-			(*aBuffer)[aId * 12 + 2] = aR;
-			(*aBuffer)[aId * 12 + 3] = aG;
-			(*aBuffer)[aId * 12 + 4] = aB;
-			(*aBuffer)[aId * 12 + 5] = aA;
-		}
-		void SetBackgroundOfVertex(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB, const U64 aA) noexcept {
-			(*aBuffer)[aId * 12 + 6] = aR;
-			(*aBuffer)[aId * 12 + 7] = aG;
-			(*aBuffer)[aId * 12 + 8] = aB;
-			(*aBuffer)[aId * 12 + 9] = aA;
-		}
-		void SetColorOfCircle(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB, const U64 aA) noexcept {
-			for (U08 i = 0; i < 4; i++) {
-				(*aBuffer)[(aId * 4 + i) * 12 + 2] = aR;
-				(*aBuffer)[(aId * 4 + i) * 12 + 3] = aG;
-				(*aBuffer)[(aId * 4 + i) * 12 + 4] = aB;
-				(*aBuffer)[(aId * 4 + i) * 12 + 5] = aA;
-			}
-		}
-		void SetBackgroundOfCircle(float** const aBuffer, const U64 aId, const Dec aR, const Dec aG, const Dec aB, const U64 aA) noexcept {
-			for (U08 i = 0; i < 4; i++) {
-				(*aBuffer)[(aId * 4 + i) * 12 + 6] = aR;
-				(*aBuffer)[(aId * 4 + i) * 12 + 7] = aG;
-				(*aBuffer)[(aId * 4 + i) * 12 + 8] = aB;
-				(*aBuffer)[(aId * 4 + i) * 12 + 9] = aA;
-			}
-		}
 
 		//Generates vertices as:
-		//POSX, POSY, COLORR, COLORG, COLORB, COLORA, BGR, BGG, BGB, BGA, TLX, TLY
-		// Position ,       Foreground (circle)     ,     Background    , Top Left
+		//POSX, POSY, TLX, TLY
+		// Position , Top Left
 
 		U64 GenerateTileVertices(float** const aBuffer, const U64 aCircleAmountX, const U64 aCircleAmountY) noexcept {
 			U64 VerticesAmount = aCircleAmountX * aCircleAmountY * 4;
 
-			*aBuffer = (float*)malloc(sizeof(float) * VerticesAmount * 12);
+			*aBuffer = (float*)malloc(sizeof(float) * VerticesAmount * 4);
 			if (*aBuffer == nullptr) {
 				std::cout << "openArabTools: Vertex Generation error: allocation failed" << "\n";
 				return INT_MAX;
@@ -151,32 +122,20 @@ namespace OpenArabTools {
 				for (U64 j = 0; j < 4; j++) {
 					//size * cleaned id + if right/bottom - offset
 					//X generation: X size * column + if right
-					(*aBuffer)[(i + j) * 12] = (CircleSizeX * int((i / 4) % aCircleAmountX)) + ((j == 1 || j == 2) ? CircleSizeX : 0) - 1.0;
+					(*aBuffer)[(i + j) * 4] = (CircleSizeX * int((i / 4) % aCircleAmountX)) + ((j == 1 || j == 2) ? CircleSizeX : 0) - 1.0;
 					//Y generation: Y size * row + if bottom * -1 because OpenGL Y coords is flipped
-					(*aBuffer)[(i + j) * 12 + 1] = -((CircleSizeY * int((i / 4) / aCircleAmountY)) + ((j == 2 || j == 3) ? CircleSizeY : 0) - 1.0);
-
-					//FG color
-					for (U64 k = 0; k < 3; k++) {
-						(*aBuffer)[(i + j) * 12 + 2 + k] = 0.5f;
-					}
-					//BG color
-					for (U64 k = 0; k < 3; k++) {
-						(*aBuffer)[(i + j) * 12 + 6 + k] = 1.0f;
-					}
-					//Alpha
-					(*aBuffer)[(i + j) * 12 + 5] = 1.0f; //FG
-					(*aBuffer)[(i + j) * 12 + 9] = 1.0f; //BG
+					(*aBuffer)[(i + j) * 4 + 1] = -((CircleSizeY * int((i / 4) / aCircleAmountY)) + ((j == 2 || j == 3) ? CircleSizeY : 0) - 1.0);
 
 					//top left coords
-					(*aBuffer)[(i + j) * 12 + 10] = (*aBuffer)[i * 12 + 0];
-					(*aBuffer)[(i + j) * 12 + 11] = (*aBuffer)[i * 12 + 1];
+					(*aBuffer)[(i + j) * 4 + 2] = (*aBuffer)[i * 4 + 0];
+					(*aBuffer)[(i + j) * 4 + 3] = (*aBuffer)[i * 4 + 1];
 				}
 			}
 
 			return VerticesAmount;
 		}
 		void ApplyChangesV(float** const aBuffer, const U64 aAmount, GLVertexBuffer* const aObject) noexcept {
-			aObject->Set(*aBuffer, aAmount, 12);
+			aObject->Set(*aBuffer, aAmount, 4);
 			free(*aBuffer);
 		}
 
@@ -302,27 +261,33 @@ namespace OpenArabTools {
 			"#version 460 core\n"
 			"in int gl_VertexID;\n"
 			"layout(location = 0) in vec2 Position;\n"
-			"layout(location = 1) in vec4 Color;\n"
-			"layout(location = 2) in vec4 Background;\n"
-			"layout(location = 3) in vec2 TopLeft;\n"
-			"out vec4 FragColor;\n"
-			"out vec4 FragBColor;\n"
+			"layout(location = 1) in vec2 TopLeft;\n"
 			"out vec2 FragTopLeft;\n"
 			"flat out int ObjectID;\n"
 			"void main()\n"
 			"{\n"
 			"	gl_Position = vec4(Position.x, Position.y, 1.0, 1.0);\n"
-			"	FragColor = Color;\n"
-			"	FragBColor = Background;\n"
 			"	FragTopLeft = TopLeft;\n"
 			"	ObjectID = int(gl_VertexID / 4);\n"
 			"}\n"
 			;
 		const char* const FragmentCircleSource =
 			"#version 460 core\n"
+			"struct ColorInfo {\n"
+			"float FR;\n"
+			"float FG;\n"
+			"float FB;\n"
+			"float FA;\n"
+			"float OR;\n"
+			"float OG;\n"
+			"float OB;\n"
+			"float OA;\n"
+			"float BR;\n"
+			"float BG;\n"
+			"float BB;\n"
+			"float BA;\n"
+			"};\n"
 			"in vec4 gl_FragCoord;\n"
-			"in vec4 FragColor;\n"
-			"in vec4 FragBColor;\n"
 			"in vec2 FragTopLeft;\n"
 			"flat in int ObjectID;\n"
 			"out vec4      OutColor;\n"
@@ -330,7 +295,11 @@ namespace OpenArabTools {
 			"uniform vec2  WindowResolution;\n"
 			"uniform float IRadius;\n" //internal radius
 			"uniform float ERadius;\n" //external radius
-			"layout(std430, binding = 4) buffer PerObject\n"
+			"layout(std430, binding = 2) buffer ColorBuffer\n"
+			"{\n"
+			"	ColorInfo ColorInformation[];\n"
+			"};\n"
+			"layout(std430, binding = 3) buffer OnBuffer\n"
 			"{\n"
 			"	bool IsLightOn[];\n"
 			"};\n"
@@ -340,9 +309,26 @@ namespace OpenArabTools {
 			"	vec2 UV = vec2(((gl_FragCoord.x/WindowResolution.x)-0.5)*2, ((gl_FragCoord.y/WindowResolution.y)-0.5)*2);\n"
 			"	float ActualDistance = distance(CenterPoint, UV);\n"
 			"	float ResultCircle = step(ERadius - (ERadius - IRadius), ActualDistance) * (1.0 - step(ERadius, ActualDistance));\n"
-			"	OutColor = vec4(vec4(ResultCircle) * FragColor * vec4(IsLightOn[ObjectID])) + vec4(vec4(1.0 - ResultCircle) * FragBColor);\n"
+			"OutColor = vec4("
+			"	vec4(ResultCircle) * vec4(ColorInformation[ObjectID].FR, ColorInformation[ObjectID].FG, ColorInformation[ObjectID].FB, ColorInformation[ObjectID].FA) * vec4(IsLightOn[ObjectID]) +"
+			"	vec4(ResultCircle) * vec4(ColorInformation[ObjectID].OR, ColorInformation[ObjectID].OG, ColorInformation[ObjectID].OB, ColorInformation[ObjectID].OA) * vec4(!IsLightOn[ObjectID])"
+			") + vec4("
+			"	vec4(1.0 - ResultCircle) * vec4(ColorInformation[ObjectID].BR, ColorInformation[ObjectID].BG, ColorInformation[ObjectID].BB, ColorInformation[ObjectID].BA)"
+			");\n"
 			"}\n"
 			;
+
+		/*
+		whole calculation of color
+
+		OutColor = vec4(
+			vec4(ResultCircle) * vec4(ColorInformation[ObjectID].FR, ColorInformation[ObjectID].FG, ColorInformation[ObjectID].FB, ColorInformation[ObjectID].FA) * vec4(IsLightOn[ObjectID]) +
+			vec4(ResultCircle) * vec4(ColorInformation[ObjectID].OR, ColorInformation[ObjectID].OG, ColorInformation[ObjectID].OB, ColorInformation[ObjectID].OA) * vec4(!IsLightOn[ObjectID])
+		) + vec4(
+			vec4(1.0 - ResultCircle) * vec4(ColorInformation[ObjectID].BR, ColorInformation[ObjectID].BG, ColorInformation[ObjectID].BB, ColorInformation[ObjectID].BA)
+		);
+
+		*/
 
 		namespace Debug {
 			void PrintVertexArray(float** aArray, const U64 aAmountOfVertices, const U64 aVertexSize, const U64 aVertexPrecisionOverride) noexcept {
