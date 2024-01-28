@@ -24,12 +24,11 @@ namespace OpenArabTools {
 		//Hides the windows
 		void hideWindow() noexcept;
 
-		//Shows a basic example of the semaphore class
-		static void main() noexcept;
-
 		//
 		// Setters
 		//
+
+		void setTitle(const std::string& aTitle) noexcept;
 
 		void setBackground(const LightColor aColor) noexcept;
 
@@ -41,21 +40,21 @@ namespace OpenArabTools {
 
 		void setOff() noexcept;
 
-		bool setOff(const U64 aId) noexcept;
+		void setOff(const U64 aId) noexcept;
 
-		bool setOff(const U64 aColumn, const U64 aRow) noexcept;
+		void setOff(const U64 aColumn, const U64 aRow) noexcept;
 
 		void setOn() noexcept;
 
-		bool setOn(const U64 aId) noexcept;
+		void setOn(const U64 aId) noexcept;
 
-		bool setOn(const U64 aColumn, const U64 aRow) noexcept;
+		void setOn(const U64 aColumn, const U64 aRow) noexcept;
 
-		void seOnOff(const bool aOnOff) noexcept;
+		void setOnOff(const bool aOnOff) noexcept;
 
-		bool setOnOff(const U64 aId, const bool aOnOff) noexcept;
+		void setOnOff(const U64 aId, const bool aOnOff) noexcept;
 
-		bool setOnOff(const U64 aColumn, const U64 aRow, const bool aOnOff) noexcept;
+		void setOnOff(const U64 aColumn, const U64 aRow, const bool aOnOff) noexcept;
 
 		//
 		// Getters
@@ -119,4 +118,6 @@ namespace OpenArabTools {
 
 		MatrixInteractionCallback mCallback;
 	};
+
+	void MatrixDemo();
 }

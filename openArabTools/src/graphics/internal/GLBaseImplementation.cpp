@@ -259,9 +259,9 @@ namespace OpenArabTools {
 		//2 POS, 4 COLOR+ALPHA, 4 BG, 2 TOPLEFT
 		const char* const VertexCircleSource =
 			"#version 460 core\n"
-			"in int gl_VertexID;\n"
 			"layout(location = 0) in vec2 Position;\n"
 			"layout(location = 1) in vec2 TopLeft;\n"
+			"in int VertexID;\n"
 			"out vec2 FragTopLeft;\n"
 			"flat out int ObjectID;\n"
 			"void main()\n"

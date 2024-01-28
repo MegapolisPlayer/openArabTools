@@ -31,7 +31,9 @@ namespace OpenArabTools {
 
 	//LightColor structure
 	struct OPENARABTOOLS_OBJ LightColor {
-		Dec R = 0.0, G = 0.0, B = 0.0;
+		Dec R, G, B;
+
+		LightColor() noexcept;
 
 		LightColor (const LightColorD aColor) noexcept;
 
@@ -43,9 +45,9 @@ namespace OpenArabTools {
 
 		LightColor* RGB255(const U08 aR, const U08 aG, const U08 aB) noexcept;
 
-		LightColor* Darken();
+		LightColor* Darken() noexcept;
 
-		LightColor* Lighten();
+		LightColor* Lighten() noexcept;
 
 		LightColor* operator=(const LightColor aColor) noexcept;
 

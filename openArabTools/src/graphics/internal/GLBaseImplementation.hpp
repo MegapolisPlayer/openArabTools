@@ -16,7 +16,26 @@ namespace OpenArabTools {
 			CircleColor() {}
 
 			CircleColor(float aFR, float aFG, float aFB, float aFA, float aOR, float aOG, float aOB, float aOA, float aBR, float aBG, float aBB, float aBA)
-			: FR(aFR), FG(aFG), FB(aFB), FA(aFA), OR(aOR), OG(aOG), OB(aOB), OA(aOA), BR(aBR), BG(aBG), BB(aBB), BA(aBA) {}
+				: FR(aFR), FG(aFG), FB(aFB), FA(aFA), OR(aOR), OG(aOG), OB(aOB), OA(aOA), BR(aBR), BG(aBG), BB(aBB), BA(aBA) {}
+
+			void SetF(LightColor* const aColor) {
+				FR = aColor->R;
+				FG = aColor->G;
+				FB = aColor->B;
+				FA = 1.0f;
+			}
+			void SetO(LightColor* const aColor) {
+				OR = aColor->R;
+				OG = aColor->G;
+				OB = aColor->B;
+				OA = 1.0f;
+			}
+			void SetB(LightColor* const aColor) {
+				BR = aColor->R;
+				BG = aColor->G;
+				BB = aColor->B;
+				BA = 1.0f;
+			}
 
 			~CircleColor() {}
 		};

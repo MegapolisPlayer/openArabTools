@@ -48,3 +48,7 @@ namespace OpenArabTools {
 #define NORMAL255(x) x/255.0
 //Normalize 0-1023 range to 0-1
 #define NORMAL1023(x) x/1023.0
+
+// Jokes...
+
+#define TRAIN auto
