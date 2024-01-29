@@ -45,6 +45,9 @@ namespace OpenArabTools {
 			this->mTitle = aTitle;
 			glfwSetWindowTitle(this->mWindow, this->mTitle.c_str());
 		}
+		std::string GLWindow::GetTitle() const noexcept {
+			return this->mTitle;
+		}
 		void GLWindow::Resize(const U64 aWidth, const U64 aHeight) noexcept {
 			this->HandleResize(aWidth, aHeight);
 			glfwSetWindowSize(this->mWindow, this->mWidth, this->mHeight);

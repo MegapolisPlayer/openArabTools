@@ -18,6 +18,7 @@ namespace OpenArabTools {
 			void HideWindow() noexcept;
 
 			void SetTitle(const char* aTitle) noexcept;
+			std::string GetTitle() const noexcept;
 
 			void Resize(const U64 aWidth, const U64 aHeight) noexcept;
 			U64 SizeX() const noexcept;
@@ -43,6 +44,7 @@ namespace OpenArabTools {
 			~GLWindow() noexcept;
 
 			//VARIABLES
+
 
 			//VAO, VBO, IBO, per window (must be in OpenGL context)
 

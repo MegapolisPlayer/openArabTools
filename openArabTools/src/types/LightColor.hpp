@@ -49,7 +49,7 @@ namespace OpenArabTools {
 
 		LightColor* Lighten() noexcept;
 
-		LightColor* operator=(const LightColor aColor) noexcept;
+		LightColor* operator=(const LightColor& aColor) noexcept;
 
 		~LightColor() noexcept;
 	};

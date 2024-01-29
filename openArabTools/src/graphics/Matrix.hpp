@@ -76,6 +76,7 @@ namespace OpenArabTools {
 
 		U64 getSize() const noexcept;
 
+		//If size 1x1 -> Returns if light off, otherwise checks the top-left
 		bool isOff() const noexcept;
 
 		bool isOff(const U64 aId) const noexcept;
@@ -92,10 +93,11 @@ namespace OpenArabTools {
 		// OPENARABTOOLS extensions
 		//
 
-		void resizeMatrix(const U64 aNewWidth, const U64 aNewHeight) noexcept;
+		//Change the amount of lights
+		void resizeMatrix(const U64 aNewX, const U64 aNewY) noexcept;
 
 		//Enables callback to Matrix
-		void enableInteraction(MatrixInteractionCallback aCallback) noexcept;
+		void enableInteraction(MatrixInteractionCallback* aCallback) noexcept;
 		//Disables callback to Matrix
 		void disableInteration() noexcept;
 
@@ -108,11 +110,15 @@ namespace OpenArabTools {
 	private:
 		U64 mSizeX, mSizeY;
 
-		int* mIsOn; //array if lights on/off
 		LightColor mPanelBG;
+		LightColor mDefaultFG; //default circle foreground
 
 		Internal::GLWindow mWindow;
-		Internal::GLShaderBuffer<int> mShaderBuf;
+
+		Internal::CircleColor* mColor;
+		Internal::GLShaderBuffer<Internal::CircleColor> mColorBuf;
+		int* mIsOn; //array if lights on/off
+		Internal::GLShaderBuffer<int> mIsOnBuf;
 
 		bool mResourcesTransferred;
 
