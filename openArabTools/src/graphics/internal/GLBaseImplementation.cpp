@@ -267,8 +267,8 @@ namespace OpenArabTools {
 			"void main()\n"
 			"{\n"
 			"	gl_Position = vec4(Position.x, Position.y, 1.0, 1.0);\n"
-			"	FragTopLeft = TopLeft;\n"
 			"	ObjectID = int(gl_VertexID / 4);\n"
+			"	FragTopLeft = TopLeft;\n"
 			"}\n"
 			;
 		const char* const FragmentCircleSource =

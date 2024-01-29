@@ -3,12 +3,15 @@
 //disable annoying "possible loss of data" warning
 #pragma warning( disable : 4244 ) 
 
+//same as normal ArabTools
+#define OPENARABTOOLS_DEFAULT_WINDOW_SIZE 650
+
 namespace OpenArabTools {
 	namespace Internal {
-		GLWindow::GLWindow() noexcept : mWidth(500), mHeight(500), mFrameNo(0), mTitle() {
+		GLWindow::GLWindow() noexcept : mWidth(OPENARABTOOLS_DEFAULT_WINDOW_SIZE), mHeight(OPENARABTOOLS_DEFAULT_WINDOW_SIZE), mFrameNo(0), mTitle() {
 			init();
 
-			this->mWindow = glfwCreateWindow(500, 500, "OpenArabTools", NULL, NULL);
+			this->mWindow = glfwCreateWindow(this->mWidth, this->mHeight, "OpenArabTools", NULL, NULL);
 			glfwSetWindowUserPointer(this->mWindow, this);
 			glfwSetWindowSizeCallback(this->mWindow, SizeCallback);
 			glfwMakeContextCurrent(this->mWindow);
@@ -71,13 +74,16 @@ namespace OpenArabTools {
 			glClearColor(aR, aG, aB, aA);
 		}
 		void GLWindow::PrepareUniforms(U64 aAmountCirclesX, U64 aAmountCirclesY, Dec aInternalRadius, bool aDebugMode) noexcept {
+			this->glVAO.Bind();
+			this->glIBO.Bind();
+
 			glUseProgram(this->glCircleShader);
 			glUniform2f(this->glCSUResolution, this->mWidth, this->mHeight);
 			glUniform1f(this->glCSUInternalRadius, aInternalRadius);
 			//pick half of SMALLER size = more circles
 			glUniform1f(
 				this->glCSUExternalRadius, 
-				(aAmountCirclesX > aAmountCirclesY) ? (2.0 / aAmountCirclesX / 2.0) : (2.0 / aAmountCirclesY / 2.0)
+				(aAmountCirclesX > aAmountCirclesY) ? (2.0 / aAmountCirclesX / 2.0 - 0.01) : (2.0 / aAmountCirclesY / 2.0 - 0.01)
 			);
 			glUniform2f(this->glCSUSize, 2.0 / aAmountCirclesX, 2.0 / aAmountCirclesY);
 		}

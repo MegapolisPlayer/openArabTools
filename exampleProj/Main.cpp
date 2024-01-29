@@ -22,6 +22,7 @@ void Function(const ArabTools::U08 a, const ArabTools::U64 b) {
 int main() {
 	ArabTools::init();
 
+	/*
 	ArabTools::Utils::sleep(1000);
 
 	std::cout << ArabTools::Version() << "\n";
@@ -44,8 +45,6 @@ int main() {
 	window.glVBO.EnableAttribute(2, &window.glVAO);
 	window.glVBO.EnableAttribute(2, &window.glVAO);
 	ArabTools::Internal::ApplyChangesI(&indicesdata, vertsize / 4, &window.glIBO);
-
-	window.PrepareUniforms(5, 5);
 
 	ArabTools::Internal::CircleColor cca[25];
 
@@ -70,6 +69,7 @@ int main() {
 	ssbo2.Set(IsOn, 25, &window.glVAO);
 	ssbo2.Bind();
 
+	window.PrepareUniforms(5, 5);
 	while (~window) {
 		window.SetBackground(1.0f, 0.0f, 1.0f, 1.0f); //purple bg if something wrong
 		window.glIBO.Draw();
@@ -81,6 +81,23 @@ int main() {
 	std::cout << "\nAmount executed 2: " << Test.load() << "\n";
 
 	while (Test.load() != MT_AMOUNT);
+	*/
+
+	ArabTools::Matrix m;
+	m.set(5, 5);
+	m.setColor(ArabTools::LightColor(ArabTools::LIGHTCOLOR_RED));
+
+	//m.setOff(10); //also works!
+
+	m.showWindow();
+
+	//while (m.open()) {
+	//	m.update();
+	//}
+
+	//OR
+
+	m.run();
 
 	std::cout << "Terminating..." << "\n";
 

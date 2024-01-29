@@ -17,7 +17,7 @@ namespace OpenArabTools {
 		//Constructor
 		Matrix() noexcept;
 		//Setup constructor
-		Matrix(const U64 aWidth, const U64 aHeight) noexcept;
+		Matrix(const U64 aSizeX, const U64 aSizeY) noexcept;
 
 		//Shows the window
 		void showWindow() noexcept;
@@ -34,16 +34,18 @@ namespace OpenArabTools {
 
 		void setBackground(const U64 aColumn, const U64 aRow, const LightColor& aColor) noexcept;
 
-		void setColor(const LightColor& color) noexcept;
+		void setColor(const LightColor& aColor) noexcept;
 
 		void setColor(const U64 aColumn, const U64 aRow, const LightColor& aColor) noexcept;
 
+		//If size 1x1 -> turns light off, otherwise turns off checks the top-left
 		void setOff() noexcept;
 
 		void setOff(const U64 aId) noexcept;
 
 		void setOff(const U64 aColumn, const U64 aRow) noexcept;
 
+		//If size 1x1 -> turns light on, otherwise turns on the top-left
 		void setOn() noexcept;
 
 		void setOn(const U64 aId) noexcept;
@@ -83,28 +85,33 @@ namespace OpenArabTools {
 
 		bool isOff(const U64 aColumn, const U64 aRow) const noexcept;
 
+		//If size 1x1 -> Returns if light on, otherwise checks the top-left
 		bool isOn() const noexcept;
 
 		bool isOn(const U64 aId) const noexcept;
 
 		bool isOn(const U64 aColumn, const U64 aRow) const noexcept;
 
+		// OPENARABTOOLS necessities
+
+		//Returns if window should be still open
+		bool open() const noexcept;
+
+		//Call this in a loop
+		void update() noexcept;
+
+		//Call this once, blocks execution until window closed!
+		void run() noexcept;
+
 		//
 		// OPENARABTOOLS extensions
 		//
 
+		//Sets the matrix
+		void set(const U64 aSizeX, const U64 aSizeY) noexcept;
+
 		//Change the amount of lights
 		void resizeMatrix(const U64 aNewX, const U64 aNewY) noexcept;
-
-		//Enables callback to Matrix
-		void enableInteraction(MatrixInteractionCallback* aCallback) noexcept;
-		//Disables callback to Matrix
-		void disableInteration() noexcept;
-
-		//Transfers resources if we want to reuse
-		void transferResources(Matrix* aOther) noexcept;
-		//Gets if resources transferred
-		bool getIfResourcesTransferred() const noexcept;
 
 		~Matrix() noexcept;
 	private:
@@ -122,8 +129,9 @@ namespace OpenArabTools {
 
 		bool mResourcesTransferred;
 
-		MatrixInteractionCallback mCallback;
+		// PRIVATE FUNCTIONS
+		
+		void UploadColorToShader() noexcept;
+		void UploadStateToShader() noexcept;
 	};
-
-	void MatrixDemo();
 }
