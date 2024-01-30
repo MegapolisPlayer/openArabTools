@@ -12,7 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\OpenArabTools.hpp" />
-    <ClInclude Include="src\error\Error.hpp" />
+    <ClInclude Include="src\Error.hpp" />
     <ClInclude Include="src\event\Event.hpp" />
     <ClInclude Include="src\graphics\Chessboard.hpp" />
     <ClInclude Include="src\graphics\Dice.hpp" />
@@ -32,7 +32,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="include\OpenArabTools.cpp" />
-    <ClCompile Include="src\error\Error.cpp" />
+    <ClCompile Include="src\Error.cpp" />
     <ClCompile Include="src\event\Event.cpp" />
     <ClCompile Include="src\graphics\Chessboard.cpp" />
     <ClCompile Include="src\graphics\Dice.cpp" />
@@ -47,7 +47,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md" />
-    <None Include="src\error\README.md" />
     <None Include="src\event\README.md" />
     <None Include="src\graphics\README.md" />
     <None Include="src\remote\README.md" />

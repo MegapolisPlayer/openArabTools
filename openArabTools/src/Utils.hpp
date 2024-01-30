@@ -1,9 +1,7 @@
 #pragma once
-#include "error/Error.hpp"
+#include "Error.hpp"
 
 namespace OpenArabTools {
-	extern U64 gsInit; //Amount of initializations
-
 	//Gets if library initialized
 	OPENARABTOOLS_OBJ bool isLibInit() noexcept;
 

@@ -5,19 +5,27 @@ namespace OpenArabTools {
 	//Matrix creation helpers
 
 	//Creates a single 1x1 matrix (a simple light)
-	#define OPENARABTOOLS_SINGLE        1,1
+	#define OPENARABTOOLS_MATRIX_SINGLE        1,1
 	//Creates a vertical single-column matrix
-	#define OPENARABTOOLS_VERTICAL(y)   1,y
+	#define OPENARABTOOLS_MATRIX_VERTICAL(y)   1,y
 	//Creates a horizontal single-row matrix
-	#define OPENARABTOOLS_HORIZONTAL(x) x,1
+	#define OPENARABTOOLS_MATRIX_HORIZONTAL(x) x,1
 
-	//Matrix class
+	//Matrix class - the base of OpenArabTools graphics
 	class OPENARABTOOLS_OBJ Matrix {
 	public:
 		//Constructor
 		Matrix() noexcept;
 		//Setup constructor
 		Matrix(const U64 aSizeX, const U64 aSizeY) noexcept;
+		//Copy constructor
+		Matrix(const Matrix& aOther) noexcept;
+		//Move constructor
+		Matrix(Matrix&& aOther) noexcept;
+		//Copy assignment
+		Matrix& operator=(const Matrix& aOther) noexcept;
+		//Move assignment
+		Matrix& operator=(Matrix&& aOther) noexcept;
 
 		//Shows the window
 		void showWindow() noexcept;
@@ -62,10 +70,12 @@ namespace OpenArabTools {
 		// Getters
 		//
 
+		//If size 1x1 -> Returns background of light, otherwise returns from top-left
 		LightColor getBackground() const noexcept;
 
 		LightColor getBackground(const U64 aColumn, const U64 aRow) const noexcept;
 
+		//If size 1x1 -> Returns color of light, otherwise returns from top-left
 		LightColor getColor() const noexcept;
 
 		LightColor getColor(const U64 aColumn, const U64 aRow) const noexcept;
@@ -94,11 +104,11 @@ namespace OpenArabTools {
 
 		// OPENARABTOOLS necessities
 
-		//Returns if window should be still open
+		//Returns if window is open
 		bool open() const noexcept;
 
-		//Call this in a loop
-		void update() noexcept;
+		//Call this in a loop, returns if window still open
+		bool update() noexcept;
 
 		//Call this once, blocks execution until window closed!
 		void run() noexcept;
@@ -107,18 +117,24 @@ namespace OpenArabTools {
 		// OPENARABTOOLS extensions
 		//
 
+		//Shows the window and runs the matrix (blocks executions on thread until window closed) 
+		void showWindowAndRun() noexcept;
+
 		//Sets the matrix
 		void set(const U64 aSizeX, const U64 aSizeY) noexcept;
+
+		//Resets the matrix
+		void reset() noexcept;
 
 		//Change the amount of lights
 		void resizeMatrix(const U64 aNewX, const U64 aNewY) noexcept;
 
+
+
+		//Destructor
 		~Matrix() noexcept;
 	private:
 		U64 mSizeX, mSizeY;
-
-		LightColor mPanelBG;
-		LightColor mDefaultFG; //default circle foreground
 
 		Internal::GLWindow mWindow;
 
@@ -127,7 +143,7 @@ namespace OpenArabTools {
 		int* mIsOn; //array if lights on/off
 		Internal::GLShaderBuffer<int> mIsOnBuf;
 
-		bool mResourcesTransferred;
+		bool mInit;
 
 		// PRIVATE FUNCTIONS
 		

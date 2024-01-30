@@ -41,7 +41,7 @@ namespace OpenArabTools {
 		Internal::SetInternalLightcolor(this, aColor);
 	}
 
-	LightColor::LightColor(const Dec aR, const Dec aG, const Dec aB) noexcept
+	LightColor::LightColor(const float aR, const float aG, const float aB) noexcept
 	: R(aR), G(aG), B(aB) {}
 
 	LightColor* LightColor::Set(const LightColorD aColor) noexcept {
@@ -49,7 +49,7 @@ namespace OpenArabTools {
 		return this;
 	}
 
-	LightColor* LightColor::LightColor::RGB(const Dec aR, const Dec aG, const Dec aB) noexcept{
+	LightColor* LightColor::LightColor::RGB(const float aR, const float aG, const float aB) noexcept{
 		this->R = aR; this->G = aG; this->B = aB;
 		return this;
 	}

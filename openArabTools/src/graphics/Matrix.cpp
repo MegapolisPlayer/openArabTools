@@ -2,14 +2,59 @@
 
 namespace OpenArabTools {
 	Matrix::Matrix() noexcept 
-	: mSizeX(0), mSizeY(0), mColor(nullptr), mIsOn(nullptr), mResourcesTransferred(false) {}
+	: mSizeX(0), mSizeY(0), mColor(nullptr), mIsOn(nullptr), mInit(false) {}
 
 	Matrix::Matrix(const U64 aSizeX, const U64 aSizeY) noexcept {
+		this->mInit = false;
 		this->set(aSizeX, aSizeY);
+	}
+	Matrix::Matrix(const Matrix& aOther) noexcept
+	: mSizeX(0), mSizeY(0), mColor(nullptr), mIsOn(nullptr), mInit(false) {
+		if (!aOther.mInit) return; //aOther not initialized
+		if (&aOther == this) {
+			Error::error("Matrix copy self assigment detected."); return;
+		}
+
+		this->mWindow = Internal::GLWindow(aOther.mSizeX, aOther.mSizeY);
+		this->set(aOther.mSizeX, aOther.mSizeY);
+
+	}
+	Matrix::Matrix(Matrix&& aOther) noexcept {
+		this->mSizeX = aOther.mSizeX;
+		this->mSizeY = aOther.mSizeY;
+		this->mWindow = aOther.mWindow;
+		this->mColor = aOther.mColor;
+		this->mColorBuf = aOther.mColorBuf;
+		this->mIsOn = aOther.mIsOn;
+		this->mIsOnBuf = aOther.mIsOnBuf;
+		this->mInit = aOther.mInit;
+
+		//we take ownership, no free in aOther (we free), do so with all pointers
+		aOther.mInit = false; //this covers mIsOn, mColor
+	}
+	Matrix& Matrix::operator=(const Matrix& aOther) noexcept {
+		std::cout << "COPY";
+		return *this;
+	}
+	Matrix& Matrix::operator=(Matrix&& aOther) noexcept {
+		this->mSizeX = aOther.mSizeX;
+		this->mSizeY = aOther.mSizeY;
+		this->mWindow = aOther.mWindow;
+		this->mColor = aOther.mColor;
+		this->mColorBuf = aOther.mColorBuf;
+		this->mIsOn = aOther.mIsOn;
+		this->mIsOnBuf = aOther.mIsOnBuf;
+		this->mInit = aOther.mInit;
+
+		aOther.mInit = false; //same as in move constructor
+
+		return *this;
 	}
 
 	void Matrix::showWindow() noexcept {
 		this->mWindow.ShowWindow();
+		this->mWindow.BindContext();
+		this->mWindow.PrepareUniforms(this->mSizeX, this->mSizeY);
 	}
 	void Matrix::hideWindow() noexcept {
 		this->mWindow.HideWindow();
@@ -78,13 +123,13 @@ namespace OpenArabTools {
 	}
 
 	LightColor Matrix::getBackground() const noexcept {
-		return this->mPanelBG;
+		return { this->mColor[0].BR, this->mColor[0].BG, this->mColor[0].BB };
 	}
 	LightColor Matrix::getBackground(const U64 aColumn, const U64 aRow) const noexcept {
 		return { this->mColor[aColumn + (aRow * this->mSizeX)].BR, this->mColor[aColumn + (aRow * this->mSizeX)].BG, this->mColor[aColumn + (aRow * this->mSizeX)].BB };
 	}
 	LightColor Matrix::getColor() const noexcept {
-		return this->mDefaultFG;
+		return { this->mColor[0].FR, this->mColor[0].FG, this->mColor[0].FB };
 	}
 	LightColor Matrix::getColor(const U64 aColumn, const U64 aRow) const noexcept {
 		return { this->mColor[aColumn + (aRow * this->mSizeX)].FR, this->mColor[aColumn + (aRow * this->mSizeX)].FG, this->mColor[aColumn + (aRow * this->mSizeX)].FB };
@@ -125,12 +170,12 @@ namespace OpenArabTools {
 		return this->mWindow.IsWindowOpen();
 	}
 
-	void Matrix::update() noexcept {
-		this->mWindow.PrepareUniforms(this->mSizeX, this->mSizeY);
+	bool Matrix::update() noexcept {
 		this->mColorBuf.Bind();
 		this->mIsOnBuf.Bind();
 		this->mWindow.glIBO.Draw();
 		this->mWindow.Process();
+		return this->open();
 	}
 
 	void Matrix::run() noexcept {
@@ -141,14 +186,30 @@ namespace OpenArabTools {
 	//openarabtools extensions
 	//
 
+	void Matrix::showWindowAndRun() noexcept {
+		this->showWindow();
+		this->run();
+	}
+
 	void Matrix::set(const U64 aSizeX, const U64 aSizeY) noexcept {
+		if (this->mInit) {
+			Error::error("Matrix already initialized.");
+			return;
+		}
+
 		//variable setup
 		this->mSizeX = aSizeX;
 		this->mSizeY = aSizeY;
 
 		this->mColor = (Internal::CircleColor*)malloc(this->mSizeX * this->mSizeY * sizeof(Internal::CircleColor));
+		if (this->mColor == nullptr) {
+			Error::error("Matrix setup error: allocation of Color array failed"); return;
+		}
 
 		this->mIsOn = (int*)malloc(this->mSizeX * this->mSizeY * sizeof(int));
+		if (this->mIsOn == nullptr) {
+			Error::error("Matrix setup error: allocation of IsOn array failed"); return;
+		}
 
 		for (U64 i = 0; i < this->mSizeX * this->mSizeY; i++) {
 			this->mColor[i] = 
@@ -170,10 +231,10 @@ namespace OpenArabTools {
 		Internal::GenerateTileIndices(&IndicesData, VertexSize / 4);
 
 #ifdef _DEBUG
-		std::cout << "openArabTools: DEBUG log:\n";
+		Error::warning("Debug log:");
 		Internal::Debug::PrintVertexArray(&VerticesData, VertexSize, 4);
 		Internal::Debug::PrintIndexArray(&IndicesData, VertexSize / 4, 6);
-		std::cout << "openArabTools: DEBUG log completed.\n";
+		Error::warning("End of debug log.");
 #endif
 
 		Internal::ApplyChangesV(&VerticesData, VertexSize, &this->mWindow.glVBO);
@@ -184,25 +245,39 @@ namespace OpenArabTools {
 		this->mWindow.PrepareUniforms(this->mSizeX, this->mSizeY);
 		this->UploadColorToShader();
 		this->UploadStateToShader();
+
+		this->mInit = true;
+	}
+
+	void Matrix::reset() noexcept {
+		if (!this->mInit) {
+			Error::warning("Matrix reset called twice.");
+			return;
+		}
+
+		free(this->mColor);
+		free(this->mIsOn);
+
+		this->mInit = false;
 	}
 
 	void Matrix::resizeMatrix(const U64 aNewX, const U64 aNewY) noexcept {
-		return;
-
 		this->mSizeX = aNewX;
 		this->mSizeY = aNewY;
 
-		//TODO: realloc buffers
-		//TODO: finish matrix class
+		this->reset();
+		this->set(this->mSizeX, this->mSizeY);
 	}
 
-	//TODO: maybe add controls for offColor (O)
+	//TODO: [MAYBE] add controls for offColor (O)
 
 	//
 	//end of openarabtools extensions
 	//
 
 	Matrix::~Matrix() noexcept {
+		//different from reset() function, no error handling
+		if (!this->mInit) return;
 		free(this->mColor);
 		free(this->mIsOn);
 	}

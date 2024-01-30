@@ -75,6 +75,10 @@ namespace OpenArabTools {
 		}
 
 		void runConcurrently(const U64 aCount, const bool aWaitReturn, RunConcurrentlyCallback aFunction) noexcept {
+			if (aFunction == nullptr) {
+				Error::warning("Invalid parameter in runConcurrently: aFunction is nullptr");
+			}
+			if (aCount == 0) return; //nothing to do, this can happen
 			if (Internal::ThreadAmount != Internal::ThreadAmountFinished) return; //if runConcurrently is running
 
 			Internal::FunctionState.clear();

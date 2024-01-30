@@ -31,17 +31,17 @@ namespace OpenArabTools {
 
 	//LightColor structure
 	struct OPENARABTOOLS_OBJ LightColor {
-		Dec R, G, B;
+		float R, G, B;
 
 		LightColor() noexcept;
 
 		LightColor (const LightColorD aColor) noexcept;
 
-		LightColor (const Dec aR, const Dec aG, const Dec aB) noexcept;
+		LightColor (const float aR, const float aG, const float aB) noexcept;
 
 		LightColor* Set(const LightColorD aColor) noexcept;
 
-		LightColor* RGB(const Dec aR, const Dec aG, const Dec aB) noexcept;
+		LightColor* RGB(const float aR, const float aG, const float aB) noexcept;
 
 		LightColor* RGB255(const U08 aR, const U08 aG, const U08 aB) noexcept;
 

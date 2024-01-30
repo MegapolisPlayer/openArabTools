@@ -4,13 +4,22 @@
 template class OPENARABTOOLS_OBJ std::basic_string<char>;
 
 namespace OpenArabTools {
+	//Forward declaration
+	class OPENARABTOOLS_OBJ Matrix;
+
 	namespace Internal {
 
 		//Main Window Class (for OpenGL)
 		class OPENARABTOOLS_OBJ GLWindow {
 		public:
+			friend class OPENARABTOOLS_OBJ ::OpenArabTools::Matrix;
+
 			GLWindow() noexcept; //default 500, 500 (X,Y)
 			GLWindow(const U64 aWidth, const U64 aHeight) noexcept;
+			GLWindow(const GLWindow& aOther) noexcept;
+			GLWindow(GLWindow&& aOther) noexcept;
+			GLWindow& operator=(const GLWindow& aOther) noexcept;
+			GLWindow& operator=(GLWindow&& aOther) noexcept;
 
 			// WINDOW MANAGEMENT
 
@@ -30,6 +39,8 @@ namespace OpenArabTools {
 
 			//Internal radius - radius of empty space in middle of circle, almost never used, if debug mode true and DEBUG defined - just prints arrays
 			void PrepareUniforms(U64 aAmountCirclesX, U64 aAmountCirclesY, Dec aInternalRadius = 0.0, bool aDebugMode = false) noexcept;
+
+			void BindContext() noexcept;
 
 			void Process() noexcept;
 
@@ -61,9 +72,8 @@ namespace OpenArabTools {
 			//glCSUResolution - 2 ints, resolution of window
 			//glCSUInternalRadius - float, internal radius
 			//glCSUExternalRadius - float, radius
-			//glCSSBitmapOnOff 
 
-			GLHandle glCSUSize, glCSUResolution, glCSUInternalRadius, glCSUExternalRadius, GLCSSBitmapOnOff;
+			GLHandle glCSUSize, glCSUResolution, glCSUInternalRadius, glCSUExternalRadius;
 
 		private: //PRIVATE SECTION
 			GLFWwindow* mWindow;
@@ -73,6 +83,8 @@ namespace OpenArabTools {
 
 			static void SizeCallback(GLFWwindow* aWindow, const int aWidth, const int aHeight) noexcept;
 			void HandleResize(const U64 aWidth, const U64 aHeight) noexcept;
+
+			void CreateWindow() noexcept;
 
 			void ShadersInit() noexcept;
 			void ShadersDestroy() noexcept;

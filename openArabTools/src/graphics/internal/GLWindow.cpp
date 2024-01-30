@@ -6,38 +6,91 @@
 //same as normal ArabTools
 #define OPENARABTOOLS_DEFAULT_WINDOW_SIZE 650
 
+//TODO: test "rule of 5" functions!!!!
+
 namespace OpenArabTools {
 	namespace Internal {
-		GLWindow::GLWindow() noexcept : mWidth(OPENARABTOOLS_DEFAULT_WINDOW_SIZE), mHeight(OPENARABTOOLS_DEFAULT_WINDOW_SIZE), mFrameNo(0), mTitle() {
-			init();
+		GLWindow::GLWindow() noexcept 
+		: mWidth(OPENARABTOOLS_DEFAULT_WINDOW_SIZE), mHeight(OPENARABTOOLS_DEFAULT_WINDOW_SIZE), mFrameNo(0), mTitle("openArabTools")
+		{ this->CreateWindow(); }
 
-			this->mWindow = glfwCreateWindow(this->mWidth, this->mHeight, "OpenArabTools", NULL, NULL);
-			glfwSetWindowUserPointer(this->mWindow, this);
-			glfwSetWindowSizeCallback(this->mWindow, SizeCallback);
-			glfwMakeContextCurrent(this->mWindow);
-			glewInit();
+		GLWindow::GLWindow(const U64 aWidth, const U64 aHeight) noexcept
+		: mWidth(aWidth), mHeight(aHeight), mFrameNo(0), mTitle("openArabTools")
+		{ this->CreateWindow(); }
 
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		GLWindow::GLWindow(const GLWindow& aOther) noexcept {
+			if (&aOther == this) {
+				Error::error("Self-assignment in GLWindow detected."); return;
+			}
 
-			this->glVAO.Bind();
-			ShadersInit();
+			this->mWidth = aOther.mWidth;
+			this->mHeight = aOther.mHeight;
+			this->mFrameNo = 0;
+			this->mTitle = aOther.mTitle;
+			this->CreateWindow();
 		}
-		GLWindow::GLWindow(const U64 aWidth, const U64 aHeight) noexcept : mWidth(aWidth), mHeight(aHeight), mFrameNo(0), mTitle() {
-			init();
+		GLWindow::GLWindow(GLWindow&& aOther) noexcept {
+			if (&aOther == this) {
+				Error::error("Self-assignment in GLWindow detected."); return;
+			}
 
-			this->mWindow = glfwCreateWindow(this->mWidth, this->mHeight, "OpenArabTools", NULL, NULL);
-			glfwSetWindowUserPointer(this->mWindow, this);
-			glfwSetWindowSizeCallback(this->mWindow, SizeCallback);
-			glfwMakeContextCurrent(this->mWindow);
-			glewInit();
+			this->mWidth = aOther.mWidth;
+			this->mHeight = aOther.mHeight;
+			this->mFrameNo = aOther.mFrameNo;
+			this->mTitle = aOther.mTitle;
 
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			this->mWindow = aOther.mWindow;
+			aOther.mWindow = nullptr;
 
-			this->glVAO.Bind();
-			ShadersInit();
+			this->glVAO = aOther.glVAO;
+			this->glVBO = aOther.glVBO;
+			this->glIBO = aOther.glIBO;
+			this->glCircleShader = aOther.glCircleShader;
+			this->glCSUSize = aOther.glCSUSize;
+			this->glCSUResolution = aOther.glCSUResolution;
+			this->glCSUInternalRadius = aOther.glCSUInternalRadius;
+			this->glCSUExternalRadius = aOther.glCSUExternalRadius;
+			this->glCircleShader = aOther.glCircleShader;
 		}
+		GLWindow& GLWindow::operator=(const GLWindow& aOther) noexcept {
+			if (&aOther == this) {
+				Error::error("Self-assignment in GLWindow detected."); return *this;
+			}
+
+			this->mWidth = aOther.mWidth;
+			this->mHeight = aOther.mHeight;
+			this->mFrameNo = 0;
+			this->mTitle = aOther.mTitle;
+			this->CreateWindow();
+
+			return *this;
+		}
+		GLWindow& GLWindow::operator=(GLWindow&& aOther) noexcept {
+			if (&aOther == this) {
+				Error::error("Self-assignment in GLWindow detected."); return *this;
+			}
+
+			this->mWidth = aOther.mWidth;
+			this->mHeight = aOther.mHeight;
+			this->mFrameNo = aOther.mFrameNo;
+			this->mTitle = aOther.mTitle;
+
+			this->mWindow = aOther.mWindow;
+			aOther.mWindow = nullptr;
+
+			this->glVAO = aOther.glVAO;
+			this->glVBO = aOther.glVBO;
+			this->glIBO = aOther.glIBO;
+			this->glCircleShader = aOther.glCircleShader;
+			this->glCSUSize = aOther.glCSUSize;
+			this->glCSUResolution = aOther.glCSUResolution;
+			this->glCSUInternalRadius = aOther.glCSUInternalRadius;
+			this->glCSUExternalRadius = aOther.glCSUExternalRadius;
+			this->glCircleShader = aOther.glCircleShader;
+
+			return *this;
+		}
+
 		void GLWindow::ShowWindow() noexcept {
 			glfwShowWindow(this->mWindow);
 		}
@@ -87,6 +140,9 @@ namespace OpenArabTools {
 			);
 			glUniform2f(this->glCSUSize, 2.0 / aAmountCirclesX, 2.0 / aAmountCirclesY);
 		}
+		void GLWindow::BindContext() noexcept {
+			glfwMakeContextCurrent(this->mWindow);
+		}
 		void GLWindow::Process() noexcept {
 			glfwSwapBuffers(this->mWindow);
 			glfwPollEvents();
@@ -99,13 +155,12 @@ namespace OpenArabTools {
 			return !glfwWindowShouldClose(this->mWindow);
 		}
 		void GLWindow::Destroy() noexcept {
-			if (this->mWindow == NULL) return;
-
-			this->Process();
-			glfwDestroyWindow(this->mWindow);
+			if (this->mWindow != nullptr) {
+				this->Process();
+				glfwDestroyWindow(this->mWindow);
+				this->mWindow = nullptr;
+			};
 			ShadersDestroy();
-			this->mWindow = NULL;
-			terminate();
 		}
 		U64 GLWindow::FrameNo() const noexcept {
 			return this->mFrameNo;
@@ -127,6 +182,23 @@ namespace OpenArabTools {
 			this->mHeight = aHeight;
 			glViewport(0, 0, this->mWidth, this->mHeight);
 			glUniform2f(this->glCSUResolution, this->mWidth, this->mHeight);
+		}
+
+		void GLWindow::CreateWindow() noexcept {
+			init();
+
+			//hint to make HIDDEN the default set in init() (OpenArabTools.cpp, Utils.hpp)
+			this->mWindow = glfwCreateWindow(this->mWidth, this->mHeight, "OpenArabTools", NULL, NULL);
+			glfwSetWindowUserPointer(this->mWindow, this);
+			glfwSetWindowSizeCallback(this->mWindow, SizeCallback);
+			glfwMakeContextCurrent(this->mWindow);
+			glewInit();
+
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+			this->glVAO.Bind();
+			ShadersInit();
 		}
 
 		void GLWindow::ShadersInit() noexcept {

@@ -3,36 +3,40 @@
 namespace OpenArabTools {
 	//declared in Utils.hpp
 
-	U64 gsInit = 0;
+	U64 Internal::InitAmount = 0;
 
 	bool isLibInit() noexcept {
-		return gsInit;
+		return Internal::InitAmount;
 	}
 
 	void init() noexcept {
-		if (gsInit != 0) return; //no double init
+		if (Internal::InitAmount != 0) return; //no double init
 		//GLFW validation
 		if (glfwInit() == GLFW_FALSE) {
-			std::cout << "OpenArabTools Error: GLFW window library initialization failed.\n";
+			Error::error("GLFW window library initialization failed.");
 			return;
 		}
+		//GLFW setup
+		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 		//GLEW validation - create fake 1x1 window
 		GLFWwindow* FakeWindow = glfwCreateWindow(1, 1, "temp", NULL, NULL);
 		glfwMakeContextCurrent(FakeWindow);
 		if (glewInit()) {
-			std::cout << "OpenArabTools Error: GLEW OpenGL loader library initialization failed.\n";
+			Error::error("GLEW OpenGL loading library initialization failed.");
 			return;
 		}
 		glfwDestroyWindow(FakeWindow);
-		gsInit++;
+		Internal::InitAmount++;
 	}
 
+	//TODO: fix terminate()
+
 	void terminate() noexcept {
-		if (gsInit == 0) { return; } //if zero: no init
-		if (gsInit > 1) { gsInit--; return; } //if more than one: just decrement 
+		//if (Internal::InitAmount == 0) { return; } //if zero: no init
+		//if (Internal::InitAmount > 1) { Internal::InitAmount--; return; } //if more than one: just decrement 
 
 		glfwTerminate(); //only when everything freed
-		gsInit--;
+		//Internal::InitAmount--;
 	}
 
 	//increment build for each update, major or minor

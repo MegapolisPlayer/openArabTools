@@ -1,5 +1,5 @@
 #pragma once
-#include "../error/Error.hpp"
+#include "../Utils.hpp"
 
 namespace OpenArabTools {
 	

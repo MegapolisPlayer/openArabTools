@@ -104,7 +104,7 @@ namespace OpenArabTools {
 
 			*aBuffer = (float*)malloc(sizeof(float) * VerticesAmount * 4);
 			if (*aBuffer == nullptr) {
-				std::cout << "openArabTools: Vertex Generation error: allocation failed" << "\n";
+				Error::error("Vertex Generation error: allocation failed");
 				return INT_MAX;
 			}
 
@@ -191,8 +191,7 @@ namespace OpenArabTools {
 		void GenerateTileIndices(unsigned int** aBuffer, const U64 aAmount) {
 			*aBuffer = (unsigned int*)malloc(sizeof(unsigned int) * aAmount * 6);
 			if (*aBuffer == nullptr) {
-				std::cout << "openArabTools: Index Generation error: allocation failed" << "\n";
-				return;
+				Error::error("Index Generation error: allocation failed"); return;
 			}
 
 			// 6 indices per object (4 vertices)
@@ -229,7 +228,7 @@ namespace OpenArabTools {
 			if (CompiledVS == GL_FALSE) {
 				char Buffer[100]; int size;
 				glGetShaderInfoLog(VertexShader, 100, &size, Buffer);
-				std::cout << "openArabTools: Vertex Shader error: " << Buffer << "\n";
+				Error::error("openArabTools: Vertex Shader error: ", Buffer);
 				return GLInvalidHandle;
 			}
 			S32 CompiledFS;
@@ -237,7 +236,7 @@ namespace OpenArabTools {
 			if (CompiledFS == GL_FALSE) {
 				char Buffer[100]; int size;
 				glGetShaderInfoLog(FragmentShader, 100, &size, Buffer);
-				std::cout << "openArabTools: Fragment Shader error: " << Buffer << "\n";
+				Error::error("openArabTools: Fragment Shader error: ", Buffer);
 				return GLInvalidHandle;
 			}
 

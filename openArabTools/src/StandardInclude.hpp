@@ -40,6 +40,11 @@ namespace OpenArabTools {
 	typedef void(RunConcurrentlyCallback)(const U08, const U64);
 	//Callback for an interaction with the Matrix class (params: X and Y of light, return SUCCESSCODE or FAILURECODE)
 	typedef bool(MatrixInteractionCallback)(const U64, const U64);
+
+	namespace Internal {
+		//Amount of initializations
+		extern U64 InitAmount;
+	}
 }
 
 //Utility macros

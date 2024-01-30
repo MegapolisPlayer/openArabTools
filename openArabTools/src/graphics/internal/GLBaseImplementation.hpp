@@ -86,7 +86,7 @@ namespace OpenArabTools {
 		//Generates vertices as:
 		//POSX, POSY, TLX, TLY
 		// Position , Top Left
-		
+
 		//Allocates memory, returns amount of vertices.
 		OPENARABTOOLS_OBJ U64 GenerateTileVertices(float** const aBuffer, const U64 aCircleAmountX, const U64 aCircleAmountY) noexcept;
 		//Frees memory allocated by GenerateTileVertices
@@ -164,7 +164,13 @@ namespace OpenArabTools {
 			OPENARABTOOLS_OBJ void PrintVertexArray(float** aArray, const U64 aAmountOfVertices, const U64 aVertexSize, const U64 aVertexPrecisionOverride = 2) noexcept;
 			OPENARABTOOLS_OBJ void PrintIndexArray(unsigned int** aArray, const U64 aAmountOfObjects, const U64 aIndicesPerObject, const U64 aNumberWidthOverride = 4) noexcept;
 		}
-	}
-}
+
+		//dll-exporting used type overloads
+		OPENARABTOOLS_OBJ GLShaderBuffer<CircleColor>;
+		OPENARABTOOLS_OBJ GLShaderBuffer<int>;
+
+	} //namespace Internal
+} //namespace oAT
 
 #include "template/GLShaderBuffer.hpp"
+
