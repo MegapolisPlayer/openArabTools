@@ -13,15 +13,30 @@ namespace OpenArabTools {
 	public:
 		Semaphore() noexcept;
 
-		std::string getTitle();
+		Semaphore(SemaphoreOrientation aOrientation) noexcept;
+
+		void setTitle(const std::string& aTitle);
 
 		void showWindow();
-
 		void hideWindow();
 
+		void setRedOn();
+		void setYellowOn();
+		void setGreenOn();
+
+		void setRedOff();
+		void setYellowOff();
+		void setGreenOff();
+
+		void setRedOnOff();
+		void setYellowOnOff();
+		void setGreenOnOff();
+
+		std::string getTitle();
 		bool isRedOn();
 		bool isYellowOn();
 		bool isGreenOn();
+
 
 		~Semaphore() noexcept;
 	private:
