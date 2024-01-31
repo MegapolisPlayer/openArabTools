@@ -3,14 +3,14 @@
 namespace OpenArabTools {
 	//declared in Utils.hpp
 
-	U64 Internal::InitAmount = 0;
+	bool Internal::IsInit = false;
 
 	bool isLibInit() noexcept {
-		return Internal::InitAmount;
+		return Internal::IsInit;
 	}
 
 	void init() noexcept {
-		if (Internal::InitAmount != 0) return; //no double init
+		if (Internal::IsInit) return; //no double init
 		//GLFW validation
 		if (glfwInit() == GLFW_FALSE) {
 			Error::error("GLFW window library initialization failed.");
@@ -26,17 +26,13 @@ namespace OpenArabTools {
 			return;
 		}
 		glfwDestroyWindow(FakeWindow);
-		Internal::InitAmount++;
+		Internal::IsInit = true;
 	}
 
-	//TODO: fix terminate()
-
 	void terminate() noexcept {
-		//if (Internal::InitAmount == 0) { return; } //if zero: no init
-		//if (Internal::InitAmount > 1) { Internal::InitAmount--; return; } //if more than one: just decrement 
-
-		glfwTerminate(); //only when everything freed
-		//Internal::InitAmount--;
+		if (!Internal::IsInit) return;
+		glfwTerminate();
+		Internal::IsInit = false;
 	}
 
 	//increment build for each update, major or minor

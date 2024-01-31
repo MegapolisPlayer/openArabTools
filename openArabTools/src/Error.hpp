@@ -14,6 +14,9 @@ namespace OpenArabTools {
 		//Prints OpenGL error and terminates program
 		[[noreturn]] void error(const char* aMessage, const char* aGLBuffer) noexcept;
 
+		//Checks if library initialized, if not throws error
+		bool noiniterror() noexcept;
+
 		//Prints warning about something not library-breaking, but still a bit sus
 		void warning(const char* aMessage) noexcept;
 	} //namespace Error

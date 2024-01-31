@@ -6,8 +6,6 @@
 //same as normal ArabTools
 #define OPENARABTOOLS_DEFAULT_WINDOW_SIZE 650
 
-//TODO: test "rule of 5" functions!!!!
-
 namespace OpenArabTools {
 	namespace Internal {
 		GLWindow::GLWindow() noexcept 
@@ -57,6 +55,8 @@ namespace OpenArabTools {
 				Error::error("Self-assignment in GLWindow detected."); return *this;
 			}
 
+			this->Destroy();
+
 			this->mWidth = aOther.mWidth;
 			this->mHeight = aOther.mHeight;
 			this->mFrameNo = 0;
@@ -69,6 +69,8 @@ namespace OpenArabTools {
 			if (&aOther == this) {
 				Error::error("Self-assignment in GLWindow detected."); return *this;
 			}
+
+			this->Destroy();
 
 			this->mWidth = aOther.mWidth;
 			this->mHeight = aOther.mHeight;
@@ -185,7 +187,7 @@ namespace OpenArabTools {
 		}
 
 		void GLWindow::CreateWindow() noexcept {
-			init();
+			if (Error::noiniterror()) return;
 
 			//hint to make HIDDEN the default set in init() (OpenArabTools.cpp, Utils.hpp)
 			this->mWindow = glfwCreateWindow(this->mWidth, this->mHeight, "OpenArabTools", NULL, NULL);
@@ -203,6 +205,7 @@ namespace OpenArabTools {
 
 		void GLWindow::ShadersInit() noexcept {
 			this->glCircleShader = Internal::MakeShader(Internal::VertexCircleSource, Internal::FragmentCircleSource);
+			glUseProgram(this->glCircleShader);
 			this->glCSUSize = glGetUniformLocation(this->glCircleShader, "Size");
 			this->glCSUResolution = glGetUniformLocation(this->glCircleShader, "WindowResolution");
 			this->glCSUInternalRadius = glGetUniformLocation(this->glCircleShader, "IRadius");

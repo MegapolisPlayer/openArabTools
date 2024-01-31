@@ -34,11 +34,11 @@ In C++ with openArabTools:
 ```cpp
 #include "OpenArabTools.hpp"
 
-
 int main() {
 	OpenArabTools::init();
 	OpenArabTools::Semaphore s;
 	s.showWindow();
+	s.run();
 }
 ```
 
@@ -54,7 +54,6 @@ void Function(const ArabTools::U08 ThreadId, const ArabTools::U64 Id) {
 int main() {
 	ArabTools::init();
 	ArabTools::Utils::runConcurrently(100000, true, Function);
-	s.showWindow();
 }
 ```
 

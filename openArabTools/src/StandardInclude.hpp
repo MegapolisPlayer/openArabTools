@@ -43,8 +43,15 @@ namespace OpenArabTools {
 
 	namespace Internal {
 		//Amount of initializations
-		extern U64 InitAmount;
+		extern bool IsInit;
 	}
+
+	//Gets if library initialized
+	OPENARABTOOLS_OBJ bool isLibInit() noexcept;
+	//Initializes the library
+	OPENARABTOOLS_OBJ void init() noexcept;
+	//Terminates the library
+	OPENARABTOOLS_OBJ void terminate() noexcept;
 }
 
 //Utility macros

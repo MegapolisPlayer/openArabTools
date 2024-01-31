@@ -2,15 +2,6 @@
 #include "Error.hpp"
 
 namespace OpenArabTools {
-	//Gets if library initialized
-	OPENARABTOOLS_OBJ bool isLibInit() noexcept;
-
-	//Initializes the library
-	OPENARABTOOLS_OBJ void init() noexcept;
-
-	//Terminates the library
-	OPENARABTOOLS_OBJ void terminate() noexcept;
-
 	//Returns the OpenArabTools version (and the version of ArabTools it was based on) as a string literal
 	OPENARABTOOLS_OBJ constexpr const char* Version() noexcept;
 

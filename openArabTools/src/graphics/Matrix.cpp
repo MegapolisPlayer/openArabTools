@@ -9,15 +9,17 @@ namespace OpenArabTools {
 		this->set(aSizeX, aSizeY);
 	}
 	Matrix::Matrix(const Matrix& aOther) noexcept
-	: mSizeX(0), mSizeY(0), mColor(nullptr), mIsOn(nullptr), mInit(false) {
-		if (!aOther.mInit) return; //aOther not initialized
+		: mSizeX(0), mSizeY(0), mColor(nullptr), mIsOn(nullptr), mInit(false) {
+		if (!aOther.mInit) {
+			return; //aOther not initialized
+		}
 		if (&aOther == this) {
 			Error::error("Matrix copy self assigment detected."); return;
 		}
 
+		this->mInit = false;
 		this->mWindow = Internal::GLWindow(aOther.mSizeX, aOther.mSizeY);
 		this->set(aOther.mSizeX, aOther.mSizeY);
-
 	}
 	Matrix::Matrix(Matrix&& aOther) noexcept {
 		this->mSizeX = aOther.mSizeX;
@@ -33,10 +35,29 @@ namespace OpenArabTools {
 		aOther.mInit = false; //this covers mIsOn, mColor
 	}
 	Matrix& Matrix::operator=(const Matrix& aOther) noexcept {
-		std::cout << "COPY";
+		if (!aOther.mInit) {
+			this->reset();
+			return *this; //aOther not initialized
+		}
+		if (&aOther == this) {
+			Error::error("Matrix copy self assigment detected."); return *this;
+		}
+
+		this->reset();
+		this->mWindow = Internal::GLWindow(aOther.mSizeX, aOther.mSizeY);
+		this->set(aOther.mSizeX, aOther.mSizeY);
+
 		return *this;
 	}
 	Matrix& Matrix::operator=(Matrix&& aOther) noexcept {
+		if (!aOther.mInit) {
+			this->reset();
+			return *this; //aOther not initialized
+		}
+		if (&aOther == this) {
+			Error::error("Matrix copy self assigment detected."); return *this;
+		}
+
 		this->mSizeX = aOther.mSizeX;
 		this->mSizeY = aOther.mSizeY;
 		this->mWindow = aOther.mWindow;
@@ -196,6 +217,8 @@ namespace OpenArabTools {
 			Error::error("Matrix already initialized.");
 			return;
 		}
+
+		this->mWindow.Resize(aSizeX * 130, aSizeY * 130);
 
 		//variable setup
 		this->mSizeX = aSizeX;
