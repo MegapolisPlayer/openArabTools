@@ -5,29 +5,29 @@ namespace OpenArabTools {
 		//Sets correct colors based on enum
 		static void	SetInternalLightcolor(LightColor* const aLC, const LightColorD aLCD) noexcept {
 			switch (aLCD) {
-			case(LIGHTCOLOR_BLACK):             aLC->RGB255(0,   0,   0  ); return;
-			case(LIGHTCOLOR_BLUE):              aLC->RGB255(0,   0,   255); return;
-			case(LIGHTCOLOR_CYAN):              aLC->RGB255(0,   255, 255); return;
-			case(LIGHTCOLOR_DARK_GRAY):         aLC->RGB255(64,  64,  64 ); return;
-			case(LIGHTCOLOR_GRAY):              aLC->RGB255(128, 128, 128); return;
-			case(LIGHTCOLOR_GREEN):             aLC->RGB255(0,   255, 0  ); return;
-			case(LIGHTCOLOR_CHESSBOARD_BLACK):  aLC->RGB255(0,   0,   0  ); return;
-			case(LIGHTCOLOR_CHESSBOARD_DARK):   aLC->RGB255(128, 64,  0  ); return;
-			case(LIGHTCOLOR_CHESSBOARD_LIGHT):  aLC->RGB255(255, 192, 128); return;
-			case(LIGHTCOLOR_CHESSBOARD_WHITE):  aLC->RGB255(0,   0,   0  ); return;
-			case(LIGHTCOLOR_LIGHT_GRAY):        aLC->RGB255(192, 192, 192); return;
-			case(LIGHTCOLOR_MAGENTA):           aLC->RGB255(128, 0,   128); return;
-			case(LIGHTCOLOR_ORANGE):            aLC->RGB255(255, 128, 0  ); return;
-			case(LIGHTCOLOR_PINK):              aLC->RGB255(255, 0,   255); return;
-			case(LIGHTCOLOR_RED):               aLC->RGB255(255, 0,   0  ); return;
-			case(LIGHTCOLOR_TRAFFIC_GREEN_OFF): aLC->RGB255(0,   128, 0  ); return;
-			case(LIGHTCOLOR_TRAFFIC_GREEN_ON):  aLC->RGB255(0,   255, 0  ); return;
-			case(LIGHTCOLOR_TRAFFIC_RED_OFF):   aLC->RGB255(128, 0,   0  ); return;
-			case(LIGHTCOLOR_TRAFFIC_RED_ON):    aLC->RGB255(255, 0,   0  ); return;
-			case(LIGHTCOLOR_YELLOW_OFF):        aLC->RGB255(128, 128, 0  ); return;
-			case(LIGHTCOLOR_YELLOW_ON):         aLC->RGB255(255, 255, 0  ); return;
-			case(LIGHTCOLOR_WHITE):             aLC->RGB255(255, 255, 255); return;
-			case(LIGHTCOLOR_YELLOW):            aLC->RGB255(255, 255, 0  ); return;
+			case(LIGHTCOLOR_BLACK):              aLC->RGB255(0,   0,   0  ); return;
+			case(LIGHTCOLOR_BLUE):               aLC->RGB255(0,   0,   255); return;
+			case(LIGHTCOLOR_CYAN):               aLC->RGB255(0,   255, 255); return;
+			case(LIGHTCOLOR_DARK_GRAY):          aLC->RGB255(64,  64,  64 ); return;
+			case(LIGHTCOLOR_GRAY):               aLC->RGB255(128, 128, 128); return;
+			case(LIGHTCOLOR_GREEN):              aLC->RGB255(0,   255, 0  ); return;
+			case(LIGHTCOLOR_CHESSBOARD_BLACK):   aLC->RGB255(0,   0,   0  ); return;
+			case(LIGHTCOLOR_CHESSBOARD_DARK):    aLC->RGB255(128, 64,  0  ); return;
+			case(LIGHTCOLOR_CHESSBOARD_LIGHT):   aLC->RGB255(255, 192, 128); return;
+			case(LIGHTCOLOR_CHESSBOARD_WHITE):   aLC->RGB255(0,   0,   0  ); return;
+			case(LIGHTCOLOR_LIGHT_GRAY):         aLC->RGB255(192, 192, 192); return;
+			case(LIGHTCOLOR_MAGENTA):            aLC->RGB255(128, 0,   128); return;
+			case(LIGHTCOLOR_ORANGE):             aLC->RGB255(255, 128, 0  ); return;
+			case(LIGHTCOLOR_PINK):               aLC->RGB255(255, 0,   255); return;
+			case(LIGHTCOLOR_RED):                aLC->RGB255(255, 0,   0  ); return;
+			case(LIGHTCOLOR_TRAFFIC_GREEN_OFF):  aLC->RGB255(0,   128, 0  ); return;
+			case(LIGHTCOLOR_TRAFFIC_GREEN_ON):   aLC->RGB255(0,   255, 0  ); return;
+			case(LIGHTCOLOR_TRAFFIC_RED_OFF):    aLC->RGB255(128, 0,   0  ); return;
+			case(LIGHTCOLOR_TRAFFIC_RED_ON):     aLC->RGB255(255, 0,   0  ); return;
+			case(LIGHTCOLOR_TRAFFIC_YELLOW_OFF): aLC->RGB255(128, 128, 0  ); return;
+			case(LIGHTCOLOR_TRAFFIC_YELLOW_ON):  aLC->RGB255(255, 255, 0  ); return;
+			case(LIGHTCOLOR_WHITE):              aLC->RGB255(255, 255, 255); return;
+			case(LIGHTCOLOR_YELLOW):             aLC->RGB255(255, 255, 0  ); return;
 			}
 		}
 	}
@@ -75,11 +75,11 @@ namespace OpenArabTools {
 		return this;
 	}
 
-	LightColor* LightColor::operator=(const LightColor& aColor) noexcept {
+	LightColor& LightColor::operator=(const LightColor& aColor) noexcept {
 		this->R = aColor.R;
 		this->G = aColor.G;
 		this->B = aColor.B;
-		return this;
+		return *this;
 	}
 
 	LightColor::~LightColor() noexcept {}

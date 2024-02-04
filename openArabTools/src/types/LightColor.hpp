@@ -23,8 +23,8 @@ namespace OpenArabTools {
 		LIGHTCOLOR_TRAFFIC_GREEN_ON,
 		LIGHTCOLOR_TRAFFIC_RED_OFF,
 		LIGHTCOLOR_TRAFFIC_RED_ON,
-		LIGHTCOLOR_YELLOW_OFF,
-		LIGHTCOLOR_YELLOW_ON,
+		LIGHTCOLOR_TRAFFIC_YELLOW_OFF,
+		LIGHTCOLOR_TRAFFIC_YELLOW_ON,
 		LIGHTCOLOR_WHITE,
 		LIGHTCOLOR_YELLOW
 	};
@@ -49,7 +49,7 @@ namespace OpenArabTools {
 
 		LightColor* Lighten() noexcept;
 
-		LightColor* operator=(const LightColor& aColor) noexcept;
+		LightColor& operator=(const LightColor& aColor) noexcept;
 
 		~LightColor() noexcept;
 	};

@@ -40,9 +40,13 @@ namespace OpenArabTools {
 
 		void setBackground(const LightColor aColor) noexcept;
 
+		void setBackground(const U64 aId, const LightColor& aColor) noexcept;
+
 		void setBackground(const U64 aColumn, const U64 aRow, const LightColor& aColor) noexcept;
 
 		void setColor(const LightColor& aColor) noexcept;
+
+		void setColor(const U64 aId, const LightColor& aColor) noexcept;
 
 		void setColor(const U64 aColumn, const U64 aRow, const LightColor& aColor) noexcept;
 
@@ -117,6 +121,12 @@ namespace OpenArabTools {
 		// OPENARABTOOLS extensions
 		//
 
+		void setOffColor(const LightColor& aColor) noexcept;
+
+		void setOffColor(const U64 aId, const LightColor& aColor) noexcept;
+
+		void setOffColor(const U64 aColumn, const U64 aRow, const LightColor& aColor) noexcept;
+
 		//Shows the window and runs the matrix (blocks executions on thread until window closed) 
 		void showWindowAndRun() noexcept;
 
@@ -128,8 +138,6 @@ namespace OpenArabTools {
 
 		//Change the amount of lights
 		void resizeMatrix(const U64 aNewX, const U64 aNewY) noexcept;
-
-
 
 		//Destructor
 		~Matrix() noexcept;

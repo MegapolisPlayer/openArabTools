@@ -100,6 +100,8 @@ namespace OpenArabTools {
 		// Position , Top Left
 
 		U64 GenerateTileVertices(float** const aBuffer, const U64 aCircleAmountX, const U64 aCircleAmountY) noexcept {
+			//TODO: fix generation of vertices in Semaphore (doesnt work)
+
 			U64 VerticesAmount = aCircleAmountX * aCircleAmountY * 4;
 
 			*aBuffer = (float*)malloc(sizeof(float) * VerticesAmount * 4);

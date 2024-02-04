@@ -91,6 +91,10 @@ namespace OpenArabTools {
 		}
 		this->UploadColorToShader();
 	}
+	void Matrix::setBackground(const U64 aId, const LightColor& aColor) noexcept {
+		this->mColor[aId].SetB(aColor);
+		this->UploadColorToShader();
+	}
 	void Matrix::setBackground(const U64 aColumn, const U64 aRow, const LightColor& aColor) noexcept {
 		this->mColor[aColumn + (aRow * this->mSizeX)].SetB(aColor);
 		this->UploadColorToShader();
@@ -99,6 +103,10 @@ namespace OpenArabTools {
 		for (U64 i = 0; i < this->mSizeX * this->mSizeY; i++) {
 			this->mColor[i].SetF(aColor);
 		}
+		this->UploadColorToShader();
+	}
+	void Matrix::setColor(const U64 aId, const LightColor& aColor) noexcept {
+		this->mColor[aId].SetF(aColor);
 		this->UploadColorToShader();
 	}
 	void Matrix::setColor(const U64 aColumn, const U64 aRow, const LightColor& aColor) noexcept {
@@ -206,6 +214,23 @@ namespace OpenArabTools {
 	//
 	//openarabtools extensions
 	//
+
+	void Matrix::setOffColor(const LightColor& aColor) noexcept {
+		for (U64 i = 0; i < this->mSizeX * this->mSizeY; i++) {
+			this->mColor[i].SetO(aColor);
+		}
+		this->UploadColorToShader();
+	}
+
+	void Matrix::setOffColor(const U64 aId, const LightColor& aColor) noexcept {
+		this->mColor[aId].SetO(aColor);
+		this->UploadColorToShader();
+	}
+
+	void Matrix::setOffColor(const U64 aColumn, const U64 aRow, const LightColor& aColor) noexcept {
+		this->mColor[aColumn + (aRow * this->mSizeX)].SetO(aColor);
+		this->UploadColorToShader();
+	}
 
 	void Matrix::showWindowAndRun() noexcept {
 		this->showWindow();

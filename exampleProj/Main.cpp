@@ -6,15 +6,19 @@
 int main() {
 	ArabTools::init();
 	
-	ArabTools::Matrix m = ArabTools::Matrix(5, 5);
-	m.setColor(ArabTools::LightColor(ArabTools::LIGHTCOLOR_RED));
-	m.setOff(0);
-	m.setOff(5);
-	m.setOff(10);
-	m.setOff(15);
-	m.setOff(20);
+	/*
+	ArabTools::Matrix m = ArabTools::Matrix(3, 3);
+	m.setColor(0, ArabTools::LightColor(ArabTools::LIGHTCOLOR_RED));
 	m.showWindow();
 	m.run();
+	*/
+
+	ArabTools::Semaphore s;
+	s.setGreenOn();
+	s.setYellowOn();
+	s.setRedOn();
+	s.showWindow();
+	s.run();
 		
 	ArabTools::terminate();
 
