@@ -8,19 +8,40 @@ int main() {
 	
 	/*
 	ArabTools::Matrix m = ArabTools::Matrix(3, 3);
-	m.setColor(0, ArabTools::LightColor(ArabTools::LIGHTCOLOR_RED));
 	m.showWindow();
-	m.run();
+
+	int i = 0;
+	ArabTools::LightColor LC;
+	while (m.update()) {
+		LC.Set(ArabTools::LightColorD(rand() % 23));
+		m.setColor(i % 9, LC);
+		m.setOnOff(i % 9, rand() % 2);
+		i++;
+	}
+
 	*/
 
 	ArabTools::Semaphore s;
-	s.setGreenOn();
-	s.setYellowOn();
-	s.setRedOn();
+	s.setRedOff();
+	s.setYellowOff();
+	s.setGreenOff();
 	s.showWindow();
-	s.run();
+
+	#define INT_TIME 750
+	while (s.update()) {
+		s.setYellowOff();
+		s.setRedOn();
+		ArabTools::Utils::sleep(INT_TIME);
+		s.setYellowOn();
+		ArabTools::Utils::sleep(INT_TIME);
+		s.setRedOff();
+		s.setYellowOff();
+		s.setGreenOn();
+		ArabTools::Utils::sleep(INT_TIME);
+		s.setGreenOff();
+		s.setYellowOn();
+		ArabTools::Utils::sleep(INT_TIME);
+	}
 		
 	ArabTools::terminate();
-
-	char a; std::cin >> a;
 }

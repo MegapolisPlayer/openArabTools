@@ -137,7 +137,7 @@ namespace OpenArabTools {
 			glUniform1f(this->glCSUInternalRadius, aInternalRadius);
 			//pick half of SMALLER size = more circles
 			glUniform1f(
-				this->glCSUExternalRadius, 
+				this->glCSUExternalRadius,
 				(aAmountCirclesX > aAmountCirclesY) ? (2.0 / aAmountCirclesX / 2.0 - 0.01) : (2.0 / aAmountCirclesY / 2.0 - 0.01)
 			);
 			glUniform2f(this->glCSUSize, 2.0 / aAmountCirclesX, 2.0 / aAmountCirclesY);

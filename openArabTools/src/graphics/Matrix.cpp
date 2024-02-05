@@ -204,7 +204,7 @@ namespace OpenArabTools {
 		this->mIsOnBuf.Bind();
 		this->mWindow.glIBO.Draw();
 		this->mWindow.Process();
-		return this->open();
+		return this->mWindow.IsWindowOpen();
 	}
 
 	void Matrix::run() noexcept {
@@ -240,7 +240,7 @@ namespace OpenArabTools {
 	void Matrix::set(const U64 aSizeX, const U64 aSizeY) noexcept {
 		if (this->mInit) {
 			Error::error("Matrix already initialized.");
-			return;
+			this->reset(); return;
 		}
 
 		this->mWindow.Resize(aSizeX * 130, aSizeY * 130);
@@ -265,7 +265,7 @@ namespace OpenArabTools {
 				//default: black on black in original, here will be white FG on black BG
 				{
 				1.0, 1.0, 1.0, 1.0, //FG
-				0.0, 0.0, 0.0, 0.0, //OG
+				0.0, 0.0, 0.0, 1.0, //OG
 				0.0, 0.0, 0.0, 1.0  //BG
 				};
 			this->mIsOn[i] = true;
@@ -317,8 +317,6 @@ namespace OpenArabTools {
 		this->set(this->mSizeX, this->mSizeY);
 	}
 
-	//TODO: [MAYBE] add controls for offColor (O)
-
 	//
 	//end of openarabtools extensions
 	//
@@ -334,9 +332,13 @@ namespace OpenArabTools {
 
 	void Matrix::UploadColorToShader() noexcept {
 		this->mColorBuf.Set(this->mColor, this->mSizeX * this->mSizeY, &this->mWindow.glVAO);
+		this->mWindow.glIBO.Draw();
+		this->mWindow.Process();
 	}
 
 	void Matrix::UploadStateToShader() noexcept {
 		this->mIsOnBuf.Set(this->mIsOn, this->mSizeX * this->mSizeY, &this->mWindow.glVAO);
+		this->mWindow.glIBO.Draw();
+		this->mWindow.Process();
 	}
 }

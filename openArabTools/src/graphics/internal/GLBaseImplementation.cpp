@@ -99,12 +99,12 @@ namespace OpenArabTools {
 		//POSX, POSY, TLX, TLY
 		// Position , Top Left
 
-		U64 GenerateTileVertices(float** const aBuffer, const U64 aCircleAmountX, const U64 aCircleAmountY) noexcept {
-			//TODO: fix generation of vertices in Semaphore (doesnt work)
+		#define VERTEX_SIZE 4
 
+		U64 GenerateTileVertices(float** const aBuffer, const U64 aCircleAmountX, const U64 aCircleAmountY) noexcept {
 			U64 VerticesAmount = aCircleAmountX * aCircleAmountY * 4;
 
-			*aBuffer = (float*)malloc(sizeof(float) * VerticesAmount * 4);
+			*aBuffer = (float*)malloc(sizeof(float) * VerticesAmount * VERTEX_SIZE);
 			if (*aBuffer == nullptr) {
 				Error::error("Vertex Generation error: allocation failed");
 				return INT_MAX;
@@ -122,15 +122,14 @@ namespace OpenArabTools {
 			for (U64 i = 0; i < VerticesAmount; i += 4) {
 				//for each vertex in object
 				for (U64 j = 0; j < 4; j++) {
-					//size * cleaned id + if right/bottom - offset
-					//X generation: X size * column + if right
-					(*aBuffer)[(i + j) * 4] = (CircleSizeX * int((i / 4) % aCircleAmountX)) + ((j == 1 || j == 2) ? CircleSizeX : 0) - 1.0;
-					//Y generation: Y size * row + if bottom * -1 because OpenGL Y coords is flipped
-					(*aBuffer)[(i + j) * 4 + 1] = -((CircleSizeY * int((i / 4) / aCircleAmountY)) + ((j == 2 || j == 3) ? CircleSizeY : 0) - 1.0);
-
+					//size * id of column + if on right - offset
+					(*aBuffer)[(i + j) * VERTEX_SIZE + 0] = (CircleSizeX * (int(i / VERTEX_SIZE) % aCircleAmountX) + ((j == 1 || j == 2) ? CircleSizeX : 0)) - 1.0;
+					//size * id of row + if on bottom - offset
+					(*aBuffer)[(i + j) * VERTEX_SIZE + 1] = -((CircleSizeY * int(i / VERTEX_SIZE / aCircleAmountX) + ((j == 2 || j == 3) ? CircleSizeY : 0)) - 1.0);
+					
 					//top left coords
-					(*aBuffer)[(i + j) * 4 + 2] = (*aBuffer)[i * 4 + 0];
-					(*aBuffer)[(i + j) * 4 + 3] = (*aBuffer)[i * 4 + 1];
+					(*aBuffer)[(i + j) * VERTEX_SIZE + 2] = (*aBuffer)[i * VERTEX_SIZE + 0];
+					(*aBuffer)[(i + j) * VERTEX_SIZE + 3] = (*aBuffer)[i * VERTEX_SIZE + 1];
 				}
 			}
 
@@ -306,16 +305,19 @@ namespace OpenArabTools {
 			"};\n"
 			"void main()\n"
 			"{\n"
+			"	vec2 UV = gl_FragCoord.xy / WindowResolution.xy; //UV coords\n"
+			"	UV = UV * 2.0 - 1.0;\n"
+			"	float Aspect = WindowResolution.x / WindowResolution.y;\n"
+			"	UV.x *= Aspect;\n"
 			"	vec2 CenterPoint = vec2(FragTopLeft.x+(Size.x/2), FragTopLeft.y-(Size.y/2));\n"
-			"	vec2 UV = vec2(((gl_FragCoord.x/WindowResolution.x)-0.5)*2, ((gl_FragCoord.y/WindowResolution.y)-0.5)*2);\n"
 			"	float ActualDistance = distance(CenterPoint, UV);\n"
-			"	float ResultCircle = step(ERadius - (ERadius - IRadius), ActualDistance) * (1.0 - step(ERadius, ActualDistance));\n"
-			"OutColor = vec4("
-			"	vec4(ResultCircle) * vec4(ColorInformation[ObjectID].FR, ColorInformation[ObjectID].FG, ColorInformation[ObjectID].FB, ColorInformation[ObjectID].FA) * vec4(IsLightOn[ObjectID]) +"
-			"	vec4(ResultCircle) * vec4(ColorInformation[ObjectID].OR, ColorInformation[ObjectID].OG, ColorInformation[ObjectID].OB, ColorInformation[ObjectID].OA) * vec4(!IsLightOn[ObjectID])"
-			") + vec4("
-			"	vec4(1.0 - ResultCircle) * vec4(ColorInformation[ObjectID].BR, ColorInformation[ObjectID].BG, ColorInformation[ObjectID].BB, ColorInformation[ObjectID].BA)"
-			");\n"
+			"	float ResultCircle = (ERadius - step((ERadius - IRadius), ActualDistance));\n"
+			"	OutColor = vec4("
+			"		vec4(ResultCircle) * vec4(ColorInformation[ObjectID].FR, ColorInformation[ObjectID].FG, ColorInformation[ObjectID].FB, ColorInformation[ObjectID].FA) * vec4(IsLightOn[ObjectID]) +"
+			"		vec4(ResultCircle) * vec4(ColorInformation[ObjectID].OR, ColorInformation[ObjectID].OG, ColorInformation[ObjectID].OB, ColorInformation[ObjectID].OA) * vec4(!IsLightOn[ObjectID])"
+			"	) + vec4("
+			"		vec4(1.0 - ResultCircle) * vec4(ColorInformation[ObjectID].BR, ColorInformation[ObjectID].BG, ColorInformation[ObjectID].BB, ColorInformation[ObjectID].BA)"
+			"	);\n"
 			"}\n"
 			;
 

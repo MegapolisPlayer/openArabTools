@@ -165,9 +165,8 @@ namespace OpenArabTools {
 			OPENARABTOOLS_OBJ void PrintIndexArray(unsigned int** aArray, const U64 aAmountOfObjects, const U64 aIndicesPerObject, const U64 aNumberWidthOverride = 4) noexcept;
 		}
 
-		//dll-exporting used type overloads
-		OPENARABTOOLS_OBJ GLShaderBuffer<CircleColor>;
-		OPENARABTOOLS_OBJ GLShaderBuffer<int>;
+		GLShaderBuffer<CircleColor>;
+		GLShaderBuffer<int>;
 
 	} //namespace Internal
 } //namespace oAT

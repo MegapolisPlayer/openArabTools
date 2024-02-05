@@ -53,5 +53,6 @@ namespace OpenArabTools {
 	private:
 		Matrix mMatrix;
 		bool mIsFlipped;
+		bool mIsRedOn, mIsYellowOn, mIsGreenOn;
 	};
 }

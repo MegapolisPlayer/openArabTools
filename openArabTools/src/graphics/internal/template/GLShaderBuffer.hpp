@@ -21,6 +21,11 @@ namespace OpenArabTools {
 		template<typename DataType, U64 Multiplier>
 		void GLShaderBuffer<DataType, Multiplier>::Set(DataType* aData, const U64 aAmount, GLVertexArray* const aArray) noexcept {
 			if (this->mVAOCount == GLInvalidHandle) { this->mVAOCount = aArray->Counter; aArray->Counter++; }
+			if (this->mInit) {
+				glDeleteBuffers(1, &this->mBuffer);
+				//this could be done better but this isnt much of a performance loss
+				//cannot call reset (deletes important variables)
+			}
 			this->mSize = aAmount;
 			aArray->Bind();
 			glGenBuffers(1, &this->mBuffer);
@@ -71,4 +76,4 @@ namespace OpenArabTools {
 }
 
 //reset back
-#pragma warning( enable : 4244 ) 
+#pragma warning( default : 4244 ) 
