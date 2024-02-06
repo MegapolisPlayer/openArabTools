@@ -1,46 +1,39 @@
-#include <iostream>
 #include "OpenArabTools.hpp"
-#include <random>
-#include <iomanip>
 
 int main() {
 	ArabTools::init();
-	
+
 	/*
-	ArabTools::Matrix m = ArabTools::Matrix(3, 3);
+	ArabTools::Matrix m;
+	m.set(3, 3);
+	m.setBackground(0, ArabTools::LIGHTCOLOR_RED);
+	m.setBackground(1, ArabTools::LIGHTCOLOR_GREEN);
+	m.setBackground(2, ArabTools::LIGHTCOLOR_BLUE);
+	m.setOn(0);
+	m.setOn(1);
+	m.setOn(2);
 	m.showWindow();
-
-	int i = 0;
-	ArabTools::LightColor LC;
-	while (m.update()) {
-		LC.Set(ArabTools::LightColorD(rand() % 23));
-		m.setColor(i % 9, LC);
-		m.setOnOff(i % 9, rand() % 2);
-		i++;
-	}
-
+	m.run();
 	*/
 
-	ArabTools::Semaphore s;
-	s.setRedOff();
-	s.setYellowOff();
-	s.setGreenOff();
+	ArabTools::Semaphore s2(ArabTools::SemaphoreOrientation::UPSIDERIGHT);
+	ArabTools::Semaphore s = s2;
 	s.showWindow();
 
 	#define INT_TIME 750
 	while (s.update()) {
 		s.setYellowOff();
 		s.setRedOn();
-		ArabTools::Utils::sleep(INT_TIME);
+		s.sleep(INT_TIME);
 		s.setYellowOn();
-		ArabTools::Utils::sleep(INT_TIME);
+		s.sleep(INT_TIME);
 		s.setRedOff();
 		s.setYellowOff();
 		s.setGreenOn();
-		ArabTools::Utils::sleep(INT_TIME);
+		s.sleep(INT_TIME);
 		s.setGreenOff();
 		s.setYellowOn();
-		ArabTools::Utils::sleep(INT_TIME);
+		s.sleep(INT_TIME);
 	}
 		
 	ArabTools::terminate();

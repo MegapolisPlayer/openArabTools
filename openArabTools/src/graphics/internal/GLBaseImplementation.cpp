@@ -307,11 +307,14 @@ namespace OpenArabTools {
 			"{\n"
 			"	vec2 UV = gl_FragCoord.xy / WindowResolution.xy; //UV coords\n"
 			"	UV = UV * 2.0 - 1.0;\n"
+			"	vec2 CenterPoint = vec2(FragTopLeft.x+(Size.x/2), FragTopLeft.y-(Size.y/2));\n"
 			"	float Aspect = WindowResolution.x / WindowResolution.y;\n"
 			"	UV.x *= Aspect;\n"
-			"	vec2 CenterPoint = vec2(FragTopLeft.x+(Size.x/2), FragTopLeft.y-(Size.y/2));\n"
+			"	CenterPoint.x *= Aspect;\n"
+			"	float ERadiusM = ERadius * Aspect;\n" //we set stuff in Window::PrepareUniform
 			"	float ActualDistance = distance(CenterPoint, UV);\n"
-			"	float ResultCircle = (ERadius - step((ERadius - IRadius), ActualDistance));\n"
+									//if >IRadius and not(>ERadiusM) then we are good
+			"	float ResultCircle = step(IRadius, ActualDistance) * (1.0 - step(ERadiusM, ActualDistance));\n"
 			"	OutColor = vec4("
 			"		vec4(ResultCircle) * vec4(ColorInformation[ObjectID].FR, ColorInformation[ObjectID].FG, ColorInformation[ObjectID].FB, ColorInformation[ObjectID].FA) * vec4(IsLightOn[ObjectID]) +"
 			"		vec4(ResultCircle) * vec4(ColorInformation[ObjectID].OR, ColorInformation[ObjectID].OG, ColorInformation[ObjectID].OB, ColorInformation[ObjectID].OA) * vec4(!IsLightOn[ObjectID])"

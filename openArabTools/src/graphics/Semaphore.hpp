@@ -38,7 +38,9 @@ namespace OpenArabTools {
 		bool isYellowOn() noexcept;
 		bool isGreenOn() noexcept;
 
-		// OPENARABTOOLS necessities
+		//
+		// OPENARABTOOLS extensions
+		//
 
 		//Returns if window is open
 		bool open() const noexcept;
@@ -48,6 +50,9 @@ namespace OpenArabTools {
 
 		//Call this once, blocks execution until window closed!
 		void run() noexcept;
+
+		//Sleeps on this thread while still updating window, returns true for compatibility with ArabTools
+		bool sleep(const U64 aMs) noexcept;
 
 		~Semaphore() noexcept;
 	private:

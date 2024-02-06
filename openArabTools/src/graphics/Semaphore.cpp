@@ -39,6 +39,23 @@ namespace OpenArabTools {
 			this->mIsFlipped = false;
 			break;
 		}
+
+		if (!this->mIsFlipped) {
+			this->mMatrix.setOffColor(0, LightColor(LIGHTCOLOR_TRAFFIC_RED_OFF));
+			this->mMatrix.setOffColor(1, LightColor(LIGHTCOLOR_TRAFFIC_YELLOW_OFF));
+			this->mMatrix.setOffColor(2, LightColor(LIGHTCOLOR_TRAFFIC_GREEN_OFF));
+			this->mMatrix.setColor(0, LightColor(LIGHTCOLOR_TRAFFIC_RED_ON));
+			this->mMatrix.setColor(1, LightColor(LIGHTCOLOR_TRAFFIC_YELLOW_ON));
+			this->mMatrix.setColor(2, LightColor(LIGHTCOLOR_TRAFFIC_GREEN_ON));
+		}
+		else {
+			this->mMatrix.setOffColor(2, LightColor(LIGHTCOLOR_TRAFFIC_RED_OFF));
+			this->mMatrix.setOffColor(1, LightColor(LIGHTCOLOR_TRAFFIC_YELLOW_OFF));
+			this->mMatrix.setOffColor(0, LightColor(LIGHTCOLOR_TRAFFIC_GREEN_OFF));
+			this->mMatrix.setColor(2, LightColor(LIGHTCOLOR_TRAFFIC_RED_ON));
+			this->mMatrix.setColor(1, LightColor(LIGHTCOLOR_TRAFFIC_YELLOW_ON));
+			this->mMatrix.setColor(0, LightColor(LIGHTCOLOR_TRAFFIC_GREEN_ON));
+		}
 	}
 
 	void Semaphore::setTitle(const std::string& aTitle) noexcept {
@@ -114,6 +131,10 @@ namespace OpenArabTools {
 
 	void Semaphore::run() noexcept {
 		this->mMatrix.run();
+	}
+
+	bool Semaphore::sleep(const U64 aMs) noexcept {
+		return this->mMatrix.sleep(aMs);
 	}
 
 	Semaphore::~Semaphore() noexcept {}

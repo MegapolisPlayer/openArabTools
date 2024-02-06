@@ -5,7 +5,14 @@ namespace OpenArabTools {
 		//General
 
 		bool sleep(const U64 aMs) noexcept {
-			std::this_thread::sleep_for(std::chrono::milliseconds(aMs));
+			//this is more precise and extenable than sleep_for
+
+			std::chrono::system_clock::time_point Start = std::chrono::system_clock::now();
+			std::chrono::system_clock::time_point End = std::chrono::system_clock::now();
+
+			while (std::chrono::duration_cast<std::chrono::milliseconds>(End - Start).count() < aMs) {
+				End = std::chrono::system_clock::now();
+			}
 			return true; //for compatibility
 		}
 

@@ -108,7 +108,7 @@ namespace OpenArabTools {
 		}
 		void GLWindow::Resize(const U64 aWidth, const U64 aHeight) noexcept {
 			this->HandleResize(aWidth, aHeight);
-			glfwSetWindowSize(this->mWindow, this->mWidth, this->mHeight);
+			glfwSetWindowSize(this->mWindow, this->mWidth, this->mHeight); //doesnt call callback!
 		}
 		U64 GLWindow::SizeX() const noexcept {
 			return this->mWidth;
@@ -135,10 +135,10 @@ namespace OpenArabTools {
 			glUseProgram(this->glCircleShader);
 			glUniform2f(this->glCSUResolution, this->mWidth, this->mHeight);
 			glUniform1f(this->glCSUInternalRadius, aInternalRadius);
-			//pick half of SMALLER size = more circles
+			//idk why this works but this does work... -megapolisplayer
 			glUniform1f(
 				this->glCSUExternalRadius,
-				(aAmountCirclesX > aAmountCirclesY) ? (2.0 / aAmountCirclesX / 2.0 - 0.01) : (2.0 / aAmountCirclesY / 2.0 - 0.01)
+				1.0 / aAmountCirclesX
 			);
 			glUniform2f(this->glCSUSize, 2.0 / aAmountCirclesX, 2.0 / aAmountCirclesY);
 		}
@@ -177,7 +177,13 @@ namespace OpenArabTools {
 		// PRIVATE
 
 		void GLWindow::SizeCallback(GLFWwindow* aWindow, const int aWidth, const int aHeight) noexcept {
-			((GLWindow*)glfwGetWindowUserPointer(aWindow))->HandleResize(aWidth, aHeight);
+			((GLWindow*)glfwGetWindowUserPointer(aWindow))->HandleUserResize(aWidth, aHeight);
+		}
+		void GLWindow::HandleUserResize(const U64 aWidth, const U64 aHeight) noexcept {
+			this->mWidth = aWidth;
+			this->mHeight = aHeight;
+			//no viewport change, breaks stuff!
+			glUniform2f(this->glCSUResolution, this->mWidth, this->mHeight);
 		}
 		void GLWindow::HandleResize(const U64 aWidth, const U64 aHeight) noexcept {
 			this->mWidth = aWidth;

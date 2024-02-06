@@ -13,31 +13,40 @@ namespace OpenArabTools {
 			float OR = 0.0, OG = 0.0, OB = 0.0, OA = 0.0;
 			float BR = 0.0, BG = 0.0, BB = 0.0, BA = 0.0;
 
-			CircleColor() {}
+			CircleColor() noexcept {}
 
-			CircleColor(float aFR, float aFG, float aFB, float aFA, float aOR, float aOG, float aOB, float aOA, float aBR, float aBG, float aBB, float aBA)
+			CircleColor(float aFR, float aFG, float aFB, float aFA, float aOR, float aOG, float aOB, float aOA, float aBR, float aBG, float aBB, float aBA) noexcept
 				: FR(aFR), FG(aFG), FB(aFB), FA(aFA), OR(aOR), OG(aOG), OB(aOB), OA(aOA), BR(aBR), BG(aBG), BB(aBB), BA(aBA) {}
 
-			void SetF(const LightColor& aColor) {
+			void SetF(const LightColor& aColor) noexcept {
 				FR = aColor.R;
 				FG = aColor.G;
 				FB = aColor.B;
 				FA = 1.0f;
 			}
-			void SetO(const LightColor& aColor) {
+			void SetO(const LightColor& aColor) noexcept {
 				OR = aColor.R;
 				OG = aColor.G;
 				OB = aColor.B;
 				OA = 1.0f;
 			}
-			void SetB(const LightColor& aColor) {
+			void SetB(const LightColor& aColor) noexcept {
 				BR = aColor.R;
 				BG = aColor.G;
 				BB = aColor.B;
 				BA = 1.0f;
 			}
 
-			~CircleColor() {}
+			//debug function
+			void Print() noexcept {
+				std::cout << 
+					"F " << FR << ' ' << FG << ' ' << FB << ' ' << FA << ' ' <<
+					"O " << OR << ' ' << OG << ' ' << OB << ' ' << OA << ' ' <<
+					"B " << BR << ' ' << BG << ' ' << BB << ' ' << BA << ' ' <<
+					'\n';
+			}
+
+			~CircleColor() noexcept {}
 		};
 
 		class OPENARABTOOLS_OBJ GLVertexArray {
@@ -164,9 +173,6 @@ namespace OpenArabTools {
 			OPENARABTOOLS_OBJ void PrintVertexArray(float** aArray, const U64 aAmountOfVertices, const U64 aVertexSize, const U64 aVertexPrecisionOverride = 2) noexcept;
 			OPENARABTOOLS_OBJ void PrintIndexArray(unsigned int** aArray, const U64 aAmountOfObjects, const U64 aIndicesPerObject, const U64 aNumberWidthOverride = 4) noexcept;
 		}
-
-		GLShaderBuffer<CircleColor>;
-		GLShaderBuffer<int>;
 
 	} //namespace Internal
 } //namespace oAT

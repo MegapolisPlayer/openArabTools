@@ -20,11 +20,11 @@ namespace OpenArabTools {
 			case(LIGHTCOLOR_ORANGE):             aLC->RGB255(255, 128, 0  ); return;
 			case(LIGHTCOLOR_PINK):               aLC->RGB255(255, 0,   255); return;
 			case(LIGHTCOLOR_RED):                aLC->RGB255(255, 0,   0  ); return;
-			case(LIGHTCOLOR_TRAFFIC_GREEN_OFF):  aLC->RGB255(0,   128, 0  ); return;
+			case(LIGHTCOLOR_TRAFFIC_GREEN_OFF):  aLC->RGB255(0,   64,  0  ); return;
 			case(LIGHTCOLOR_TRAFFIC_GREEN_ON):   aLC->RGB255(0,   255, 0  ); return;
-			case(LIGHTCOLOR_TRAFFIC_RED_OFF):    aLC->RGB255(128, 0,   0  ); return;
+			case(LIGHTCOLOR_TRAFFIC_RED_OFF):    aLC->RGB255(64,  0,   0  ); return;
 			case(LIGHTCOLOR_TRAFFIC_RED_ON):     aLC->RGB255(255, 0,   0  ); return;
-			case(LIGHTCOLOR_TRAFFIC_YELLOW_OFF): aLC->RGB255(128, 128, 0  ); return;
+			case(LIGHTCOLOR_TRAFFIC_YELLOW_OFF): aLC->RGB255(64,  64,  0  ); return;
 			case(LIGHTCOLOR_TRAFFIC_YELLOW_ON):  aLC->RGB255(255, 255, 0  ); return;
 			case(LIGHTCOLOR_WHITE):              aLC->RGB255(255, 255, 255); return;
 			case(LIGHTCOLOR_YELLOW):             aLC->RGB255(255, 255, 0  ); return;
@@ -55,7 +55,9 @@ namespace OpenArabTools {
 	}
 
 	LightColor* LightColor::RGB255(const U08 aR, const U08 aG, const U08 aB) noexcept {
-		this->R = aR / 255.0; this->G = aG / 255.0; this->B = aB / 255.0;
+		this->R = float(aR) / 255.0;
+		this->G = float(aG) / 255.0;
+		this->B = float(aB) / 255.0;
 		return this;
 	}
 

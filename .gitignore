@@ -11,3 +11,5 @@
 *.lastbuildstate
 *.vcxproj.filters
 *.vcxproj.user
+Debug/
+Release/

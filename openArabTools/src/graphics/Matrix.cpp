@@ -20,6 +20,13 @@ namespace OpenArabTools {
 		this->mInit = false;
 		this->mWindow = Internal::GLWindow(aOther.mSizeX, aOther.mSizeY);
 		this->set(aOther.mSizeX, aOther.mSizeY);
+
+		for (U64 i = 0; i < aOther.mSizeX * aOther.mSizeY; i++) {
+			this->mColor[i] = aOther.mColor[i];
+			this->mIsOn[i] = aOther.mIsOn[i];
+		}
+		this->UploadColorToShader();
+		this->UploadStateToShader();
 	}
 	Matrix::Matrix(Matrix&& aOther) noexcept {
 		this->mSizeX = aOther.mSizeX;
@@ -36,8 +43,7 @@ namespace OpenArabTools {
 	}
 	Matrix& Matrix::operator=(const Matrix& aOther) noexcept {
 		if (!aOther.mInit) {
-			this->reset();
-			return *this; //aOther not initialized
+			this->reset(); return *this; //aOther not initialized
 		}
 		if (&aOther == this) {
 			Error::error("Matrix copy self assigment detected."); return *this;
@@ -46,6 +52,13 @@ namespace OpenArabTools {
 		this->reset();
 		this->mWindow = Internal::GLWindow(aOther.mSizeX, aOther.mSizeY);
 		this->set(aOther.mSizeX, aOther.mSizeY);
+
+		for (U64 i = 0; i < aOther.mSizeX * aOther.mSizeY; i++) {
+			this->mColor[i] = aOther.mColor[i];
+			this->mIsOn[i] = aOther.mIsOn[i];
+		}
+		this->UploadColorToShader();
+		this->UploadStateToShader();
 
 		return *this;
 	}
@@ -261,14 +274,14 @@ namespace OpenArabTools {
 
 		for (U64 i = 0; i < this->mSizeX * this->mSizeY; i++) {
 			this->mColor[i] = 
-				//RGBA: Color, RGBA: Off (alpha 0), RGBA Background
+				//RGBA: Color, RGBA: Off, RGBA Background
 				//default: black on black in original, here will be white FG on black BG
 				{
 				1.0, 1.0, 1.0, 1.0, //FG
 				0.0, 0.0, 0.0, 1.0, //OG
 				0.0, 0.0, 0.0, 1.0  //BG
 				};
-			this->mIsOn[i] = true;
+			this->mIsOn[i] = false; //start off
 		}
 
 		//generation
@@ -315,6 +328,18 @@ namespace OpenArabTools {
 
 		this->reset();
 		this->set(this->mSizeX, this->mSizeY);
+	}
+
+	bool Matrix::sleep(const U64 aMs) noexcept {
+		std::chrono::system_clock::time_point Start = std::chrono::system_clock::now();
+		std::chrono::system_clock::time_point End = std::chrono::system_clock::now();
+
+		while (std::chrono::duration_cast<std::chrono::milliseconds>(End - Start).count() < aMs) {
+			End = std::chrono::system_clock::now();
+			this->mWindow.glIBO.Draw();
+			this->mWindow.Process();
+		}
+		return true;
 	}
 
 	//
