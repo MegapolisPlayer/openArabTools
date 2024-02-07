@@ -39,15 +39,15 @@ namespace OpenArabTools {
 
 		LightColor (const float aR, const float aG, const float aB) noexcept;
 
-		LightColor* Set(const LightColorD aColor) noexcept;
+		LightColor& Set(const LightColorD aColor) noexcept;
 
-		LightColor* RGB(const float aR, const float aG, const float aB) noexcept;
+		LightColor& RGB(const float aR, const float aG, const float aB) noexcept;
 
-		LightColor* RGB255(const U08 aR, const U08 aG, const U08 aB) noexcept;
+		LightColor& RGB255(const U08 aR, const U08 aG, const U08 aB) noexcept;
 
-		LightColor* Darken() noexcept;
+		LightColor& Darken() noexcept;
 
-		LightColor* Lighten() noexcept;
+		LightColor& Lighten() noexcept;
 
 		LightColor& operator=(const LightColor& aColor) noexcept;
 

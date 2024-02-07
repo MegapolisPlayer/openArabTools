@@ -16,7 +16,7 @@ int main() {
 	m.run();
 	*/
 
-	ArabTools::Semaphore s2(ArabTools::SemaphoreOrientation::UPSIDERIGHT);
+	ArabTools::Semaphore s2(ArabTools::SemaphoreOrientation::NORMAL);
 	ArabTools::Semaphore s = s2;
 	s.showWindow();
 

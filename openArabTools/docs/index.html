@@ -1,13 +1,185 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>OpenArabTools</title>
+	<title>OpenArabTools Docs</title>
+	<link rel="stylesheet" href="./style.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="iso-8859-2">
 </head>
 <body>
-	<h>Contents</h>
+	<h id="top">OpenArabTools Documentation</h><br>
+	<p id="authors">
+		Copyright (c) 2023-2024 Martin/MegapolisPlayer and contributors.<br>
+		Licensed under the Creative Commons CC-BY 4.0.<br>
+		<a href="https://www.github.com/MegapolisPlayer/openArabTools">GitHub Repository</a><br>
+		<br>
+		Based on Ing. Daniel Kahoun's ArabTools Library.<br>
+		Copyright (c) 2014-2020 Ing. Daniel Kahoun<br>
+		All rights reserved.<br>
+	</p>
+	<a href="./internal.html">Documentation for the <i>Internal and Error</i> namespaces</a><br>
+	<a href="./dev.html">Documentation for <i>internal (inaccessible) functions</i> - only for developers</a><br>
+	<h id="contents">Contents</h><br>
 	<ul>
-		<li>OpenArabTools namespace</li>
-		<li>Internal namespace</li>
-	</ul>
-</body>
+		<li>
+			<a href="#authors">Authors</a>
+		</li>
+		<li>
+			<a href="#libmgmt">Library Management</a>
+		</li>
+		<li>
+			<a href="#types">Types</a>
+			<ul>
+				<li><a href="#lightcolord">LightColorD</a></li>
+				<li><a href="#lightcolor">LightColor</a></li>
+			</ul>
+		</li>
+		<li>
+			<a href="#graphics">Graphics</a>
+			<ul>
+				<li><a href="#matrix">Matrix</a></li>
+				<li><a href="#semaphore">Semaphore</a></li>
+			</ul>
+		</li>
+		<li>
+			<a href="#event">Event</a>
+		</li>
+		<li>
+			<a href="#remote">Remote</a>
+		</li>
+	</ul><br>
+
+	<!-- Library -->
+	<div id="libmgmt">
+		<h>Library Management</h>
+		<table>
+			<tr>
+				<th>Function Name</th>
+				<th>Function Description</th>
+			</tr>
+			<tr>
+				<td>void init() noexcept</td>
+				<td>Initializes the library</td>
+			</tr>
+			<tr>
+				<td>void terminate() noexcept</td>
+				<td>Terminates the library</td>
+			</tr>
+			<tr>
+				<td>bool isLibInit() noexcept</td>
+				<td>Gets if library is initialized as a boolean</td>
+			</tr>
+		</table>
+		<b>There is an error message for detecting if library was not initialized.</b>
+</div>
+	<!-- Types -->
+	<div id="types">
+		<h>Types</h>
+	</div>
+	<div id="lightcolord">
+		<h2>LightColorD</h2>
+		<p>
+			C-style enum type, no prefix, predefined values for <a href="#lightcolor">LightColor</a>.<br>
+			Possible values:
+			<ul>
+				<li>LIGHTCOLOR_BLACK</li>
+				<li>LIGHTCOLOR_BLUE</li>
+				<li>LIGHTCOLOR_CYAN</li>
+				<li>LIGHTCOLOR_DARK_GRAY</li>
+				<li>LIGHTCOLOR_GRAY</li>
+				<li>LIGHTCOLOR_GREEN</li>
+				<li>LIGHTCOLOR_CHESSBOARD_BLACK</li>
+				<li>LIGHTCOLOR_CHESSBOARD_DARK</li>
+				<li>LIGHTCOLOR_CHESSBOARD_LIGHT</li>
+				<li>LIGHTCOLOR_CHESSBOARD_WHITE</li>
+				<li>LIGHTCOLOR_LIGHT_GRAY</li>
+				<li>LIGHTCOLOR_MAGENTA</li>
+				<li>LIGHTCOLOR_ORANGE</li>
+				<li>LIGHTCOLOR_PINK</li>
+				<li>LIGHTCOLOR_RED</li>
+				<li>LIGHTCOLOR_TRAFFIC_GREEN_OFF</li>
+				<li>LIGHTCOLOR_TRAFFIC_GREEN_ON,
+				<li>LIGHTCOLOR_TRAFFIC_RED_OFF</li>
+				<li>LIGHTCOLOR_TRAFFIC_RED_ON</li>
+				<li>LIGHTCOLOR_TRAFFIC_YELLOW_OFF,
+				<li>LIGHTCOLOR_TRAFFIC_YELLOW_ON</li>
+				<li>LIGHTCOLOR_WHITE</li>
+				<li>LIGHTCOLOR_YELLOW</li>
+			</ul>
+			<b>Values may not match the original ArabTools colors.</b><br>
+		</p>
+	</div>
+	<div id="lightcolor">
+		<h2>LightColor</h2>
+		<p>
+			Struct type, represents a RGB color.<br>
+			Methods:<br>
+			<table>
+				<tr>
+					<th>Method Name</th>
+					<th>Method Description</th>
+				</tr>
+				<tr>
+					<td>LightColor() noexcept</td>
+					<td>Default constructor</td>
+				</tr>
+				<tr>
+					<td>LightColor(const LightColorD aColor) noexcept</td>
+					<td>"Setup" constructor, takes in <a href="#lightcolord">LightColorD</a></td>
+				</tr>
+				<tr>
+					<td>LightColor (const float aR, const float aG, const float aB) noexcept</td>
+					<td>"Setup" constructor, takes in normalized (0-1) RGB values.</td>
+				</tr>
+				<tr>
+					<td>LightColor& Set(const LightColorD aColor) noexcept</td>
+					<td>Sets a color from <a href="#lightcolord">LightColorD</a></td>
+				</tr>
+				<tr>
+					<td>LightColor& RGB(const float aR, const float aG, const float aB) noexcept</td>
+					<td>Sets a color, takes in normalized (0-1) RGB values.</td>
+				</tr>
+				<tr>
+					<td>LightColor& RGB255(const U08 aR, const U08 aG, const U08 aB) noexcept</td>
+					<td>Sets a color, takes in 8-bit RGB values (0-255).</td>
+				</tr>
+				<tr>
+					<td>LightColor& Darken() noexcept</td>
+					<td>Darkens color by 25 points, or sets to #000000 (black) if that is not possible.</td>
+				</tr>
+				<tr>
+					<td>LightColor& Lighten() noexcept</td>
+					<td>Lightens color by 25 points, or sets to #ffffff (white) if that is not possible.</td>
+				</tr>
+				<tr>
+					<td>LightColor& operator=(const LightColor& aColor) noexcept</td>
+					<td>Copy assignment operator</td>
+				</tr>
+				<tr>
+					<td>~LightColor() noexcept</td>
+					<td>Default destructor</td>
+				</tr>
+			</table>
+		</p>
+	</div>
+	<!-- Graphics -->
+	<div id="graphics">
+		<h>Graphics</h>
+	</div>
+	<div id="matrix">
+		<h2>Matrix</h2>
+	</div>
+	<div id="semaphore">
+		<h2>Semaphore</h2>
+	</div>
+	<!-- Event -->
+	<div id="event">
+		<h>Event</h>
+	</div>
+	<!-- Remote -->
+	<div id="remote">
+		<h>Remote</h>
+	</div>
+	<a href="#top">Jump to top</a>
+</body>						
 </html>

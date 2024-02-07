@@ -82,8 +82,8 @@ namespace OpenArabTools {
 			std::string mTitle;
 
 			static void SizeCallback(GLFWwindow* aWindow, const int aWidth, const int aHeight) noexcept;
-			void HandleUserResize(const U64 aWidth, const U64 aHeight) noexcept;
 			void HandleResize(const U64 aWidth, const U64 aHeight) noexcept;
+			void HandleUserResize(const U64 aWidth, const U64 aHeight) noexcept;
 
 			void CreateWindow() noexcept;
 

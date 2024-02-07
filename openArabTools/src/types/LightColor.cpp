@@ -44,37 +44,37 @@ namespace OpenArabTools {
 	LightColor::LightColor(const float aR, const float aG, const float aB) noexcept
 	: R(aR), G(aG), B(aB) {}
 
-	LightColor* LightColor::Set(const LightColorD aColor) noexcept {
+	LightColor& LightColor::Set(const LightColorD aColor) noexcept {
 		Internal::SetInternalLightcolor(this, aColor);
-		return this;
+		return *this;
 	}
 
-	LightColor* LightColor::LightColor::RGB(const float aR, const float aG, const float aB) noexcept{
+	LightColor& LightColor::LightColor::RGB(const float aR, const float aG, const float aB) noexcept {
 		this->R = aR; this->G = aG; this->B = aB;
-		return this;
+		return *this;
 	}
 
-	LightColor* LightColor::RGB255(const U08 aR, const U08 aG, const U08 aB) noexcept {
+	LightColor& LightColor::RGB255(const U08 aR, const U08 aG, const U08 aB) noexcept {
 		this->R = float(aR) / 255.0;
 		this->G = float(aG) / 255.0;
 		this->B = float(aB) / 255.0;
-		return this;
+		return *this;
 	}
 
-	LightColor* LightColor::Darken() noexcept {
+	LightColor& LightColor::Darken() noexcept {
 		//decrements by 25 IF value is bigger than 25, otherwise sets it to 0
 		this->R -= ((this->R >= 25) ? 25 : this->R);
 		this->G -= ((this->G >= 25) ? 25 : this->G);
 		this->B -= ((this->B >= 25) ? 25 : this->B);
-		return this;
+		return *this;
 	}
 
-	LightColor* LightColor::Lighten() noexcept {
+	LightColor& LightColor::Lighten() noexcept {
 		this->R += 25; this->G += 25; this->B += 25;
 		if (this->R > 255) this->R = 255;
 		if (this->G > 255) this->G = 255;
 		if (this->B > 255) this->B = 255;
-		return this;
+		return *this;
 	}
 
 	LightColor& LightColor::operator=(const LightColor& aColor) noexcept {

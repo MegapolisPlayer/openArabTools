@@ -139,7 +139,8 @@ namespace OpenArabTools {
 		//Change the amount of lights
 		void resizeMatrix(const U64 aNewX, const U64 aNewY) noexcept;
 
-		//Sleeps on this thread while still updating window, returns true for compatibility with ArabTools
+		//Sleeps on this thread while still updating window, returns true if window stayed open (and false if window closed)
+		//NOTE: invalidates Matrix if window closed
 		bool sleep(const U64 aMs) noexcept;
 
 		//Destructor

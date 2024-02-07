@@ -107,7 +107,13 @@ namespace OpenArabTools {
 			return this->mTitle;
 		}
 		void GLWindow::Resize(const U64 aWidth, const U64 aHeight) noexcept {
-			this->HandleResize(aWidth, aHeight);
+#ifdef _DEBUG
+			Error::warning("System window resize.");
+#endif
+			this->mWidth = aWidth;
+			this->mHeight = aHeight;
+			glViewport(0, 0, this->mWidth, this->mHeight);
+			glUniform2f(this->glCSUResolution, this->mWidth, this->mHeight);
 			glfwSetWindowSize(this->mWindow, this->mWidth, this->mHeight); //doesnt call callback!
 		}
 		U64 GLWindow::SizeX() const noexcept {
@@ -180,16 +186,11 @@ namespace OpenArabTools {
 			((GLWindow*)glfwGetWindowUserPointer(aWindow))->HandleUserResize(aWidth, aHeight);
 		}
 		void GLWindow::HandleUserResize(const U64 aWidth, const U64 aHeight) noexcept {
+#ifdef _DEBUG
+			Error::warning("User window resize.");
+#endif
 			this->mWidth = aWidth;
 			this->mHeight = aHeight;
-			//no viewport change, breaks stuff!
-			glUniform2f(this->glCSUResolution, this->mWidth, this->mHeight);
-		}
-		void GLWindow::HandleResize(const U64 aWidth, const U64 aHeight) noexcept {
-			this->mWidth = aWidth;
-			this->mHeight = aHeight;
-			glViewport(0, 0, this->mWidth, this->mHeight);
-			glUniform2f(this->glCSUResolution, this->mWidth, this->mHeight);
 		}
 
 		void GLWindow::CreateWindow() noexcept {

@@ -52,7 +52,12 @@ namespace OpenArabTools {
 	OPENARABTOOLS_OBJ void init() noexcept;
 	//Terminates the library
 	OPENARABTOOLS_OBJ void terminate() noexcept;
+
 }
+
+//Using declarations
+
+using namespace std::chrono_literals;
 
 //Utility macros
 
