@@ -8,6 +8,7 @@
 </head>
 <body>
 	<h id="top">OpenArabTools Documentation</h><br>
+	<p id="version">Up-to-date for version: 0.1, build id 1 </p>
 	<p id="authors">
 		Copyright (c) 2023-2024 Martin/MegapolisPlayer and contributors.<br>
 		Licensed under the Creative Commons CC-BY 4.0.<br>
@@ -25,7 +26,13 @@
 			<a href="#authors">Authors</a>
 		</li>
 		<li>
+			<a href="#types">Types and Macros</a>
+		</li>
+		<li>
 			<a href="#libmgmt">Library Management</a>
+		</li>
+		<li>
+			<a href="#utils">Utils and Version</a>
 		</li>
 		<li>
 			<a href="#types">Types</a>
@@ -39,6 +46,8 @@
 			<ul>
 				<li><a href="#matrix">Matrix</a></li>
 				<li><a href="#semaphore">Semaphore</a></li>
+				<li><a href="#chessboard">Chessboard</a></li>
+				<li><a href="#dice">Dice</a></li>
 			</ul>
 		</li>
 		<li>
@@ -48,6 +57,84 @@
 			<a href="#remote">Remote</a>
 		</li>
 	</ul><br>
+
+	<!-- Types -->
+		 <div id="types">
+		<h>Types and Macros</h>
+		<table>
+			<tr>
+				<th>Type Name</th>
+				<th>Type Description</th>
+			</tr>
+			<tr>
+				<td>OPENARABTOOLS_NO_STANDARD_INCLUDE</td>
+				<td>
+					Define this macro if you have already included all of the necessary headers.<br>
+					(GLEW, GLFW, iostream, string, vector, thread, chrono, atomic, mutex)
+				</td>
+			</tr>
+			<tr>
+				<td>OPENARABTOOLS_NO_NAMESPACE_OVERRIDE</td>
+				<td>
+					Define this macro to disable the following namespace aliases: ArabTools, oAT, AT<br>
+					(OpenArabTools is the default namespace and cannot be disabled.)
+				</td>
+			</tr>
+			<tr>
+				<td>typedef int8_t S08;</td>
+				<td>1 byte signed integer</td>
+			</tr>
+			<tr>
+				<td>typedef int16_t S16;</td>
+				<td>2 byte signed integer</td>
+			</tr>
+			<tr>
+				<td>typedef int32_t S32;</td>
+				<td>4 byte signed integer</td>
+			</tr>
+			<tr>
+				<td>typedef int64_t S64;</td>
+				<td>8 byte signed integer</td>
+			</tr>
+			<tr>
+				<td>typedef uint8_t U08;</td>
+				<td>1 byte unsigned integer</td>
+			</tr>
+			<tr>
+				<td>typedef uint16_t U16;</td>
+				<td>2 byte unsigned integer</td>
+			</tr>
+			<tr>
+				<td>typedef uint32_t U32;</td>
+				<td>4 byte unsigned integer</td>
+			</tr>
+			<tr>
+				<td>typedef uint64_t U64;</td>
+				<td>8 byte unsigned integer</td>
+			</tr>
+			<tr>
+				<td>typedef long double Dec;</td>
+				<td>Decimal number</td>
+			</tr>
+			<tr>
+				<td>typedef void(RunConcurrentlyCallback)(const U08, const U64);</td>
+				<td>Type for runConcurrently functions. Args: OpenArabTools Thread Id as U08, Job Id as U64, do not return.</td>
+			</tr>
+			<tr>
+				<td>#define NORMAL255(x) x/255.0</td>
+				<td>Normalizes values in range 0-255 (use for RGB)</td>
+			</tr>
+			<tr>
+				<td>#define NORMAL1023(x) x/1023.0</td>
+				<td>Normalizes values in range 0-1023 (use for RGB)</td>
+			</tr>
+			<tr>
+				<td>#define TRAIN auto</td>
+				<td>Trains > cars. Just fact. (this entry <i>might</i> be biased a little bit)</td>
+			</tr>
+		</table>
+		<b>OpenArabTools uses standard C types (float, unsigned int) where applicable.</b>
+		</div>
 
 	<!-- Library -->
 	<div id="libmgmt">
@@ -69,9 +156,70 @@
 				<td>bool isLibInit() noexcept</td>
 				<td>Gets if library is initialized as a boolean</td>
 			</tr>
+			<tr>
+				<td>constexpr const char* Version() noexcept</td>
+				<td>Gets the version and copyright header string</td>
+			</tr>
+			<tr>
+				<td>constexpr U64 buildID() noexcept</td>
+				<td>Gets the library build ID</td>
+			</tr>
 		</table>
 		<b>There is an error message for detecting if library was not initialized.</b>
-</div>
+	</div>
+
+	<!-- Utils -->
+	<div id="utils">
+		<h>Utils and Version</h>
+		<h2>Functions</h2>
+		<table>
+			<tr>
+				<th>Function Name</th>
+				<th>Function Description</th>
+			</tr>
+			<tr>
+				<td>bool sleep(const U64 aMs) noexcept</td>
+				<td>Sleeps for milliseconds</td>
+			</tr>
+			<tr>
+				<td>bool isEmpty(const char* aString) noexcept</td>
+				<td>Returns if the string is empty (overload for C strings)</td>
+			</tr>
+			<tr>
+				<td>bool isEmpty(const std::string& aString) noexcept</td>
+				<td>Returns if the string is empty (overload for C++ strings)</td>
+			</tr>
+			<tr>
+				<td>bool nonEmpty(const char* aString) noexcept</td>
+				<td>Returns string if not empty, otherwise returns nullptr (overload for C strings)</td>
+			</tr>
+			<tr>
+				<td>bool nonEmpty(const std::string* const aString) noexcept</td>
+				<td>Returns string if not empty, otherwise returns nullptr (overload for C++ strings)</td>
+			</tr>
+			<tr>
+				<td>void runConcurrently(const U64 aCount, const bool aWaitReturn, RunConcurrentlyCallback aFunction) noexcept</td>
+				<td>Runs function in [aFunction] on multiple threads [aCount] times, returns immediately or if aWaitReturn is set after the functions complete the tasks</td>
+			</tr>
+		</table>
+		<h2>ScopedTimer class</h2>
+		<table>
+			<tr>
+				<th>Method name</th>
+				<th>Method description</th>
+			</tr>
+			<tr>
+				<td>ScopedTimer(const char* aMessage) noexcept</td>
+				<td>Constructor, initializes a ScopedTimer instance.</td>
+			</tr>
+			<tr>
+				<td>~ScopedTimer() noexcept</td>
+				<td>Desctructor, stops timer and prints duration to console.</td>
+			</tr>
+
+		</table>
+	</div>
+
 	<!-- Types -->
 	<div id="types">
 		<h>Types</h>
@@ -116,8 +264,8 @@
 			Methods:<br>
 			<table>
 				<tr>
-					<th>Method Name</th>
-					<th>Method Description</th>
+					<th>Method name</th>
+					<th>Method description</th>
 				</tr>
 				<tr>
 					<td>LightColor() noexcept</td>
@@ -168,17 +316,90 @@
 	</div>
 	<div id="matrix">
 		<h2>Matrix</h2>
+		<p>
+			Matrix class. Represents an array of circle lights.
+		</p>
+		<table>
+			<tr>
+				<th>Method name</th>
+				<th>Method description</th>
+			</tr>
+			<tr>
+				<td></td>
+				<td></td>
+			</tr>
+		</table>
 	</div>
 	<div id="semaphore">
 		<h2>Semaphore</h2>
+		<p>
+			Represents a simple 3-light traffic sempahore.
+		</p>
+		<table>
+			<tr>
+				<th>Method name</th>
+				<th>Method description</th>
+			</tr>
+			<tr>
+				<td></td>
+				<td></td>
+			</tr>
+		</table>
+	</div>
+	<div id="chessboard">
+		<h2>Chessboard</h2>
+		<p>
+			Represents an array of chess squares. Default size is 8 by 8.
+			Lights can be white or black and represent pieces.
+			The background uses these colors:<br>
+			<ul>
+				<li>LIGHTCOLOR_CHESSBOARD_BLACK and</li>
+				<li>LIGHTCOLOR_CHESSBOARD_DARK</li>
+			</ul>
+			or:
+			<ul>
+				<li>
+					LIGHTCOLOR_CHESSBOARD_LIGHT and
+				</li>
+				<li>LIGHTCOLOR_CHESSBOARD_WHITE</li>
+			</ul>
+		</p>
+		<table>
+			<tr>
+				<th>Method name</th>
+				<th>Method description</th>
+			</tr>
+			<tr>
+				<td></td>
+				<td></td>
+			</tr>
+		</table>
+	</div>
+	<div id="dice">
+		<h2>Dice</h2>
+		<p>
+			Represents a playing dice with values 0 to 9.
+		</p>
+		<table>
+			<tr>
+				<th>Method name</th>
+				<th>Method description</th>
+			</tr>
+			<tr>
+				<td></td>
+				<td></td>
+			</tr>
+		</table>
 	</div>
 	<!-- Event -->
 	<div id="event">
 		<h>Event</h>
+		<p><i>Will be added in OpenArabTools 0.2</i></p>
 	</div>
 	<!-- Remote -->
 	<div id="remote">
 		<h>Remote</h>
+		<p><i>Will be added in OpenArabTools 0.3 and 0.4</i></p>
 	</div>
 	<a href="#top">Jump to top</a>
 </body>						

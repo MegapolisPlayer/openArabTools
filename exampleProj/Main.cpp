@@ -1,4 +1,4 @@
-#include "OpenArabTools.hpp"
+﻿#include "OpenArabTools.hpp"
 
 int main() {
 	ArabTools::init();

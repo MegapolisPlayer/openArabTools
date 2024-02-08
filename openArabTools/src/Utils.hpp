@@ -8,18 +8,6 @@ namespace OpenArabTools {
 	//Returns the OpenArabTools build ID
 	OPENARABTOOLS_OBJ constexpr U64 buildID() noexcept;
 
-	class OPENARABTOOLS_OBJ ScopedTimer {
-	public:
-		//Constructor, initializes a ScopedTimer
-		ScopedTimer(const char* aMessage) noexcept;
-
-		//Destructor, stops timer and prints value to console
-		~ScopedTimer() noexcept;
-	private:
-		const char* mMessage;
-		std::chrono::system_clock::time_point mStart;
-	};
-
 	namespace Utils {
 		//Sleeps on this thread, returns true for compatibility with ArabTools
 		OPENARABTOOLS_OBJ bool sleep(const U64 aMs) noexcept;
@@ -40,4 +28,16 @@ namespace OpenArabTools {
 		//NOTE: returns immediately if another instance is already running, lambdas also possible
 		OPENARABTOOLS_OBJ void runConcurrently(const U64 aCount, const bool aWaitReturn, RunConcurrentlyCallback aFunction) noexcept;
 	}
+
+	class OPENARABTOOLS_OBJ ScopedTimer {
+	public:
+		//Constructor, initializes a ScopedTimer instance
+		ScopedTimer(const char* aMessage) noexcept;
+
+		//Destructor, stops timer and prints duration to console
+		~ScopedTimer() noexcept;
+	private:
+		const char* mMessage;
+		std::chrono::system_clock::time_point mStart;
+	};
 }
