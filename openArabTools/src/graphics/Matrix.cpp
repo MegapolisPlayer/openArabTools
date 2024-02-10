@@ -256,11 +256,11 @@ namespace OpenArabTools {
 			this->reset(); return;
 		}
 
-		this->mWindow.Resize(aSizeX * 130, aSizeY * 130);
-
 		//variable setup
 		this->mSizeX = aSizeX;
 		this->mSizeY = aSizeY;
+
+		this->mWindow.Resize(this->mSizeX * 130, this->mSizeY * 130);
 
 		this->mColor = (Internal::CircleColor*)malloc(this->mSizeX * this->mSizeY * sizeof(Internal::CircleColor));
 		if (this->mColor == nullptr) {
@@ -299,11 +299,19 @@ namespace OpenArabTools {
 #endif
 
 		Internal::ApplyChangesV(&VerticesData, VertexSize, &this->mWindow.glVBO);
-		this->mWindow.glVBO.EnableAttribute(2, &this->mWindow.glVAO); //2d pos
-		this->mWindow.glVBO.EnableAttribute(2, &this->mWindow.glVAO); //top left
+
+		if (this->mWindow.glVBO.AreCountersSaved()) {
+			this->mWindow.glVBO.RestoreAttributes(&this->mWindow.glVAO);
+		}
+		else {
+			this->mWindow.glVBO.EnableAttribute(2, &this->mWindow.glVAO); //2d pos
+			this->mWindow.glVBO.EnableAttribute(2, &this->mWindow.glVAO); //top left
+		}
+
 		Internal::ApplyChangesI(&IndicesData, VertexSize / 4, &this->mWindow.glIBO);
 
 		this->mWindow.PrepareUniforms(this->mSizeX, this->mSizeY);
+
 		this->UploadColorToShader();
 		this->UploadStateToShader();
 
@@ -316,18 +324,17 @@ namespace OpenArabTools {
 			return;
 		}
 
+		//no window reset!
+		this->mSizeX = 0;
+		this->mSizeY = 0;
 		free(this->mColor);
 		free(this->mIsOn);
-
 		this->mInit = false;
 	}
 
 	void Matrix::resizeMatrix(const U64 aNewX, const U64 aNewY) noexcept {
-		this->mSizeX = aNewX;
-		this->mSizeY = aNewY;
-
 		this->reset();
-		this->set(this->mSizeX, this->mSizeY);
+		this->set(aNewX, aNewY);
 	}
 
 	bool Matrix::sleep(const U64 aMs) noexcept {
@@ -360,12 +367,14 @@ namespace OpenArabTools {
 	//private
 
 	void Matrix::UploadColorToShader() noexcept {
+		glUseProgram(this->mWindow.glCircleShader);
 		this->mColorBuf.Set(this->mColor, this->mSizeX * this->mSizeY, &this->mWindow.glVAO);
 		this->mWindow.glIBO.Draw();
 		this->mWindow.Process();
 	}
 
 	void Matrix::UploadStateToShader() noexcept {
+		glUseProgram(this->mWindow.glCircleShader);
 		this->mIsOnBuf.Set(this->mIsOn, this->mSizeX * this->mSizeY, &this->mWindow.glVAO);
 		this->mWindow.glIBO.Draw();
 		this->mWindow.Process();

@@ -55,7 +55,7 @@ namespace OpenArabTools {
 				Error::error("Self-assignment in GLWindow detected."); return *this;
 			}
 
-			this->Destroy();
+			this->Reset();
 
 			this->mWidth = aOther.mWidth;
 			this->mHeight = aOther.mHeight;
@@ -70,7 +70,7 @@ namespace OpenArabTools {
 				Error::error("Self-assignment in GLWindow detected."); return *this;
 			}
 
-			this->Destroy();
+			this->Reset();
 
 			this->mWidth = aOther.mWidth;
 			this->mHeight = aOther.mHeight;
@@ -162,7 +162,7 @@ namespace OpenArabTools {
 		bool GLWindow::operator~() const noexcept {
 			return !glfwWindowShouldClose(this->mWindow);
 		}
-		void GLWindow::Destroy() noexcept {
+		void GLWindow::Reset() noexcept {
 			if (this->mWindow != nullptr) {
 				this->Process();
 				glfwDestroyWindow(this->mWindow);
@@ -177,7 +177,7 @@ namespace OpenArabTools {
 			this->mFrameNo = 0;
 		}
 		GLWindow::~GLWindow() noexcept {
-			this->Destroy();
+			this->Reset();
 		}
 
 		// PRIVATE

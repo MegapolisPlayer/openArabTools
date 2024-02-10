@@ -30,7 +30,6 @@ namespace OpenArabTools {
 			this->mBuffer = GLInvalidHandle;
 			this->mVertices = 0;
 			this->mVertSize = 0;
-			this->mVertCounter = 0;
 			this->mInit = false;
 		}
 		GLVertexBuffer::GLVertexBuffer(float* const aData, const U64 aVertices, const U64 aVerticesSize) noexcept {
@@ -38,6 +37,7 @@ namespace OpenArabTools {
 		}
 
 		void GLVertexBuffer::Set(float* const aData, const U64 aVertices, const U64 aVerticesSize) noexcept {
+			if (this->mInit) { this->Reset(); }
 			this->mVertices = aVertices;
 			this->mVertSize = aVerticesSize;
 			glGenBuffers(1, &this->mBuffer);
@@ -47,32 +47,59 @@ namespace OpenArabTools {
 		}
 
 		void GLVertexBuffer::EnableAttribute(const U64 aAmountValues, GLVertexArray* const aArray) noexcept {
+			if (!this->mInit) return;
 			aArray->Bind();
+			this->Bind();
 			glEnableVertexAttribArray(aArray->Counter);
-			glVertexAttribPointer(aArray->Counter, aAmountValues, GL_FLOAT, GL_FALSE, this->mVertSize * sizeof(float), (const void*)(this->mVertCounter * sizeof(float)));
+			glVertexAttribPointer(aArray->Counter, aAmountValues, GL_FLOAT, GL_FALSE, this->mVertSize * sizeof(float), (const void*)(std::accumulate(this->mCounterOffsets.begin(), this->mCounterOffsets.end(), 0) * sizeof(float)));
+			this->mCounters.push_back(aArray->Counter);
+			this->mCounterOffsets.push_back(aAmountValues);
 			aArray->Counter++;
-			this->mVertCounter += aAmountValues;
 		}
 		void GLVertexBuffer::EnableAttribute(const U64 aCounterOverride, const U64 aAmountValues, GLVertexArray* const aArray) noexcept {
+			if (!this->mInit) return;
 			aArray->Bind();
+			this->Bind();
 			glEnableVertexAttribArray(aCounterOverride);
-			glVertexAttribPointer(aCounterOverride, aAmountValues, GL_FLOAT, GL_FALSE, this->mVertSize * sizeof(float), (const void*)(this->mVertCounter * sizeof(float)));
+			glVertexAttribPointer(aCounterOverride, aAmountValues, GL_FLOAT, GL_FALSE, this->mVertSize * sizeof(float), (const void*)(std::accumulate(this->mCounterOffsets.begin(), this->mCounterOffsets.end(), 0) * sizeof(float)));
+			this->mCounters.push_back(aCounterOverride);
+			this->mCounterOffsets.push_back(aAmountValues);
+		}
+
+		void GLVertexBuffer::RestoreAttributes(GLVertexArray* const aArray) noexcept {
+			aArray->Bind();
+			this->Bind();
+			for (U64 i = 0; i < this->mCounters.size(); i++) {
+				glEnableVertexAttribArray(this->mCounters[i]);
+				glVertexAttribPointer(
+					this->mCounters[i], this->mCounterOffsets[i], GL_FLOAT, GL_FALSE, this->mVertSize * sizeof(float),
+					(const void*)(std::accumulate(this->mCounterOffsets.begin(), this->mCounterOffsets.begin() + ((i == 0) ? 0 : i - 1), 0) * sizeof(float))
+				);
+			}
 		}
 
 		void GLVertexBuffer::Bind() noexcept {
 			glBindBuffer(GL_ARRAY_BUFFER, this->mBuffer);
 		}
 		void GLVertexBuffer::Unbind() noexcept {
-			glBindBuffer(GL_ARRAY_BUFFER, this->mBuffer);
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
 		}
 		void GLVertexBuffer::Reset() noexcept {
-			if (!this->mInit) return;
+			if (!this->mInit) { return; }
+			this->Unbind();
 			glDeleteBuffers(1, &this->mBuffer);
 			this->mBuffer = GLInvalidHandle;
 			this->mVertices = 0;
 			this->mVertSize = 0;
-			this->mVertCounter = 0;
 			this->mInit = false;
+		}
+		void GLVertexBuffer::ResetVectors() noexcept {
+			this->mCounters.clear();
+			this->mCounterOffsets.clear();
+		}
+
+		bool GLVertexBuffer::AreCountersSaved() const noexcept {
+			return !(this->mCounters.empty() && this->mCounterOffsets.empty());
 		}
 
 		GLHandle GLVertexBuffer::GetHandle() const noexcept {
@@ -152,10 +179,12 @@ namespace OpenArabTools {
 		}
 
 		void GLIndexBuffer::Set(unsigned int* const aData, const U64 aAmount) noexcept {
+			if (this->mInit) { this->Reset(); }
 			this->mAmount = aAmount;
 			glGenBuffers(1, &this->mBuffer);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->mBuffer);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->mAmount * sizeof(unsigned int), aData, GL_STATIC_DRAW);
+			this->mInit = true;
 		}
 
 		void GLIndexBuffer::Bind() noexcept {
@@ -165,7 +194,8 @@ namespace OpenArabTools {
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		}
 		void GLIndexBuffer::Reset() noexcept {
-			if (!this->mInit) return;
+			if (!this->mInit) { return; }
+			this->Unbind();
 			glDeleteBuffers(1, &this->mBuffer);
 			this->mBuffer = GLInvalidHandle;
 			this->mAmount = 0;
@@ -173,6 +203,7 @@ namespace OpenArabTools {
 		}
 
 		void GLIndexBuffer::Draw(const U64 aOffsetNumbers, const U64 aAmountToDraw) noexcept {
+			this->Bind();
 			glDrawElements(GL_TRIANGLES, aAmountToDraw == 0 ? this->mAmount : aAmountToDraw, GL_UNSIGNED_INT, (const void*)(aOffsetNumbers * sizeof(unsigned int)));
 		}
 
@@ -316,24 +347,26 @@ namespace OpenArabTools {
 									//if >IRadius and not(>ERadiusM) then we are good
 			"	float ResultCircle = step(IRadius, ActualDistance) * (1.0 - step(ERadiusM, ActualDistance));\n"
 			"	OutColor = vec4("
-			"		vec4(ResultCircle) * vec4(ColorInformation[ObjectID].FR, ColorInformation[ObjectID].FG, ColorInformation[ObjectID].FB, ColorInformation[ObjectID].FA) * vec4(IsLightOn[ObjectID]) +"
-			"		vec4(ResultCircle) * vec4(ColorInformation[ObjectID].OR, ColorInformation[ObjectID].OG, ColorInformation[ObjectID].OB, ColorInformation[ObjectID].OA) * vec4(!IsLightOn[ObjectID])"
-			"	) + vec4("
-			"		vec4(1.0 - ResultCircle) * vec4(ColorInformation[ObjectID].BR, ColorInformation[ObjectID].BG, ColorInformation[ObjectID].BB, ColorInformation[ObjectID].BA)"
+			"	(vec4(ResultCircle) * vec4(ColorInformation[ObjectID].FR, ColorInformation[ObjectID].FG, ColorInformation[ObjectID].FB, ColorInformation[ObjectID].FA) * vec4(IsLightOn[ObjectID])) +"
+			"	(vec4(ResultCircle) * vec4(ColorInformation[ObjectID].OR, ColorInformation[ObjectID].OG, ColorInformation[ObjectID].OB, ColorInformation[ObjectID].OA) * vec4(!IsLightOn[ObjectID])) +"
+			"	(vec4(1.0 - ResultCircle) * vec4(ColorInformation[ObjectID].BR, ColorInformation[ObjectID].BG, ColorInformation[ObjectID].BB, ColorInformation[ObjectID].BA))"
 			"	);\n"
 			"}\n"
 			;
+
+		//debug lines:
+		//"OutColor = vec4(ColorInformation[ObjectID].FR, ColorInformation[ObjectID].FG, ColorInformation[ObjectID].FB, ColorInformation[ObjectID].FA);\n"
+		//"OutColor = vec4(ColorInformation[ObjectID].BR, ColorInformation[ObjectID].BG, ColorInformation[ObjectID].BB, ColorInformation[ObjectID].BA);\n"
+		//"OutColor = vec4(ObjectID / 25.0);\n"
+		//"OutColor = vec4(IsLightOn[ObjectID]);\n"
 
 		/*
 		whole calculation of color
 
 		OutColor = vec4(
-			vec4(ResultCircle) * vec4(ColorInformation[ObjectID].FR, ColorInformation[ObjectID].FG, ColorInformation[ObjectID].FB, ColorInformation[ObjectID].FA) * vec4(IsLightOn[ObjectID]) +
-			vec4(ResultCircle) * vec4(ColorInformation[ObjectID].OR, ColorInformation[ObjectID].OG, ColorInformation[ObjectID].OB, ColorInformation[ObjectID].OA) * vec4(!IsLightOn[ObjectID])
-		) + vec4(
-			vec4(1.0 - ResultCircle) * vec4(ColorInformation[ObjectID].BR, ColorInformation[ObjectID].BG, ColorInformation[ObjectID].BB, ColorInformation[ObjectID].BA)
-		);
-
+			(vec4(ResultCircle) * vec4(ColorInformation[ObjectID].FR, ColorInformation[ObjectID].FG, ColorInformation[ObjectID].FB, ColorInformation[ObjectID].FA) * vec4(IsLightOn[ObjectID])) +
+			(vec4(ResultCircle) * vec4(ColorInformation[ObjectID].OR, ColorInformation[ObjectID].OG, ColorInformation[ObjectID].OB, ColorInformation[ObjectID].OA) * vec4(!IsLightOn[ObjectID])) +
+			(vec4(1.0 - ResultCircle) * vec4(ColorInformation[ObjectID].BR, ColorInformation[ObjectID].BG, ColorInformation[ObjectID].BB, ColorInformation[ObjectID].BA));
 		*/
 
 		namespace Debug {

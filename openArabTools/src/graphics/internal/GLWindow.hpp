@@ -47,7 +47,7 @@ namespace OpenArabTools {
 			bool IsWindowOpen() const noexcept;
 			bool operator~() const noexcept; //returns if window still open
 
-			void Destroy() noexcept;
+			void Reset() noexcept;
 
 			U64 FrameNo() const noexcept; //gets. no of frame
 			void FrameNoReset() noexcept; //resets frame no

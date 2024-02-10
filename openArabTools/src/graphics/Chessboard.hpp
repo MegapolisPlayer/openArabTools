@@ -11,18 +11,33 @@ namespace OpenArabTools {
 	class OPENARABTOOLS_OBJ Chessboard {
 	public:
 		Chessboard() noexcept;
+		Chessboard(const U64 aSizeX, const U64 aSizeY) noexcept;
 
 		void showWindow() noexcept;
 		void hideWindow() noexcept;
 
-		//Puts a piece onto the chessboard. (if CHESSBOARD_PIECE_NONE set - removes the piece)
 		void put(const U64 aColumn, const U64 aRow, PieceColor aPiece) noexcept;
-
 		void remove(const U64 aColumn, const U64 aRow) noexcept;
 
-		PieceColor get() const noexcept;
-		U64 getHeight() const noexcept;
+		PieceColor get(const U64 aColumn, const U64 aRow) const noexcept;
 		U64 getWidth() const noexcept;
+		U64 getHeight() const noexcept;
+
+		//
+		// OPENARABTOOLS necessities
+		//
+
+		bool open() const noexcept;
+		bool update() noexcept;
+		void run() noexcept;
+
+		//
+		// OPENARABTOOLS extensions
+		//
+
+		void showWindowAndRun() noexcept;
+		void reset() noexcept;
+		bool sleep(const U64 aMs) noexcept;
 
 		~Chessboard() noexcept;
 	private:

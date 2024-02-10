@@ -14,17 +14,11 @@ namespace OpenArabTools {
 	//Matrix class - the base of OpenArabTools graphics
 	class OPENARABTOOLS_OBJ Matrix {
 	public:
-		//Constructor
 		Matrix() noexcept;
-		//Setup constructor
 		Matrix(const U64 aSizeX, const U64 aSizeY) noexcept;
-		//Copy constructor
 		Matrix(const Matrix& aOther) noexcept;
-		//Move constructor
 		Matrix(Matrix&& aOther) noexcept;
-		//Copy assignment
 		Matrix& operator=(const Matrix& aOther) noexcept;
-		//Move assignment
 		Matrix& operator=(Matrix&& aOther) noexcept;
 
 		//Shows the window
@@ -106,7 +100,9 @@ namespace OpenArabTools {
 
 		bool isOn(const U64 aColumn, const U64 aRow) const noexcept;
 
+		//
 		// OPENARABTOOLS necessities
+		//
 
 		//Returns if window is open
 		bool open() const noexcept;
@@ -127,16 +123,11 @@ namespace OpenArabTools {
 
 		void setOffColor(const U64 aColumn, const U64 aRow, const LightColor& aColor) noexcept;
 
-		//Shows the window and runs the matrix (blocks executions on thread until window closed) 
 		void showWindowAndRun() noexcept;
 
-		//Sets the matrix
 		void set(const U64 aSizeX, const U64 aSizeY) noexcept;
-
-		//Resets the matrix
 		void reset() noexcept;
 
-		//Change the amount of lights
 		void resizeMatrix(const U64 aNewX, const U64 aNewY) noexcept;
 
 		//Sleeps on this thread while still updating window, returns true if window stayed open (and false if window closed)
@@ -145,7 +136,7 @@ namespace OpenArabTools {
 
 		//Destructor
 		~Matrix() noexcept;
-	private:
+	//private:
 		U64 mSizeX, mSizeY;
 
 		Internal::GLWindow mWindow;

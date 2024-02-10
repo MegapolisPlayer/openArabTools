@@ -9,6 +9,7 @@
 #include <chrono>
 #include <atomic>
 #include <mutex>
+#include <numeric>
 #endif
 
 #ifdef OPENARABTOOLS_BUILD_DLL

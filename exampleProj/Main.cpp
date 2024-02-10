@@ -2,20 +2,29 @@
 
 int main() {
 	ArabTools::init();
+	
+	ArabTools::Matrix m;
+
+	while (true) {
+		m.set(5, 5);
+		m.resizeMatrix(7, 7);
+		m.reset();
+	}
 
 	/*
-	ArabTools::Matrix m;
-	m.set(3, 3);
-	m.setBackground(0, ArabTools::LIGHTCOLOR_RED);
-	m.setBackground(1, ArabTools::LIGHTCOLOR_GREEN);
-	m.setBackground(2, ArabTools::LIGHTCOLOR_BLUE);
-	m.setOn(0);
-	m.setOn(1);
-	m.setOn(2);
+	for (int i = 0; i < 49; i++) {
+		m.setBackground(i, ArabTools::LightColorD(i % 16));
+		m.setColor(i, ArabTools::LIGHTCOLOR_BLUE);
+		m.setOn(i);
+		m.mColor[i].Print();
+	}
 	m.showWindow();
 	m.run();
 	*/
 
+	//todo: FIX: when resizing matrix cannot set foreground colors (but it is passed to shader successfully and without resize it works!)
+	
+	/*
 	ArabTools::Semaphore s2(ArabTools::SemaphoreOrientation::NORMAL);
 	ArabTools::Semaphore s = s2;
 	s.showWindow();
@@ -35,6 +44,7 @@ int main() {
 		s.setYellowOn();
 		s.sleep(INT_TIME);
 	}
+	*/
 		
 	ArabTools::terminate();
 }

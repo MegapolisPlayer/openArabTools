@@ -72,9 +72,14 @@ namespace OpenArabTools {
 			void EnableAttribute(const U64 aAmountValues, GLVertexArray* const aArray) noexcept;
 			void EnableAttribute(const U64 aCounterOverride, const U64 aAmountValues, GLVertexArray* const aArray) noexcept;
 
+			void RestoreAttributes(GLVertexArray* const aArray) noexcept;
+
 			void Bind() noexcept;
 			void Unbind() noexcept;
 			void Reset() noexcept;
+			void ResetVectors() noexcept;
+
+			bool AreCountersSaved() const noexcept;
 
 			GLHandle GetHandle() const noexcept;
 			U64 GetNumberOfVertices() const noexcept;
@@ -86,8 +91,10 @@ namespace OpenArabTools {
 			GLHandle mBuffer;
 			U64 mVertices;
 			U64 mVertSize;
-			U64 mVertCounter;
 			bool mInit;
+
+			std::vector<U64> mCounters;
+			std::vector<U64> mCounterOffsets;
 		};
 
 		//VBO generation utils

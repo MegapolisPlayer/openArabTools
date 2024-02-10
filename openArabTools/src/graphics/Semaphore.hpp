@@ -42,16 +42,10 @@ namespace OpenArabTools {
 		// OPENARABTOOLS extensions
 		//
 
-		//Returns if window is open
 		bool open() const noexcept;
-
-		//Call this in a loop, returns if window still open
 		bool update() noexcept;
-
-		//Call this once, blocks execution until window closed!
 		void run() noexcept;
 
-		//Sleeps on this thread while still updating window, returns true for compatibility with ArabTools
 		bool sleep(const U64 aMs) noexcept;
 
 		~Semaphore() noexcept;
