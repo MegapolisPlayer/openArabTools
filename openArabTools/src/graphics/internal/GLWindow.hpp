@@ -37,8 +37,8 @@ namespace OpenArabTools {
 			void SetBackground(const Dec aRGB, const Dec aA) noexcept;
 			void SetBackground(const Dec aR, const Dec aG, const Dec aB, const Dec aA) noexcept;
 
-			//Internal radius - radius of empty space in middle of circle, almost never used, if debug mode true and DEBUG defined - just prints arrays
-			void PrepareUniforms(U64 aAmountCirclesX, U64 aAmountCirclesY, Dec aInternalRadius = 0.0, bool aDebugMode = false) noexcept;
+			//Internal radius - radius of empty space in middle of circle, almost never used
+			void PrepareUniforms(U64 aAmountCirclesX, U64 aAmountCirclesY, Dec aInternalRadius = 0.0) noexcept;
 
 			void BindContext() noexcept;
 

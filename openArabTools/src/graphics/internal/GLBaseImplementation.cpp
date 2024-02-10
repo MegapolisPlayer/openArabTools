@@ -73,7 +73,7 @@ namespace OpenArabTools {
 				glEnableVertexAttribArray(this->mCounters[i]);
 				glVertexAttribPointer(
 					this->mCounters[i], this->mCounterOffsets[i], GL_FLOAT, GL_FALSE, this->mVertSize * sizeof(float),
-					(const void*)(std::accumulate(this->mCounterOffsets.begin(), this->mCounterOffsets.begin() + ((i == 0) ? 0 : i - 1), 0) * sizeof(float))
+					(const void*)(std::accumulate(this->mCounterOffsets.begin(), this->mCounterOffsets.begin() + i, 0) * sizeof(float))
 				);
 			}
 		}

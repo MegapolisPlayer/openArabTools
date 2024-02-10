@@ -298,6 +298,7 @@ namespace OpenArabTools {
 		Error::warning("End of debug log.");
 #endif
 
+		this->mWindow.glVBO.Bind();
 		Internal::ApplyChangesV(&VerticesData, VertexSize, &this->mWindow.glVBO);
 
 		if (this->mWindow.glVBO.AreCountersSaved()) {

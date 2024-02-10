@@ -2,6 +2,11 @@
 #include "Matrix.hpp"
 
 namespace OpenArabTools {
+	enum OPENARABTOOLS_OBJ ChessboardStyle : uint8_t {
+		CHESSBOARD_STYLE_WHITE_BLACK = 0,
+		CHESSBOARD_STYLE_DEFAULT_WOOD
+	};
+
 	enum OPENARABTOOLS_OBJ PieceColor : uint8_t {
 		CHESSBOARD_PIECE_NONE = 0,
 		CHESSBOARD_PIECE_WHITE,
@@ -12,6 +17,7 @@ namespace OpenArabTools {
 	public:
 		Chessboard() noexcept;
 		Chessboard(const U64 aSizeX, const U64 aSizeY) noexcept;
+
 
 		void showWindow() noexcept;
 		void hideWindow() noexcept;
@@ -35,12 +41,16 @@ namespace OpenArabTools {
 		// OPENARABTOOLS extensions
 		//
 
+
 		void showWindowAndRun() noexcept;
-		void reset() noexcept;
 		bool sleep(const U64 aMs) noexcept;
+
+		void applyChessboardStyle(const ChessboardStyle aCS) noexcept;
+		void applyChessboardStyle(const LightColor& aLight, const LightColor& aDark) noexcept;
 
 		~Chessboard() noexcept;
 	private:
 		Matrix mMatrix;
+		ChessboardStyle mCS;
 	};
 }

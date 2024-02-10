@@ -134,14 +134,13 @@ namespace OpenArabTools {
 			glClear(GL_COLOR_BUFFER_BIT);
 			glClearColor(aR, aG, aB, aA);
 		}
-		void GLWindow::PrepareUniforms(U64 aAmountCirclesX, U64 aAmountCirclesY, Dec aInternalRadius, bool aDebugMode) noexcept {
+		void GLWindow::PrepareUniforms(U64 aAmountCirclesX, U64 aAmountCirclesY, Dec aInternalRadius) noexcept {
 			this->glVAO.Bind();
 			this->glIBO.Bind();
 
 			glUseProgram(this->glCircleShader);
 			glUniform2f(this->glCSUResolution, this->mWidth, this->mHeight);
 			glUniform1f(this->glCSUInternalRadius, aInternalRadius);
-			//idk why this works but this does work... -megapolisplayer
 			glUniform1f(
 				this->glCSUExternalRadius,
 				1.0 / aAmountCirclesX
