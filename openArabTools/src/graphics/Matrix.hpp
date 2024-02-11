@@ -2,8 +2,6 @@
 #include "internal/GLInterface.hpp"
 
 namespace OpenArabTools {
-	//Matrix creation helpers
-
 	//Creates a single 1x1 matrix (a simple light)
 	#define OPENARABTOOLS_MATRIX_SINGLE        1,1
 	//Creates a vertical single-column matrix
@@ -53,15 +51,10 @@ namespace OpenArabTools {
 
 		//If size 1x1 -> turns light on, otherwise turns on the top-left
 		void setOn() noexcept;
-
 		void setOn(const U64 aId) noexcept;
-
 		void setOn(const U64 aColumn, const U64 aRow) noexcept;
-
 		void setOnOff(const bool aOnOff) noexcept;
-
 		void setOnOff(const U64 aId, const bool aOnOff) noexcept;
-
 		void setOnOff(const U64 aColumn, const U64 aRow, const bool aOnOff) noexcept;
 
 		//
@@ -70,34 +63,25 @@ namespace OpenArabTools {
 
 		//If size 1x1 -> Returns background of light, otherwise returns from top-left
 		LightColor getBackground() const noexcept;
-
 		LightColor getBackground(const U64 aColumn, const U64 aRow) const noexcept;
 
 		//If size 1x1 -> Returns color of light, otherwise returns from top-left
 		LightColor getColor() const noexcept;
-
 		LightColor getColor(const U64 aColumn, const U64 aRow) const noexcept;
 
 		std::string getTitle() const noexcept;
-
 		U64 getWidth() const noexcept;
-
 		U64 getHeight() const noexcept;
-
 		U64 getSize() const noexcept;
 
 		//If size 1x1 -> Returns if light off, otherwise checks the top-left
 		bool isOff() const noexcept;
-
 		bool isOff(const U64 aId) const noexcept;
-
 		bool isOff(const U64 aColumn, const U64 aRow) const noexcept;
 
 		//If size 1x1 -> Returns if light on, otherwise checks the top-left
 		bool isOn() const noexcept;
-
 		bool isOn(const U64 aId) const noexcept;
-
 		bool isOn(const U64 aColumn, const U64 aRow) const noexcept;
 
 		//
@@ -118,10 +102,18 @@ namespace OpenArabTools {
 		//
 
 		void setOffColor(const LightColor& aColor) noexcept;
-
 		void setOffColor(const U64 aId, const LightColor& aColor) noexcept;
-
 		void setOffColor(const U64 aColumn, const U64 aRow, const LightColor& aColor) noexcept;
+		
+		void setColorAlpha() noexcept;
+		void setColorAlpha(const U64 aId, const float aAlpha) noexcept;
+		void setColorAlpha(const U64 aColumn, const U64 aRow, const float aAlpha) noexcept;
+		void setOffColorAlpha() noexcept;
+		void setOffColorAlpha(const U64 aId, const float aAlpha) noexcept;
+		void setOffColorAlpha(const U64 aColumn, const U64 aRow, const float aAlpha) noexcept;
+		void setBackgroundAlpha() noexcept;
+		void setBackgroundAlpha(const U64 aId, const float aAlpha) noexcept;
+		void setBackgroundAlpha(const U64 aColumn, const U64 aRow, const float aAlpha) noexcept;
 
 		void showWindowAndRun() noexcept;
 

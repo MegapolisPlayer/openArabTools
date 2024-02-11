@@ -1,9 +1,13 @@
 #include "Chessboard.hpp"
 
 namespace OpenArabTools {
-	Chessboard::Chessboard() noexcept {}
+	Chessboard::Chessboard() noexcept {
+		this->mMatrix.set(8, 8);
+		this->applyChessboardStyle(CHESSBOARD_STYLE_DEFAULT_WOOD);
+	}
 	Chessboard::Chessboard(const U64 aSizeX, const U64 aSizeY) noexcept {
 		this->mMatrix.set(aSizeX, aSizeY);
+		this->applyChessboardStyle(CHESSBOARD_STYLE_DEFAULT_WOOD);
 	}
 
 	void Chessboard::showWindow() noexcept {
@@ -57,11 +61,19 @@ namespace OpenArabTools {
 		return this->mMatrix.sleep(aMs);
 	}
 
-	void applyChessboardStyle(const ChessboardStyle aCS) noexcept {
-
+	void Chessboard::applyChessboardStyle(const ChessboardStyle aCS) noexcept {
+		switch (aCS) {
+		case(CHESSBOARD_STYLE_WHITE_BLACK): this->applyChessboardStyle(LIGHTCOLOR_CHESSBOARD_WHITE, LIGHTCOLOR_CHESSBOARD_BLACK); return;
+		case(CHESSBOARD_STYLE_DEFAULT_WOOD): this->applyChessboardStyle(LIGHTCOLOR_CHESSBOARD_LIGHT, LIGHTCOLOR_CHESSBOARD_DARK); return;
+		}
 	}
-	void applyChessboardStyle(const LightColor& aLight, const LightColor& aDark) noexcept {
-
+	void Chessboard::applyChessboardStyle(const LightColor& aLight, const LightColor& aDark) noexcept {
+		for (U64 i = 0; i < this->mMatrix.getSize(); i++) {
+			switch (i % 2 == 0) {
+			case(true): this->mMatrix.setBackground(aLight); break;
+			case(false): this->mMatrix.setBackground(aDark); break;
+			}
+		}
 	}
 
 	Chessboard::~Chessboard() noexcept {}

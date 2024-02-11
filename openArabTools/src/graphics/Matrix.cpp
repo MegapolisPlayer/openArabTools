@@ -234,15 +234,41 @@ namespace OpenArabTools {
 		}
 		this->UploadColorToShader();
 	}
-
 	void Matrix::setOffColor(const U64 aId, const LightColor& aColor) noexcept {
 		this->mColor[aId].SetO(aColor);
 		this->UploadColorToShader();
 	}
-
 	void Matrix::setOffColor(const U64 aColumn, const U64 aRow, const LightColor& aColor) noexcept {
 		this->mColor[aColumn + (aRow * this->mSizeX)].SetO(aColor);
 		this->UploadColorToShader();
+	}
+	
+	void Matrix::setColorAlpha() noexcept {
+
+	}
+	void Matrix::setColorAlpha(const U64 aId, const float aAlpha) noexcept {
+		
+	}
+	void Matrix::setColorAlpha(const U64 aColumn, const U64 aRow, const float aAlpha) noexcept {
+
+	}
+	void Matrix::setOffColorAlpha() noexcept {
+
+	}
+	void Matrix::setOffColorAlpha(const U64 aId, const float aAlpha) noexcept {
+	
+	}
+	void Matrix::setOffColorAlpha(const U64 aColumn, const U64 aRow, const float aAlpha) noexcept {
+
+	}
+	void Matrix::setBackgroundAlpha() noexcept {
+
+	}
+	void Matrix::setBackgroundAlpha(const U64 aId, const float aAlpha) noexcept {
+	
+	}
+	void Matrix::setBackgroundAlpha(const U64 aColumn, const U64 aRow, const float aAlpha) noexcept {
+
 	}
 
 	void Matrix::showWindowAndRun() noexcept {
@@ -260,7 +286,14 @@ namespace OpenArabTools {
 		this->mSizeX = aSizeX;
 		this->mSizeY = aSizeY;
 
-		this->mWindow.Resize(this->mSizeX * 130, this->mSizeY * 130);
+		//select larger (size X or size Y), size should never be larger than 800px
+		U64 CircleSize = 800 / ((this->mSizeX > this->mSizeY) ? this->mSizeX : this->mSizeY);
+
+		if (CircleSize > 130) {
+			CircleSize = 130;
+		}
+
+		this->mWindow.Resize(this->mSizeX * CircleSize, this->mSizeY * CircleSize);
 
 		this->mColor = (Internal::CircleColor*)malloc(this->mSizeX * this->mSizeY * sizeof(Internal::CircleColor));
 		if (this->mColor == nullptr) {
@@ -278,7 +311,7 @@ namespace OpenArabTools {
 				//default: black on black in original, here will be white FG on black BG
 				{
 				1.0, 1.0, 1.0, 1.0, //FG
-				0.0, 0.0, 0.0, 1.0, //OG
+				0.0, 0.0, 0.0, 0.0, //OG
 				0.0, 0.0, 0.0, 1.0  //BG
 				};
 			this->mIsOn[i] = false; //start off

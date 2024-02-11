@@ -346,28 +346,18 @@ namespace OpenArabTools {
 			"	float ActualDistance = distance(CenterPoint, UV);\n"
 									//if >IRadius and not(>ERadiusM) then we are good
 			"	float ResultCircle = step(IRadius, ActualDistance) * (1.0 - step(ERadiusM, ActualDistance));\n"
-			"	OutColor = vec4("
-			"	(vec4(ResultCircle) * vec4(ColorInformation[ObjectID].FR, ColorInformation[ObjectID].FG, ColorInformation[ObjectID].FB, ColorInformation[ObjectID].FA) * vec4(IsLightOn[ObjectID])) +"
-			"	(vec4(ResultCircle) * vec4(ColorInformation[ObjectID].OR, ColorInformation[ObjectID].OG, ColorInformation[ObjectID].OB, ColorInformation[ObjectID].OA) * vec4(!IsLightOn[ObjectID])) +"
-			"	(vec4(1.0 - ResultCircle) * vec4(ColorInformation[ObjectID].BR, ColorInformation[ObjectID].BG, ColorInformation[ObjectID].BB, ColorInformation[ObjectID].BA))"
+			"	vec4 CF = vec4(ColorInformation[ObjectID].FR, ColorInformation[ObjectID].FG, ColorInformation[ObjectID].FB, ColorInformation[ObjectID].FA);\n"
+			"	vec4 CO = vec4(ColorInformation[ObjectID].OR, ColorInformation[ObjectID].OG, ColorInformation[ObjectID].OB, ColorInformation[ObjectID].OA);\n"
+			"	vec4 CB = vec4(ColorInformation[ObjectID].BR, ColorInformation[ObjectID].BG, ColorInformation[ObjectID].BB, ColorInformation[ObjectID].BA);\n"
+			"	OutColor = ("
+					//either CF or CO
+			"		(CF * vec4(ResultCircle) * vec4(IsLightOn[ObjectID])) + "
+			"		(CO * vec4(ResultCircle) * vec4(!IsLightOn[ObjectID])) + "
+					//background on outside always, if OFF.alpha != 1: background everywhere
+			"		(CB * vec4(1.0 - ResultCircle)) + (CB * vec4(ResultCircle) * vec4(1.0 - CO.w) * vec4(!IsLightOn[ObjectID]))"
 			"	);\n"
 			"}\n"
 			;
-
-		//debug lines:
-		//"OutColor = vec4(ColorInformation[ObjectID].FR, ColorInformation[ObjectID].FG, ColorInformation[ObjectID].FB, ColorInformation[ObjectID].FA);\n"
-		//"OutColor = vec4(ColorInformation[ObjectID].BR, ColorInformation[ObjectID].BG, ColorInformation[ObjectID].BB, ColorInformation[ObjectID].BA);\n"
-		//"OutColor = vec4(ObjectID / 25.0);\n"
-		//"OutColor = vec4(IsLightOn[ObjectID]);\n"
-
-		/*
-		whole calculation of color
-
-		OutColor = vec4(
-			(vec4(ResultCircle) * vec4(ColorInformation[ObjectID].FR, ColorInformation[ObjectID].FG, ColorInformation[ObjectID].FB, ColorInformation[ObjectID].FA) * vec4(IsLightOn[ObjectID])) +
-			(vec4(ResultCircle) * vec4(ColorInformation[ObjectID].OR, ColorInformation[ObjectID].OG, ColorInformation[ObjectID].OB, ColorInformation[ObjectID].OA) * vec4(!IsLightOn[ObjectID])) +
-			(vec4(1.0 - ResultCircle) * vec4(ColorInformation[ObjectID].BR, ColorInformation[ObjectID].BG, ColorInformation[ObjectID].BB, ColorInformation[ObjectID].BA));
-		*/
 
 		namespace Debug {
 			void PrintVertexArray(float** aArray, const U64 aAmountOfVertices, const U64 aVertexSize, const U64 aVertexPrecisionOverride) noexcept {

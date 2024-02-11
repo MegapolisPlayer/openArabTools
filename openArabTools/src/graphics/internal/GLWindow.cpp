@@ -154,6 +154,8 @@ namespace OpenArabTools {
 			glfwSwapBuffers(this->mWindow);
 			glfwPollEvents();
 			this->mFrameNo++;
+			glClear(GL_COLOR_BUFFER_BIT);
+			glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 		}
 		bool GLWindow::IsWindowOpen() const noexcept {
 			return !glfwWindowShouldClose(this->mWindow);
@@ -203,7 +205,8 @@ namespace OpenArabTools {
 			glewInit();
 
 			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
 
 			this->glVAO.Bind();
 			ShadersInit();

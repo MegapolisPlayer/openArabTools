@@ -51,6 +51,5 @@ namespace OpenArabTools {
 		~Chessboard() noexcept;
 	private:
 		Matrix mMatrix;
-		ChessboardStyle mCS;
 	};
 }
