@@ -158,6 +158,7 @@ namespace OpenArabTools {
 			GLShaderBuffer(DataType* aData, const U64 aAmount, GLVertexArray* const aArray) noexcept;
 
 			void Set(DataType* aData, const U64 aAmount, GLVertexArray* const aArray) noexcept;
+			void Update(DataType* aNewData) noexcept;
 
 			void Bind() noexcept;
 			void BindBuffer() noexcept; //bind only the buffer

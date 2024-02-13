@@ -260,7 +260,7 @@ namespace OpenArabTools {
 			if (CompiledVS == GL_FALSE) {
 				char Buffer[100]; int size;
 				glGetShaderInfoLog(VertexShader, 100, &size, Buffer);
-				Error::error("openArabTools: Vertex Shader error: ", Buffer);
+				Error::error("Vertex Shader error: ", Buffer);
 				return GLInvalidHandle;
 			}
 			S32 CompiledFS;
@@ -268,7 +268,7 @@ namespace OpenArabTools {
 			if (CompiledFS == GL_FALSE) {
 				char Buffer[100]; int size;
 				glGetShaderInfoLog(FragmentShader, 100, &size, Buffer);
-				Error::error("openArabTools: Fragment Shader error: ", Buffer);
+				Error::error("Fragment Shader error: ", Buffer);
 				return GLInvalidHandle;
 			}
 

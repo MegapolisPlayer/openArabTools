@@ -139,5 +139,8 @@ namespace OpenArabTools {
 		
 		void UploadColorToShader() noexcept;
 		void UploadStateToShader() noexcept;
+
+		void CheckRangeID(const U64 aId) noexcept;
+		void CheckRangeCR(const U64 aCol, const U64 aRow) noexcept;
 	};
 }

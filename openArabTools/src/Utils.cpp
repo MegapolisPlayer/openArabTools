@@ -106,4 +106,14 @@ namespace OpenArabTools {
 			while (Internal::ThreadAmount != Internal::ThreadAmountFinished);
 		}
 	}
+
+	ScopedTimer::ScopedTimer(const char* aName) noexcept {
+		this->mName = aName;
+		this->mStart = std::chrono::system_clock::now();
+	}
+	ScopedTimer::~ScopedTimer() noexcept {
+		U64 Us = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - this->mStart).count();
+		U64 Ms = Us / 1000;
+		std::cout << "Timer \"" << this->mName << "\": " << Ms << "ms, " << Us << "us, " << 1000000/Us << "FPS\n";
+	}
 }

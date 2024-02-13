@@ -43,6 +43,7 @@ namespace OpenArabTools {
 			void BindContext() noexcept;
 
 			void Process() noexcept;
+			void Events() noexcept;
 
 			bool IsWindowOpen() const noexcept;
 			bool operator~() const noexcept; //returns if window still open

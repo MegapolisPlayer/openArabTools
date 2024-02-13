@@ -365,8 +365,9 @@ namespace OpenArabTools {
 
 		this->mWindow.PrepareUniforms(this->mSizeX, this->mSizeY);
 
-		this->UploadColorToShader();
-		this->UploadStateToShader();
+		 
+		this->mColorBuf.Set(this->mColor, this->mSizeX * this->mSizeY, &this->mWindow.glVAO);
+		this->mIsOnBuf.Set(this->mIsOn, this->mSizeX * this->mSizeY, &this->mWindow.glVAO);
 
 		this->mInit = true;
 	}
@@ -421,15 +422,18 @@ namespace OpenArabTools {
 
 	void Matrix::UploadColorToShader() noexcept {
 		glUseProgram(this->mWindow.glCircleShader);
-		this->mColorBuf.Set(this->mColor, this->mSizeX * this->mSizeY, &this->mWindow.glVAO);
-		this->mWindow.glIBO.Draw();
-		this->mWindow.Process();
+		this->mColorBuf.Update(this->mColor);
 	}
 
 	void Matrix::UploadStateToShader() noexcept {
 		glUseProgram(this->mWindow.glCircleShader);
-		this->mIsOnBuf.Set(this->mIsOn, this->mSizeX * this->mSizeY, &this->mWindow.glVAO);
-		this->mWindow.glIBO.Draw();
-		this->mWindow.Process();
+		this->mIsOnBuf.Update(this->mIsOn);
+	}
+
+	void Matrix::CheckRangeID(const U64 aId) noexcept {
+
+	}
+	void Matrix::CheckRangeCR(const U64 aCol, const U64 aRow) noexcept {
+
 	}
 }

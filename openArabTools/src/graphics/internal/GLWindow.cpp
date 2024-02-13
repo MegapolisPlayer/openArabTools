@@ -155,7 +155,13 @@ namespace OpenArabTools {
 			glfwPollEvents();
 			this->mFrameNo++;
 			glClear(GL_COLOR_BUFFER_BIT);
-			glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+#ifdef _DEBUG
+			//if debug: set background to purple (noticable if something wrong)
+			glClearColor(0.7f, 0.0f, 0.7f, 1.0f);
+#endif
+		}
+		void GLWindow::Events() noexcept {
+			glfwPollEvents();
 		}
 		bool GLWindow::IsWindowOpen() const noexcept {
 			return !glfwWindowShouldClose(this->mWindow);
@@ -202,7 +208,9 @@ namespace OpenArabTools {
 			glfwSetWindowUserPointer(this->mWindow, this);
 			glfwSetWindowSizeCallback(this->mWindow, SizeCallback);
 			glfwMakeContextCurrent(this->mWindow);
+
 			glewInit();
+			glfwSwapInterval(0);
 
 			glEnable(GL_BLEND);
 			//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

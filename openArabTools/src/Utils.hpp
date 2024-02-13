@@ -31,13 +31,10 @@ namespace OpenArabTools {
 
 	class OPENARABTOOLS_OBJ ScopedTimer {
 	public:
-		//Constructor, initializes a ScopedTimer instance
-		ScopedTimer(const char* aMessage) noexcept;
-
-		//Destructor, stops timer and prints duration to console
+		ScopedTimer(const char* aName) noexcept;
 		~ScopedTimer() noexcept;
 	private:
-		const char* mMessage;
+		const char* mName;
 		std::chrono::system_clock::time_point mStart;
 	};
 }
