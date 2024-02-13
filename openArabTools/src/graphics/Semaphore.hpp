@@ -29,18 +29,22 @@ namespace OpenArabTools {
 		void setYellowOff() noexcept;
 		void setGreenOff() noexcept;
 
-		void setRedOnOff() noexcept;
-		void setYellowOnOff() noexcept;
-		void setGreenOnOff() noexcept;
+		void setRedOnOff(const bool aOnOff) noexcept;
+		void setYellowOnOff(const bool aOnOff) noexcept;
+		void setGreenOnOff(const bool aOnOff) noexcept;
 
-		std::string getTitle() noexcept;
-		bool isRedOn() noexcept;
-		bool isYellowOn() noexcept;
-		bool isGreenOn() noexcept;
+		std::string getTitle() const noexcept;
+		bool isRedOn() const noexcept;
+		bool isYellowOn() const noexcept;
+		bool isGreenOn() const noexcept;
 
 		//
 		// OPENARABTOOLS extensions
 		//
+
+		void toggleRed() noexcept;
+		void toggleYellow() noexcept;
+		void toggleGreen() noexcept;
 
 		bool open() const noexcept;
 		bool update() noexcept;

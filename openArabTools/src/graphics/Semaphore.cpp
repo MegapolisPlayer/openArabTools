@@ -95,30 +95,43 @@ namespace OpenArabTools {
 		this->mIsGreenOn = false;
 	}
 
-	void Semaphore::setRedOnOff() noexcept {
+	void Semaphore::setRedOnOff(const bool aOnOff) noexcept {
+		this->mMatrix.setOnOff(this->mIsFlipped ? 2 : 0, aOnOff);
+		this->mIsRedOn = aOnOff;
+	}
+	void Semaphore::setYellowOnOff(const bool aOnOff) noexcept {
+		this->mMatrix.setOnOff(1, aOnOff);
+		this->mIsYellowOn = aOnOff;
+	}
+	void Semaphore::setGreenOnOff(const bool aOnOff) noexcept {
+		this->mMatrix.setOnOff(this->mIsFlipped ? 0 : 2, aOnOff);
+		this->mIsGreenOn = aOnOff;
+	}
+
+	std::string Semaphore::getTitle() const noexcept {
+		return this->mMatrix.getTitle();
+	}
+	bool Semaphore::isRedOn() const noexcept {
+		return this->mIsRedOn;
+	}
+	bool Semaphore::isYellowOn() const noexcept {
+		return this->mIsYellowOn;
+	}
+	bool Semaphore::isGreenOn() const noexcept {
+		return this->mIsGreenOn;
+	}
+
+	void Semaphore::toggleRed() noexcept {
 		this->mIsRedOn = !this->mIsRedOn;
 		this->mMatrix.setOnOff(this->mIsFlipped ? 2 : 0, this->mIsRedOn);
 	}
-	void Semaphore::setYellowOnOff() noexcept {
+	void Semaphore::toggleYellow() noexcept {
 		this->mIsYellowOn = !this->mIsYellowOn;
 		this->mMatrix.setOnOff(1, this->mIsYellowOn);
 	}
-	void Semaphore::setGreenOnOff() noexcept {
+	void Semaphore::toggleGreen() noexcept {
 		this->mIsGreenOn = !this->mIsGreenOn;
 		this->mMatrix.setOnOff(this->mIsFlipped ? 0 : 2, this->mIsGreenOn);
-	}
-
-	std::string Semaphore::getTitle() noexcept {
-		return this->mMatrix.getTitle();
-	}
-	bool Semaphore::isRedOn() noexcept {
-		return this->mIsRedOn;
-	}
-	bool Semaphore::isYellowOn() noexcept {
-		return this->mIsYellowOn;
-	}
-	bool Semaphore::isGreenOn() noexcept {
-		return this->mIsGreenOn;
 	}
 
 	bool Semaphore::open() const noexcept {

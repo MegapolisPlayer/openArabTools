@@ -20,13 +20,11 @@ namespace OpenArabTools {
 	void Chessboard::put(const U64 aColumn, const U64 aRow, PieceColor aPiece) noexcept {
 		if (aPiece == CHESSBOARD_PIECE_NONE) this->remove(aColumn, aRow);
 
-		/*
 		switch (aPiece) {
-		case CHESSBOARD_PIECE_WHITE: this->mMatrix.setColor(aColumn, aRow, ); break;
-		case CHESSBOARD_PIECE_BLACK: break;
+		case CHESSBOARD_PIECE_WHITE: this->mMatrix.setColor(aColumn, aRow, LIGHTCOLOR_WHITE); break;
+		case CHESSBOARD_PIECE_BLACK: this->mMatrix.setColor(aColumn, aRow, LIGHTCOLOR_BLACK); break;
 		default: break;
 		}
-		*/
 
 		this->mMatrix.setOn(aColumn, aRow);
 	}
@@ -34,14 +32,33 @@ namespace OpenArabTools {
 		this->mMatrix.setOff(aColumn, aRow);
 	}
 
-	PieceColor Chessboard::get(const U64 aColumn, const U64 aRow) const noexcept {
-		return CHESSBOARD_PIECE_NONE;
+	PieceColor Chessboard::get(const U64 aId) const noexcept {
+		if (!this->mMatrix.isOn(aId))
+			return CHESSBOARD_PIECE_NONE;
+
+		if (this->mMatrix.getColor(aId) == LightColor(LIGHTCOLOR_WHITE))
+			return CHESSBOARD_PIECE_WHITE;
+		else
+			return CHESSBOARD_PIECE_BLACK;
 	}
+	PieceColor Chessboard::get(const U64 aColumn, const U64 aRow) const noexcept {
+		if (!this->mMatrix.isOn(aColumn, aRow))
+			return CHESSBOARD_PIECE_NONE;
+
+		if (this->mMatrix.getColor(aColumn, aRow) == LightColor(LIGHTCOLOR_WHITE))
+			return CHESSBOARD_PIECE_WHITE;
+		else
+			return CHESSBOARD_PIECE_BLACK;
+	}
+
 	U64 Chessboard::getWidth() const noexcept {
 		return this->mMatrix.getWidth();
 	}
 	U64 Chessboard::getHeight() const noexcept {
 		return this->mMatrix.getHeight();
+	}
+	U64 Chessboard::getSize() const noexcept {
+		return this->mMatrix.getSize();
 	}
 
 	bool Chessboard::open() const noexcept {
@@ -69,9 +86,9 @@ namespace OpenArabTools {
 	}
 	void Chessboard::applyChessboardStyle(const LightColor& aLight, const LightColor& aDark) noexcept {
 		for (U64 i = 0; i < this->mMatrix.getSize(); i++) {
-			switch (i % 2 == 0) {
-			case(true): this->mMatrix.setBackground(aLight); break;
-			case(false): this->mMatrix.setBackground(aDark); break;
+			switch ((i + (i / this->mMatrix.getWidth())) % 2) {
+				case(true): this->mMatrix.setBackground(i, aLight); break;
+				case(false): this->mMatrix.setBackground(i, aDark); break;
 			}
 		}
 	}

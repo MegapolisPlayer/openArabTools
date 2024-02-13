@@ -23,7 +23,7 @@ import cz.gyarab.util.light.Semaphore;
 class Main {
 	public static void Main(String[] Args) {
 		Semaphore s = Semaphore.createSemaphore();
-    	s.showWindow();
+		s.showWindow();
 	}
 }
 ```
@@ -37,8 +37,7 @@ In C++ with openArabTools:
 int main() {
 	OpenArabTools::init();
 	OpenArabTools::Semaphore s;
-	s.showWindow();
-	s.run();
+	s.showWindowAndRun();
 }
 ```
 

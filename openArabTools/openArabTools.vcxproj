@@ -48,7 +48,6 @@
   <ItemGroup>
     <None Include="..\README.md" />
     <None Include="docs\index.html" />
-    <None Include="docs\internal.html" />
     <None Include="docs\style.css" />
     <None Include="docs\dev.html" />
     <None Include="src\event\README.md" />

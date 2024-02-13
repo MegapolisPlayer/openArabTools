@@ -42,14 +42,9 @@ namespace OpenArabTools {
 
 		void setColor(const U64 aColumn, const U64 aRow, const LightColor& aColor) noexcept;
 
-		//If size 1x1 -> turns light off, otherwise turns off checks the top-left
 		void setOff() noexcept;
-
 		void setOff(const U64 aId) noexcept;
-
 		void setOff(const U64 aColumn, const U64 aRow) noexcept;
-
-		//If size 1x1 -> turns light on, otherwise turns on the top-left
 		void setOn() noexcept;
 		void setOn(const U64 aId) noexcept;
 		void setOn(const U64 aColumn, const U64 aRow) noexcept;
@@ -61,12 +56,12 @@ namespace OpenArabTools {
 		// Getters
 		//
 
-		//If size 1x1 -> Returns background of light, otherwise returns from top-left
 		LightColor getBackground() const noexcept;
+		LightColor getBackground(const U64 aId) const noexcept;
 		LightColor getBackground(const U64 aColumn, const U64 aRow) const noexcept;
 
-		//If size 1x1 -> Returns color of light, otherwise returns from top-left
 		LightColor getColor() const noexcept;
+		LightColor getColor(const U64 aId) const noexcept;
 		LightColor getColor(const U64 aColumn, const U64 aRow) const noexcept;
 
 		std::string getTitle() const noexcept;
@@ -105,13 +100,13 @@ namespace OpenArabTools {
 		void setOffColor(const U64 aId, const LightColor& aColor) noexcept;
 		void setOffColor(const U64 aColumn, const U64 aRow, const LightColor& aColor) noexcept;
 		
-		void setColorAlpha() noexcept;
+		void setColorAlpha(const float aAlpha) noexcept;
 		void setColorAlpha(const U64 aId, const float aAlpha) noexcept;
 		void setColorAlpha(const U64 aColumn, const U64 aRow, const float aAlpha) noexcept;
-		void setOffColorAlpha() noexcept;
+		void setOffColorAlpha(const float aAlpha) noexcept;
 		void setOffColorAlpha(const U64 aId, const float aAlpha) noexcept;
 		void setOffColorAlpha(const U64 aColumn, const U64 aRow, const float aAlpha) noexcept;
-		void setBackgroundAlpha() noexcept;
+		void setBackgroundAlpha(const float aAlpha) noexcept;
 		void setBackgroundAlpha(const U64 aId, const float aAlpha) noexcept;
 		void setBackgroundAlpha(const U64 aColumn, const U64 aRow, const float aAlpha) noexcept;
 

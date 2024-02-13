@@ -14,7 +14,7 @@ namespace OpenArabTools {
 			case(LIGHTCOLOR_CHESSBOARD_BLACK):   aLC->RGB255(0,   0,   0  ); return;
 			case(LIGHTCOLOR_CHESSBOARD_DARK):    aLC->RGB255(128, 64,  0  ); return;
 			case(LIGHTCOLOR_CHESSBOARD_LIGHT):   aLC->RGB255(255, 192, 128); return;
-			case(LIGHTCOLOR_CHESSBOARD_WHITE):   aLC->RGB255(0,   0,   0  ); return;
+			case(LIGHTCOLOR_CHESSBOARD_WHITE):   aLC->RGB255(255, 255, 255); return;
 			case(LIGHTCOLOR_LIGHT_GRAY):         aLC->RGB255(192, 192, 192); return;
 			case(LIGHTCOLOR_MAGENTA):            aLC->RGB255(128, 0,   128); return;
 			case(LIGHTCOLOR_ORANGE):             aLC->RGB255(255, 128, 0  ); return;
@@ -82,6 +82,10 @@ namespace OpenArabTools {
 		this->G = aColor.G;
 		this->B = aColor.B;
 		return *this;
+	}
+
+	bool LightColor::operator==(const LightColor& aOther) const noexcept {
+		return (this->R == aOther.R && this->G == aOther.G && this->B == aOther.B);
 	}
 
 	LightColor::~LightColor() noexcept {}

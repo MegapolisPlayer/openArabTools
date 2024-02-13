@@ -51,6 +51,8 @@ namespace OpenArabTools {
 
 		LightColor& operator=(const LightColor& aColor) noexcept;
 
+		bool operator==(const LightColor& aOther) const noexcept;
+
 		~LightColor() noexcept;
 	};
 }

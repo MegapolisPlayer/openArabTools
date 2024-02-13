@@ -128,7 +128,9 @@ namespace OpenArabTools {
 	}
 
 	void Matrix::setOff() noexcept {
-		this->mIsOn[0] = false;
+		for (U64 i = 0; i < this->mSizeX * this->mSizeY; i++) {
+			this->mIsOn[i] = false;
+		}
 		this->UploadStateToShader();
 	}
 	void Matrix::setOff(const U64 aId) noexcept {
@@ -140,7 +142,9 @@ namespace OpenArabTools {
 		this->UploadStateToShader();
 	}
 	void Matrix::setOn() noexcept {
-		this->mIsOn[0] = true;
+		for (U64 i = 0; i < this->mSizeX * this->mSizeY; i++) {
+			this->mIsOn[i] = true;
+		}
 		this->UploadStateToShader();
 	}
 	void Matrix::setOn(const U64 aId) noexcept {
@@ -152,7 +156,9 @@ namespace OpenArabTools {
 		this->UploadStateToShader();
 	}
 	void Matrix::setOnOff(const bool aOnOff) noexcept {
-		this->mIsOn[0] = aOnOff;
+		for (U64 i = 0; i < this->mSizeX * this->mSizeY; i++) {
+			this->mIsOn[i] = aOnOff;
+		}
 		this->UploadStateToShader();
 	}
 	void Matrix::setOnOff(const U64 aId, const bool aOnOff) noexcept {
@@ -167,8 +173,14 @@ namespace OpenArabTools {
 	LightColor Matrix::getBackground() const noexcept {
 		return { this->mColor[0].BR, this->mColor[0].BG, this->mColor[0].BB };
 	}
+	LightColor Matrix::getBackground(const U64 aId) const noexcept {
+		return { this->mColor[aId].BR, this->mColor[aId].BG, this->mColor[aId].BB };
+	}
 	LightColor Matrix::getBackground(const U64 aColumn, const U64 aRow) const noexcept {
 		return { this->mColor[aColumn + (aRow * this->mSizeX)].BR, this->mColor[aColumn + (aRow * this->mSizeX)].BG, this->mColor[aColumn + (aRow * this->mSizeX)].BB };
+	}
+	LightColor Matrix::getColor(const U64 aId) const noexcept {
+		return { this->mColor[aId].FR, this->mColor[aId].FG, this->mColor[aId].FB };
 	}
 	LightColor Matrix::getColor() const noexcept {
 		return { this->mColor[0].FR, this->mColor[0].FG, this->mColor[0].FB };
@@ -243,32 +255,39 @@ namespace OpenArabTools {
 		this->UploadColorToShader();
 	}
 	
-	void Matrix::setColorAlpha() noexcept {
-
+	void Matrix::setColorAlpha(const float aAlpha) noexcept {
+		for (U64 i = 0; i < this->mSizeX * this->mSizeY; i++) {
+			this->mColor[i].FA = aAlpha;
+		}
+		this->UploadColorToShader();
 	}
 	void Matrix::setColorAlpha(const U64 aId, const float aAlpha) noexcept {
-		
+		this->mColor[aId].FA = aAlpha;
 	}
 	void Matrix::setColorAlpha(const U64 aColumn, const U64 aRow, const float aAlpha) noexcept {
-
+		this->mColor[aColumn + (aRow * this->mSizeX)].FA = aAlpha;
 	}
-	void Matrix::setOffColorAlpha() noexcept {
-
+	void Matrix::setOffColorAlpha(const float aAlpha) noexcept {
+		for (U64 i = 0; i < this->mSizeX * this->mSizeY; i++) {
+			this->mColor[i].OA = aAlpha;
+		}
 	}
 	void Matrix::setOffColorAlpha(const U64 aId, const float aAlpha) noexcept {
-	
+		this->mColor[aId].OA = aAlpha;
 	}
 	void Matrix::setOffColorAlpha(const U64 aColumn, const U64 aRow, const float aAlpha) noexcept {
-
+		this->mColor[aColumn + (aRow * this->mSizeX)].OA = aAlpha;
 	}
-	void Matrix::setBackgroundAlpha() noexcept {
-
+	void Matrix::setBackgroundAlpha(const float aAlpha) noexcept {
+		for (U64 i = 0; i < this->mSizeX * this->mSizeY; i++) {
+			this->mColor[i].BA = aAlpha;
+		}
 	}
 	void Matrix::setBackgroundAlpha(const U64 aId, const float aAlpha) noexcept {
-	
+		this->mColor[aId].BA = aAlpha;
 	}
 	void Matrix::setBackgroundAlpha(const U64 aColumn, const U64 aRow, const float aAlpha) noexcept {
-
+		this->mColor[aColumn + (aRow * this->mSizeX)].BA = aAlpha;
 	}
 
 	void Matrix::showWindowAndRun() noexcept {

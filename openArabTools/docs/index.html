@@ -18,7 +18,6 @@
 		Copyright (c) 2014-2020 Ing. Daniel Kahoun<br>
 		All rights reserved.<br>
 	</p>
-	<a href="./internal.html">Documentation for the <i>Internal and Error</i> namespaces</a><br>
 	<a href="./dev.html">Documentation for <i>internal (inaccessible) functions</i> - only for developers</a><br>
 	<h id="contents">Contents</h><br>
 	<ul>
@@ -45,7 +44,10 @@
 			<a href="#graphics">Graphics</a>
 			<ul>
 				<li><a href="#matrix">Matrix</a></li>
+				<li><a href="#semaphoreorientation">SemaphoreOrientation</a></li>
 				<li><a href="#semaphore">Semaphore</a></li>
+				<li><a href="#chessboardstyle">ChessboardStyle</a></li>
+				<li><a href="#piececolor">PieceColor</a></li>
 				<li><a href="#chessboard">Chessboard</a></li>
 				<li><a href="#dice">Dice</a></li>
 			</ul>
@@ -304,6 +306,10 @@
 					<td>Copy assignment operator</td>
 				</tr>
 				<tr>
+					<td>bool operator==(const LightColor& aOther) noexcept</td>
+					<td>Comparison operator</td>
+				</tr>
+				<tr>
 					<td>~LightColor() noexcept</td>
 					<td>Default destructor</td>
 				</tr>
@@ -330,6 +336,21 @@
 			</tr>
 		</table>
 	</div>
+	<div id="semaphoreorientation">
+		<h2>SemaphoreOrientation</h2>
+		<p>
+			C++ style enum-struct type, prefix SemaphoreOrientation::[VALUE].
+			Represents the orientation of <a href="#semaphore">Semaphore</a>.<br>
+			Possible values:
+		</p>
+		<ul>
+			<li>NORMAL</li>
+			<li>UPSIDEUP (=NORMAL)</li>
+			<li>UPSIDEDOWN</li>
+			<li>UPSIDELEFT</li>
+			<li>UPSIDERIGHT</li>
+		</ul>
+	</div>
 	<div id="semaphore">
 		<h2>Semaphore</h2>
 		<p>
@@ -341,37 +362,140 @@
 				<th>Method description</th>
 			</tr>
 			<tr>
-				<td></td>
-				<td></td>
+				<td>Semaphore() noexcept</td>
+				<td>Default constructor</td>
+			</tr>
+			<tr>
+				<td>Semaphore(SemaphoreOrientation aOrientation) noexcept</td>
+				<td>Setup constructor, see <a href="#semaphoreorientation">SemaphoreOrientation</a></td>
+			</tr>
+			<tr>
+				<td>void setTitle(const std::string& aTitle) noexcept</td>
+				<td>Sets the window title</td>
+			</tr>
+			<tr>
+				<td>void showWindow() noexcept</td>
+				<td>Shows the window</td>
+			</tr>
+			<tr>
+				<td>void hideWindow() noexcept</td>
+				<td>Hides the window</td>
+			</tr>
+			<tr>
+				<td>void setRedOn() noexcept</td>
+				<td>Sets the red light on.</td>
+			</tr>
+			<tr>
+				<td>void setYellowOn() noexcept</td>
+				<td>Sets the yellow light on.</td>
+			</tr>
+			<tr>
+				<td>void setGreenOn() noexcept</td>
+				<td>Sets the green light on.</td>
+			</tr>
+			<tr>
+				<td>void setRedOff() noexcept</td>
+				<td>Sets the red light off.</td>
+			</tr>
+			<tr>
+				<td>void setYellowOff() noexcept</td>
+				<td>Sets the yellow light off.</td>
+			</tr>
+			<tr>
+				<td>void setGreenOff() noexcept</td>
+				<td>Sets the green light off.</td>
+			</tr>
+			<tr>
+				<td>void setRedOnOff(const bool aOnOff) noexcept</td>
+				<td>Sets the red light on or off.</td>
+			</tr>
+			<tr>
+				<td>void setYellowOnOff(const bool aOnOff) noexcept</td>
+				<td>Sets the yellow light on or off.</td>
+			</tr>
+			<tr>
+				<td>void setGreenOnOff(const bool aOnOff) noexcept</td>
+				<td>Sets the green light on or off.</td>
+			</tr>
+			<tr>
+				<td>std::string getTitle() const noexcept</td>
+				<td>Sets the red light off.</td>
+			</tr>
+			<tr>
+				<td>bool isRedOn() const noexcept</td>
+				<td>Gets if red light on.</td>
+			</tr>
+			<tr>
+				<td>bool isYellowOn() const noexcept</td>
+				<td>Gets if yellow light on.</td>
+			</tr>
+			<tr>
+				<td>bool isGreenOn() const noexcept</td>
+				<td>Gets if green light on.</td>
+			</tr>
+			<tr>
+				<td>void toggleRed() noexcept</td>
+				<td>Toggles red light.</td>
+			</tr>
+			<tr>
+				<td>void toggleYellow() noexcept</td>
+				<td>Toggles yellow light.</td>
+			</tr>
+			<tr>
+				<td>void toggleGreen() noexcept</td>
+				<td>Toggles green light.</td>
+			</tr>
+			<tr>
+				<td>bool open() const noexcept</td>
+				<td>Gets if window should be open.</td>
+			</tr>
+			<tr>
+				<td>bool update() noexcept</td>
+				<td>Executes a window update. Returns if window should be open.</td>
+			</tr>
+			<tr>
+				<td>void run() noexcept</td>
+				<td>Runs the window. NOTE: this blocks the main thread!</td>
+			</tr>
+			<tr>
+				<td>bool sleep(const U64 aMs) noexcept</td>
+				<td>Sleeps in current window and thread. Unlike sleep() and Utils::sleep(), this still updates the window. (use this!)</td>
+			</tr>
+			<tr>
+				<td>~Semaphore() noexcept</td>
+				<td>Default destructor</td>
 			</tr>
 		</table>
+	</div>
+	<div id="chessboardstyle">
+		<h2>ChessboardStyle</h2>
+		<p>
+			<ul>
+				<li>CHESSBOARD_STYLE_WHITE_BLACK</li>
+				<li>CHESSBOARD_STYLE_DEFAULT_WOOD</li>
+			</ul>
+		</p>
+	</div>
+	<div id="piececolor">
+		<h2>PieceColor</h2>
+		<p>
+			<ul>
+				<li>CHESSBOARD_PIECE_NONE</li>
+				<li>CHESSBOARD_PIECE_WHITE</li>
+				<li>CHESSBOARD_PIECE_BLACK</li>
+			</ul>
+		</p>
 	</div>
 	<div id="chessboard">
 		<h2>Chessboard</h2>
 		<p>
 			Represents an array of chess squares. Default size is 8 by 8.
 			Lights can be white or black and represent pieces.
-			The background uses these colors:<br>
-			<ul>
-				<li>LIGHTCOLOR_CHESSBOARD_BLACK and</li>
-				<li>LIGHTCOLOR_CHESSBOARD_DARK</li>
-			</ul>
-			or:
-			<ul>
-				<li>
-					LIGHTCOLOR_CHESSBOARD_LIGHT and
-				</li>
-				<li>LIGHTCOLOR_CHESSBOARD_WHITE</li>
-			</ul>
 		</p>
 		<table>
 			<tr>
 				<th>Method name</th>
 				<th>Method description</th>
-			</tr>
-			<tr>
-				<td></td>
-				<td></td>
 			</tr>
 		</table>
 	</div>
