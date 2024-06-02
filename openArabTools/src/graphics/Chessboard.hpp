@@ -31,7 +31,7 @@ namespace OpenArabTools {
 		U64 getSize() const noexcept;
 
 		//
-		// OPENARABTOOLS necessities
+		// OpenArabTools necessities
 		//
 
 		bool open() const noexcept;
@@ -39,7 +39,7 @@ namespace OpenArabTools {
 		void run() noexcept;
 
 		//
-		// OPENARABTOOLS extensions
+		// OpenArabTools extensions
 		//
 
 		void showWindowAndRun() noexcept;

@@ -74,7 +74,7 @@ Documentation for the internal API: (TODO: add documentation once completed)
 # License
 Copyright (c) 2023-2024 Martin/MegapolisPlayer and contributors.
 
-Licensed under CC-BY 4.0.
+Licensed under CC-BY 4.0. (In summation: author(s) must be attributed. No other restrictions apply.)
 
 Full legal text [here](https://creativecommons.org/licenses/by/4.0/)
 

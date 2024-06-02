@@ -8,24 +8,24 @@ namespace OpenArabTools {
 		}
 
 		[[noreturn]] void error(const char* aMessage) noexcept {
-			std::cout << "openArabTools: ERROR: " << aMessage << "\n";
+			std::cerr << "openArabTools: ERROR: " << aMessage << "\n";
 			stop();
 		}
 
 		[[noreturn]] void error(const char* aMessage, const char* aGLBuffer) noexcept {
-			std::cout << "openArabTools: ERROR: " << aMessage << ": " << aGLBuffer << "\n";
+			std::cerr << "openArabTools: ERROR: " << aMessage << ": " << aGLBuffer << "\n";
 			stop();
 		}
 		
 		bool noiniterror() noexcept {
 			if (isLibInit()) return false;
-			std::cout << "openArabTools: ERROR: Library not initialized.\n";
+			std::cerr << "openArabTools: ERROR: Library not initialized.\n";
 			stop();
 			return true; 
 		}
 
 		void warning(const char* aMessage) noexcept {
-			std::cout << "openArabTools: WARNING: " << aMessage << "\n";
+			std::cerr << "openArabTools: WARNING: " << aMessage << "\n";
 		}
 	}
 }

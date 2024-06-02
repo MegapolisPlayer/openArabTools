@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -14,7 +14,9 @@
     <ClInclude Include="include\OpenArabTools.hpp" />
     <ClInclude Include="src\Error.hpp" />
     <ClInclude Include="src\event\Event.hpp" />
+    <ClInclude Include="src\graphics\Canvas.hpp" />
     <ClInclude Include="src\graphics\Chessboard.hpp" />
+    <ClInclude Include="src\graphics\Crossing.hpp" />
     <ClInclude Include="src\graphics\Dice.hpp" />
     <ClInclude Include="src\graphics\Graphics.hpp" />
     <ClInclude Include="src\graphics\internal\GLBaseImplementation.hpp" />
@@ -34,7 +36,9 @@
     <ClCompile Include="include\OpenArabTools.cpp" />
     <ClCompile Include="src\Error.cpp" />
     <ClCompile Include="src\event\Event.cpp" />
+    <ClCompile Include="src\graphics\Canvas.cpp" />
     <ClCompile Include="src\graphics\Chessboard.cpp" />
+    <ClCompile Include="src\graphics\Crossing.cpp" />
     <ClCompile Include="src\graphics\Dice.cpp" />
     <ClCompile Include="src\graphics\internal\GLBaseImplementation.cpp" />
     <ClCompile Include="src\graphics\internal\GLWindow.cpp" />
@@ -51,6 +55,7 @@
     <None Include="docs\style.css" />
     <None Include="docs\dev.html" />
     <None Include="src\event\README.md" />
+    <None Include="CONTRIBUTING.md" />
     <None Include="src\graphics\README.md" />
     <None Include="src\remote\README.md" />
     <None Include="src\types\README.md" />

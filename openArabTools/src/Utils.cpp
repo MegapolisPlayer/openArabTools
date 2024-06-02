@@ -113,7 +113,11 @@ namespace OpenArabTools {
 	}
 	ScopedTimer::~ScopedTimer() noexcept {
 		U64 Us = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - this->mStart).count();
+		if (Us == 0) {
+			std::cerr << "Timer \"" << this->mName << "\": 0us, >1000000 FPS\n";
+			return;
+		}
 		U64 Ms = Us / 1000;
-		std::cout << "Timer \"" << this->mName << "\": " << Ms << "ms, " << Us << "us, " << 1000000/Us << "FPS\n";
+		std::cerr << "Timer \"" << this->mName << "\": " << Ms << "ms, " << Us << "us, " << 1000000/Us << "FPS\n";
 	}
 }

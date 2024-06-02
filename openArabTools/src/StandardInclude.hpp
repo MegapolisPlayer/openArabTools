@@ -63,4 +63,4 @@ using namespace std::chrono_literals;
 
 // Jokes...
 
-#define TRAIN auto
+#define train auto

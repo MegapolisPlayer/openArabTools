@@ -17,7 +17,7 @@ namespace OpenArabTools {
 		//Checks if library initialized, if not throws error
 		bool noiniterror() noexcept;
 
-		//Prints warning about something not library-breaking, but still a bit sus
+		//Prints warning about something not library-breaking, but still incorrect
 		void warning(const char* aMessage) noexcept;
 	} //namespace Error
 }

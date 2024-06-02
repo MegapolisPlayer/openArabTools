@@ -193,6 +193,7 @@ namespace OpenArabTools {
 			((GLWindow*)glfwGetWindowUserPointer(aWindow))->HandleUserResize(aWidth, aHeight);
 		}
 		void GLWindow::HandleUserResize(const U64 aWidth, const U64 aHeight) noexcept {
+			//TODO: add resizing support
 #ifdef _DEBUG
 			Error::warning("User window resize.");
 #endif

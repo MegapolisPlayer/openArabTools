@@ -16,7 +16,6 @@ namespace OpenArabTools {
 
 		Semaphore(SemaphoreOrientation aOrientation) noexcept;
 
-		void setTitle(const std::string& aTitle) noexcept;
 
 		void showWindow() noexcept;
 		void hideWindow() noexcept;
@@ -39,7 +38,7 @@ namespace OpenArabTools {
 		bool isGreenOn() const noexcept;
 
 		//
-		// OPENARABTOOLS extensions
+		// OpenArabTools extensions
 		//
 
 		void toggleRed() noexcept;
@@ -50,6 +49,9 @@ namespace OpenArabTools {
 		bool update() noexcept;
 		void run() noexcept;
 
+		void setTitle(const std::string& aTitle) noexcept;
+
+		void showWindowAndRun() noexcept;
 		bool sleep(const U64 aMs) noexcept;
 
 		~Semaphore() noexcept;

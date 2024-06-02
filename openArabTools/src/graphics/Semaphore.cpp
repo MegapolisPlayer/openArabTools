@@ -58,9 +58,6 @@ namespace OpenArabTools {
 		}
 	}
 
-	void Semaphore::setTitle(const std::string& aTitle) noexcept {
-		this->mMatrix.setTitle(aTitle);
-	}
 
 	void Semaphore::showWindow() noexcept {
 		this->mMatrix.showWindow();
@@ -146,6 +143,13 @@ namespace OpenArabTools {
 		this->mMatrix.run();
 	}
 
+	void Semaphore::setTitle(const std::string& aTitle) noexcept {
+		this->mMatrix.setTitle(aTitle);
+	}
+
+	void Semaphore::showWindowAndRun() noexcept {
+		this->mMatrix.showWindowAndRun();
+	}
 	bool Semaphore::sleep(const U64 aMs) noexcept {
 		return this->mMatrix.sleep(aMs);
 	}

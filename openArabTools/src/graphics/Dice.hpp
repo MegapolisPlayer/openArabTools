@@ -15,7 +15,7 @@ namespace OpenArabTools {
 		U64 getValue(U64 aValue) const noexcept;
 
 		//
-		// OPENARABTOOLS necessities
+		// OpenArabTools necessities
 		//
 
 		bool open() const noexcept;
@@ -23,11 +23,13 @@ namespace OpenArabTools {
 		void run() noexcept;
 
 		//
-		// OPENARABTOOLS extensions
+		// OpenArabTools extensions
 		//
 
 		void disableAll() noexcept;
 		void enableAll() noexcept;
+
+		void setTitle(const std::string& aTitle) noexcept;
 
 		void showWindowAndRun() noexcept;
 		bool sleep(const U64 aMs) noexcept;

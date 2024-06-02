@@ -94,6 +94,8 @@ namespace OpenArabTools {
 		this->mWindow.HideWindow();
 	}
 
+	//setters
+
 	void Matrix::setTitle(const std::string& aTitle) noexcept {
 		this->mWindow.SetTitle(aTitle.c_str());
 	}
@@ -170,6 +172,8 @@ namespace OpenArabTools {
 		this->UploadStateToShader();
 	}
 
+	//getters
+
 	LightColor Matrix::getBackground() const noexcept {
 		return { this->mColor[0].BR, this->mColor[0].BG, this->mColor[0].BB };
 	}
@@ -220,11 +224,20 @@ namespace OpenArabTools {
 		return bool(this->mIsOn[aColumn + (aRow * this->mSizeX)]);
 	}
 
+	//other stuff
+
 	bool Matrix::open() const noexcept {
 		return this->mWindow.IsWindowOpen();
 	}
 
 	bool Matrix::update() noexcept {
+		if (!this->mInit) { 
+			Error::warning("Updating dead Matrix object, consider checking return value.");
+			return false;
+		}
+		if (!this->mWindow.IsWindowOpen()) {
+			this->reset();
+		}
 		this->mColorBuf.Bind();
 		this->mIsOnBuf.Bind();
 		this->mWindow.glIBO.Draw();
@@ -365,9 +378,10 @@ namespace OpenArabTools {
 
 		this->mWindow.PrepareUniforms(this->mSizeX, this->mSizeY);
 
-		 
 		this->mColorBuf.Set(this->mColor, this->mSizeX * this->mSizeY, &this->mWindow.glVAO);
 		this->mIsOnBuf.Set(this->mIsOn, this->mSizeX * this->mSizeY, &this->mWindow.glVAO);
+
+		this->mWindow.ShowWindow();
 
 		this->mInit = true;
 	}
@@ -379,6 +393,7 @@ namespace OpenArabTools {
 		}
 
 		//no window reset!
+		this->mWindow.HideWindow();
 		this->mSizeX = 0;
 		this->mSizeY = 0;
 		free(this->mColor);
@@ -397,7 +412,6 @@ namespace OpenArabTools {
 
 		while (std::chrono::system_clock::now() < End) {
 			if (!this->mWindow.IsWindowOpen()) {
-				this->reset();
 				return false;
 			}
 			std::this_thread::sleep_for(1ms);

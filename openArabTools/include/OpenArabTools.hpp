@@ -18,7 +18,7 @@ namespace AT = ArabTools;
 #endif
 
 /*
-OPENARABTOOLS configuration macros
+OpenArabTools configuration macros
 DEFINE THESE MACROS BEFORE INCLUDING
 --
 

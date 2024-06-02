@@ -82,6 +82,10 @@ namespace OpenArabTools {
 		}
 	}
 
+	void Dice::setTitle(const std::string& aTitle) noexcept {
+		this->mMatrix.setTitle(aTitle);
+	}
+		
 	void Dice::showWindowAndRun() noexcept {
 		this->mMatrix.showWindowAndRun();
 	}

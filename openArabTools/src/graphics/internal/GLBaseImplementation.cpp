@@ -361,21 +361,21 @@ namespace OpenArabTools {
 
 		namespace Debug {
 			void PrintVertexArray(float** aArray, const U64 aAmountOfVertices, const U64 aVertexSize, const U64 aVertexPrecisionOverride) noexcept {
-				std::ios DefaultCout(nullptr); std::cout.copyfmt(DefaultCout);
-				std::cout << std::fixed << std::setprecision(aVertexPrecisionOverride);
+				std::ios DefaultCout(nullptr); std::cerr.copyfmt(DefaultCout);
+				std::cerr << std::fixed << std::setprecision(aVertexPrecisionOverride);
 				for (uint64_t i = 0; i < aAmountOfVertices * aVertexSize; i++) {
-					if (i % aVertexSize == 0 && i != 0) std::cout << '\n';
-					std::cout << (*aArray)[i] << ',';
+					if (i % aVertexSize == 0 && i != 0) std::cerr << '\n';
+					std::cerr << (*aArray)[i] << ',';
 				}
-				std::cout << '\n';
-				std::cout.copyfmt(DefaultCout);
+				std::cerr << '\n';
+				std::cerr.copyfmt(DefaultCout);
 			}
 			void PrintIndexArray(unsigned int** aArray, const U64 aAmountOfObjects, const U64 aIndicesPerObject, const U64 aNumberWidthOverride) noexcept {
 				for (uint64_t i = 0; i < aAmountOfObjects * aIndicesPerObject; i++) {
-					if (i % aIndicesPerObject == 0 && i != 0) std::cout << '\n';
-					std::cout << std::setw(aNumberWidthOverride) << std::setfill('0') << (*aArray)[i] << ',';
+					if (i % aIndicesPerObject == 0 && i != 0) std::cerr << '\n';
+					std::cerr << std::setw(aNumberWidthOverride) << std::setfill('0') << (*aArray)[i] << ',';
 				}
-				std::cout << '\n';
+				std::cerr << '\n';
 			}
 		}
 	}

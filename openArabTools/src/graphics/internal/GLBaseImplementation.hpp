@@ -39,7 +39,7 @@ namespace OpenArabTools {
 
 			//debug function
 			void Print() noexcept {
-				std::cout << 
+				std::cerr << 
 					"F " << FR << ' ' << FG << ' ' << FB << ' ' << FA << ' ' <<
 					"O " << OR << ' ' << OG << ' ' << OB << ' ' << OA << ' ' <<
 					"B " << BR << ' ' << BG << ' ' << BB << ' ' << BA << ' ' <<

@@ -1,5 +1,5 @@
 #pragma once
 
-#include "Semaphore.hpp"
+#include "Crossing.hpp" //also includes Semaphore.hpp
 #include "Chessboard.hpp"
 #include "Dice.hpp"

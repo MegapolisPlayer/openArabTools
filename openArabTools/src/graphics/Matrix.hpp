@@ -80,7 +80,7 @@ namespace OpenArabTools {
 		bool isOn(const U64 aColumn, const U64 aRow) const noexcept;
 
 		//
-		// OPENARABTOOLS necessities
+		// OpenArabTools necessities
 		//
 
 		//Returns if window is open
@@ -93,7 +93,7 @@ namespace OpenArabTools {
 		void run() noexcept;
 
 		//
-		// OPENARABTOOLS extensions
+		// OpenArabTools extensions
 		//
 
 		void setOffColor(const LightColor& aColor) noexcept;
