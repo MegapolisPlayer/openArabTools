@@ -107,7 +107,7 @@ namespace OpenArabTools {
 			return this->mTitle;
 		}
 		void GLWindow::Resize(const U64 aWidth, const U64 aHeight) noexcept {
-#ifdef _DEBUG
+#ifdef OPENARABTOOLS_PRINT_DEBUG_INFO
 			Error::warning("System window resize.");
 #endif
 			this->mWidth = aWidth;
@@ -194,7 +194,7 @@ namespace OpenArabTools {
 		}
 		void GLWindow::HandleUserResize(const U64 aWidth, const U64 aHeight) noexcept {
 			//TODO: add resizing support
-#ifdef _DEBUG
+#ifdef OPENARABTOOLS_PRINT_DEBUG_INFO
 			Error::warning("User window resize.");
 #endif
 			this->mWidth = aWidth;
@@ -204,7 +204,7 @@ namespace OpenArabTools {
 		void GLWindow::CreateWindow() noexcept {
 			if (Error::noiniterror()) return;
 
-			//hint to make HIDDEN the default set in init() (OpenArabTools.cpp, Utils.hpp)
+			glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 			this->mWindow = glfwCreateWindow(this->mWidth, this->mHeight, "OpenArabTools", NULL, NULL);
 			glfwSetWindowUserPointer(this->mWindow, this);
 			glfwSetWindowSizeCallback(this->mWindow, SizeCallback);

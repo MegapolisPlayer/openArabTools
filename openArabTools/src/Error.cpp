@@ -5,6 +5,7 @@ namespace OpenArabTools {
 		[[noreturn]] void stop() noexcept {
 			Internal::IsInit = 1; //override so terminate() actually terminates
 			terminate();
+			std::exit(EXIT_FAILURE);
 		}
 
 		[[noreturn]] void error(const char* aMessage) noexcept {

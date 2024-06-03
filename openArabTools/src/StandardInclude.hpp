@@ -10,12 +10,24 @@
 #include <atomic>
 #include <mutex>
 #include <numeric>
+#include <array>
 #endif
+
+//Uncomment this line to recieve full debug information from OAT
+//#define OPENARABTOOLS_PRINT_DEBUG_INFO
+
+#ifdef _WIN32
 
 #ifdef OPENARABTOOLS_BUILD_DLL
 #define OPENARABTOOLS_OBJ _declspec(dllexport)
 #else
 #define OPENARABTOOLS_OBJ _declspec(dllimport)
+#endif
+
+#else
+
+#define OPENARABTOOLS_OBJ
+
 #endif
 
 namespace OpenArabTools {

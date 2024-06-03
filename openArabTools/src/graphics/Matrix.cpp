@@ -356,7 +356,7 @@ namespace OpenArabTools {
 		unsigned int* IndicesData;
 		Internal::GenerateTileIndices(&IndicesData, VertexSize / 4);
 
-#ifdef _DEBUG
+#ifdef OPENARABTOOLS_PRINT_DEBUG_INFO
 		Error::warning("Debug log:");
 		Internal::Debug::PrintVertexArray(&VerticesData, VertexSize, 4);
 		Internal::Debug::PrintIndexArray(&IndicesData, VertexSize / 4, 6);
@@ -412,6 +412,7 @@ namespace OpenArabTools {
 
 		while (std::chrono::system_clock::now() < End) {
 			if (!this->mWindow.IsWindowOpen()) {
+				this->reset();
 				return false;
 			}
 			std::this_thread::sleep_for(1ms);

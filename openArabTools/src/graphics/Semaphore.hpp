@@ -16,7 +16,6 @@ namespace OpenArabTools {
 
 		Semaphore(SemaphoreOrientation aOrientation) noexcept;
 
-
 		void showWindow() noexcept;
 		void hideWindow() noexcept;
 
