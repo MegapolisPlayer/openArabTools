@@ -57,7 +57,6 @@
     <None Include="src\event\README.md" />
     <None Include="CONTRIBUTING.md" />
     <None Include="src\graphics\README.md" />
-    <None Include="src\graphics\resource\Crossing1.oat" />
     <None Include="src\remote\README.md" />
     <None Include="src\types\README.md" />
   </ItemGroup>

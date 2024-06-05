@@ -6,7 +6,7 @@ This library is designed so that the students who are currently learning C++,
 students who have already left the school and/or the people just curious to experience
 ArabTools a way to still have access to it.
 
-The documentation for openArabTools is accessible here: (TODO: add documentation once completed)
+The documentation for openArabTools is accessible in the `docs` folder.
 
 # How to use it?
 
@@ -69,7 +69,7 @@ int main() {
 Use it only if you want to extend the functionality of oAT.
 Everything from the internal API (which can be accessed without nuking the entire library) is in the ArabTools::Internal namespace.
 
-Documentation for the internal API: (TODO: add documentation once completed)
+Documentation for the internal API is located in `docs/dev.html`
 
 # License
 Copyright (c) 2023-2024 Martin/MegapolisPlayer and contributors.

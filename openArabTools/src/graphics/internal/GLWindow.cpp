@@ -4,12 +4,13 @@
 #pragma warning( disable : 4244 ) 
 
 //same as normal ArabTools
-#define OPENARABTOOLS_DEFAULT_WINDOW_SIZE 650
 
 namespace OpenArabTools {
 	namespace Internal {
+		U64 GLWindow::msDefaultWindowSize = 650;
+
 		GLWindow::GLWindow() noexcept 
-		: mWidth(OPENARABTOOLS_DEFAULT_WINDOW_SIZE), mHeight(OPENARABTOOLS_DEFAULT_WINDOW_SIZE), mFrameNo(0), mTitle("openArabTools")
+		: mWidth(msDefaultWindowSize), mHeight(msDefaultWindowSize), mFrameNo(0), mTitle("openArabTools")
 		{ this->CreateWindow(); }
 
 		GLWindow::GLWindow(const U64 aWidth, const U64 aHeight) noexcept
@@ -99,8 +100,8 @@ namespace OpenArabTools {
 		void GLWindow::HideWindow() noexcept {
 			glfwHideWindow(this->mWindow);
 		}
-		void GLWindow::SetTitle(const char* aTitle) noexcept {
-			this->mTitle = aTitle;
+		void GLWindow::SetTitle(const char* arTitle) noexcept {
+			this->mTitle = arTitle;
 			glfwSetWindowTitle(this->mWindow, this->mTitle.c_str());
 		}
 		std::string GLWindow::GetTitle() const noexcept {
@@ -134,7 +135,7 @@ namespace OpenArabTools {
 			glClear(GL_COLOR_BUFFER_BIT);
 			glClearColor(aR, aG, aB, aA);
 		}
-		void GLWindow::PrepareUniforms(U64 aAmountCirclesX, U64 aAmountCirclesY, Dec aInternalRadius) noexcept {
+		void GLWindow::PrepareUniforms(const U64 aAmountCirclesX, const U64 aAmountCirclesY, const Dec aInternalRadius) noexcept {
 			this->glVAO.Bind();
 			this->glIBO.Bind();
 
@@ -189,8 +190,8 @@ namespace OpenArabTools {
 
 		// PRIVATE
 
-		void GLWindow::SizeCallback(GLFWwindow* aWindow, const int aWidth, const int aHeight) noexcept {
-			((GLWindow*)glfwGetWindowUserPointer(aWindow))->HandleUserResize(aWidth, aHeight);
+		void GLWindow::SizeCallback(GLFWwindow* apWindow, const int aWidth, const int aHeight) noexcept {
+			((GLWindow*)glfwGetWindowUserPointer(apWindow))->HandleUserResize(aWidth, aHeight);
 		}
 		void GLWindow::HandleUserResize(const U64 aWidth, const U64 aHeight) noexcept {
 			//TODO: add resizing support

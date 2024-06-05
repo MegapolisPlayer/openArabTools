@@ -59,16 +59,16 @@ namespace OpenArabTools {
 				~AtomicWrapper() {}; //std::atomic has a destructor
 			};
 
-			static U08 ThreadAmount = std::thread::hardware_concurrency() - 1;
-			static std::mutex Mutex; //so that only 1 thread can access
-			static std::vector<AtomicWrapper<bool>> FunctionState; //bool true if is avaiable
-			static std::atomic<U08> ThreadAmountFinished = ThreadAmount;
+			static U08 sThreadAmount = std::thread::hardware_concurrency() - 1;
+			static std::mutex sMutex; //so that only 1 thread can access
+			static std::vector<AtomicWrapper<bool>> sFunctionState; //bool true if is avaiable
+			static std::atomic<U08> sThreadAmountFinished = sThreadAmount;
 
 			void RunnerFunc(const U08 aMyThreadId, const U64 aCount, RunConcurrentlyCallback aFunction) noexcept {
 				for (U64 Id = 0; Id < aCount; Id++) {
-					std::unique_lock<std::mutex> LG(Mutex);
-					if (FunctionState[Id].mAtomic.load()) {
-						FunctionState[Id].mAtomic.store(false);
+					std::unique_lock<std::mutex> LG(sMutex);
+					if (sFunctionState[Id].mAtomic.load()) {
+						sFunctionState[Id].mAtomic.store(false);
 						LG.unlock();
 						aFunction(aMyThreadId, Id);
 					}
@@ -77,7 +77,7 @@ namespace OpenArabTools {
 						continue;
 					};
 				}
-				ThreadAmountFinished++;
+				sThreadAmountFinished++;
 			}
 		}
 
@@ -86,16 +86,16 @@ namespace OpenArabTools {
 				Error::warning("Invalid parameter in runConcurrently: aFunction is nullptr");
 			}
 			if (aCount == 0) return; //nothing to do, this can happen
-			if (Internal::ThreadAmount != Internal::ThreadAmountFinished) return; //if runConcurrently is running
+			if (Internal::sThreadAmount != Internal::sThreadAmountFinished) return; //if runConcurrently is running
 
-			Internal::FunctionState.clear();
-			Internal::ThreadAmountFinished = 0;
+			Internal::sFunctionState.clear();
+			Internal::sThreadAmountFinished = 0;
 			for (U64 Id = 0; Id < aCount; Id++) {
-				Internal::FunctionState.emplace_back(true);
+				Internal::sFunctionState.emplace_back(true);
 			}
 
 			std::thread TempThread;
-			for (U08 Id = 0; Id < Internal::ThreadAmount; Id++) {
+			for (U08 Id = 0; Id < Internal::sThreadAmount; Id++) {
 				TempThread = std::thread(Internal::RunnerFunc, Id, aCount, aFunction);
 				TempThread.detach();
 			}
@@ -103,7 +103,7 @@ namespace OpenArabTools {
 			if (!aWaitReturn) return;
 
 			//wait
-			while (Internal::ThreadAmount != Internal::ThreadAmountFinished);
+			while (Internal::sThreadAmount != Internal::sThreadAmountFinished);
 		}
 	}
 

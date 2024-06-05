@@ -1,11 +1,11 @@
 #include "Crossing.hpp"
 
-#define SEMAPHORE_ROW_SIZE 4
-#define SEMAPHORE_RED_OFFSET 1
-#define SEMAPHORE_YELLOW_OFFSET 2
-#define SEMAPHORE_GREEN_OFFSET 3
-
 namespace OpenArabTools {
+	static constexpr U64 csSemaphoreRowSize = 4;
+	static constexpr U64 csSemaphoreRedOffset = 1;
+	static constexpr U64 csSemaphoreYellowOffset = 2;
+	static constexpr U64 csSemaphoreGreenOffset = 3;
+
 	CrossingSemaphoreAccessor::CrossingSemaphoreAccessor(Crossing* aParent, const U64 aSemaphoreId) noexcept
 	: mParent(nullptr), mSemaphoreId(INT64_MAX) {
 		if (this->mSemaphoreId >= 4) { 
@@ -37,23 +37,23 @@ namespace OpenArabTools {
 	}
 
 	void CrossingSemaphoreAccessor::setRedOnOff(const bool aOnOff) noexcept {
-		this->mParent->mSemaphoreStates[(this->mSemaphoreId * SEMAPHORE_ROW_SIZE) + SEMAPHORE_RED_OFFSET] = aOnOff;
+		this->mParent->mSemaphoreStates[(this->mSemaphoreId * csSemaphoreRowSize) + csSemaphoreRedOffset] = aOnOff;
 	}
 	void CrossingSemaphoreAccessor::setYellowOnOff(const bool aOnOff) noexcept {
-		this->mParent->mSemaphoreStates[(this->mSemaphoreId * SEMAPHORE_ROW_SIZE) + SEMAPHORE_YELLOW_OFFSET] = aOnOff;
+		this->mParent->mSemaphoreStates[(this->mSemaphoreId * csSemaphoreRowSize) + csSemaphoreYellowOffset] = aOnOff;
 	}
 	void CrossingSemaphoreAccessor::setGreenOnOff(const bool aOnOff) noexcept {
-		this->mParent->mSemaphoreStates[(this->mSemaphoreId * SEMAPHORE_ROW_SIZE) + SEMAPHORE_GREEN_OFFSET] = aOnOff;
+		this->mParent->mSemaphoreStates[(this->mSemaphoreId * csSemaphoreRowSize) + csSemaphoreGreenOffset] = aOnOff;
 	}
 
 	bool CrossingSemaphoreAccessor::isRedOn() const noexcept {
-		return this->mParent->mSemaphoreStates[(this->mSemaphoreId * SEMAPHORE_ROW_SIZE) + SEMAPHORE_RED_OFFSET];
+		return this->mParent->mSemaphoreStates[(this->mSemaphoreId * csSemaphoreRowSize) + csSemaphoreRedOffset];
 	}
 	bool CrossingSemaphoreAccessor::isYellowOn() const noexcept {
-		return this->mParent->mSemaphoreStates[(this->mSemaphoreId * SEMAPHORE_ROW_SIZE) + SEMAPHORE_YELLOW_OFFSET];
+		return this->mParent->mSemaphoreStates[(this->mSemaphoreId * csSemaphoreRowSize) + csSemaphoreYellowOffset];
 	}
 	bool CrossingSemaphoreAccessor::isGreenOn() const noexcept {
-		return this->mParent->mSemaphoreStates[(this->mSemaphoreId * SEMAPHORE_ROW_SIZE) + SEMAPHORE_GREEN_OFFSET];
+		return this->mParent->mSemaphoreStates[(this->mSemaphoreId * csSemaphoreRowSize) + csSemaphoreGreenOffset];
 	}
 
 	void CrossingSemaphoreAccessor::toggleRed() noexcept {
@@ -68,19 +68,68 @@ namespace OpenArabTools {
 
 	CrossingSemaphoreAccessor::~CrossingSemaphoreAccessor() noexcept {}
 
+	//validation macros, set default size
+	static constexpr const U64 sCrossingStandardSizeX = 30;
+	static constexpr const U64 sCrossingStandardSizeY = 30;
+
+	const char* DefaultCrossingStyle =
+		"GGGGGGGGGGGGGPRRPGGGGGGGGGGGGG"
+		"GGGGGGGGGGGGGPRRPGGGGGGGGGGGGG"
+		"GGGGGGGGGGGGGPRRPGGGGGGGGGGGGG"
+		"GGGGGGGGGGGGGPRRPGGGGGGGGGGGGG"
+		"GGGGGGGGGGGGGPRRPGGGGGGGGGGGGG"
+		"GGGGGGGGGGGGGPRRPGGGGGGGGGGGGG"
+		"GGGGGGGGGGGGGPRRPGGGGGGGGGGGGG"
+		"GGGGGGGGGBBBGPRRPGGGGGGGGGGGGG"
+		"GGGGGGGGGB3BGPRRPGGGGGGGGGGGGG"
+		"GGGGGGGGGB2BGPRRPGGGGGGGGGGGGG"
+		"GGGGGGGGGB1BGPRRPGGGGGGGGGGGGG"
+		"GGGGGGGGGBBBGPRRPGGGGGGGGGGGGG"
+		"GGGGGGGGGGGGGPRRPGGGGGGGGGGGGG"
+		"PPPPPPPPPPPPPPRRPPPPPPPPPPPPPP"
+		"RRRRRRRRRRRRRRRRRRRRRRRRRRRRRR"
+		"RRRRRRRRRRRRRRRRRRRRRRRRRRRRRR"
+		"PPPPPPPPPPPPPPRRPPPPPPPPPPPPPP"
+		"GGGGGGGGGGGGGPRRPGGGGGGGGGGGGG"
+		"GGGGGGGGGGGGGPRRPGBBBGGGGGGGGG"
+		"GGGGGGGGGGGGGPRRPGB1BGGGGGGGGG"
+		"GGGGGGGGGGGGGPRRPGB2BGGGGGGGGG"
+		"GGGGGGGGGGGGGPRRPGB3BGGGGGGGGG"
+		"GGGGGGGGGGGGGPRRPGBBBGGGGGGGGG"
+		"GGGGGGGGGGGGGPRRPGGGGGGGGGGGGG"
+		"GGGGGGGGGGGGGPRRPGGGGGGGGGGGGG"
+		"GGGGGGGGGGGGGPRRPGGGGGGGGGGGGG"
+		"GGGGGGGGGGGGGPRRPGGGGGGGGGGGGG"
+		"GGGGGGGGGGGGGPRRPGGGGGGGGGGGGG"
+		"GGGGGGGGGGGGGPRRPGGGGGGGGGGGGG"
+		"GGGGGGGGGGGGGPRRPGGGGGGGGGGGGG"
+	;
+
 	Crossing::Crossing() noexcept {
-		this->mMatrix.set(30, 30);
+		this->mMatrix.set(sCrossingStandardSizeX, sCrossingStandardSizeY);
 		this->mSemaphoreStates = { false };
 
 		//Draw 4-way crossing using matrix background and foreground
 
 		this->mMatrix.setBackground(LIGHTCOLOR_GREEN);
 
-		//TODO: load from file in resource folder: 30x30 string
+		this->drawFromString(DefaultCrossingStyle);
+	}
+	Crossing::Crossing(const std::string& aFilename) noexcept {
+		this->mMatrix.set(sCrossingStandardSizeX, sCrossingStandardSizeY);
+		this->mSemaphoreStates = { false };
 
-		//Draw road
+		std::ifstream File;
+		File.open(aFilename, std::ios::binary);
 
-		//Draw Semaphores
+		if (!File.is_open()) {
+			Error::error("Provided Crossing information file does not exist.");
+			return;
+		}
+
+		File.close();
+
+		//this->drawFromString();
 	}
 
 	void Crossing::showWindow() noexcept {
@@ -136,5 +185,57 @@ namespace OpenArabTools {
 
 	Crossing::~Crossing() noexcept {
 		
+	}
+
+	//helper - quadrants:
+	//01 //+1 from right
+	//23 //+2 from bottom
+	U64 Crossing::getQuadrantId(const U64 aX, const U64 aY) noexcept {
+		// from right + 2(from bottom)
+		return (aX >= this->mMatrix.getWidth() / 2) + (2 * (aY >= (this->mMatrix.getHeight() / 2)));
+	}
+
+	void Crossing::drawFromString(const std::string& aString) noexcept {
+		//most tiles will probably be grass
+		this->mMatrix.setBackground(LIGHTCOLOREX_DARK_GREEN);
+
+		//Draw from string
+		//G - Grass, R - Road, W - White, B - Black, 1 - Red, 2 - Yellow, 3 - Green
+
+		for (U64 Id = 0; Id < aString.size(); Id++) {
+			switch (aString[Id]) {
+				case('G'):
+					break;
+				case('R'):
+					this->mMatrix.setBackground(Id, LIGHTCOLOR_GRAY);
+					break;
+				case('P'):
+					this->mMatrix.setBackground(Id, LIGHTCOLOR_LIGHT_GRAY);
+					break;
+				case('B'):
+					this->mMatrix.setBackground(Id, LIGHTCOLOR_BLACK);
+					break;
+
+				case('1'):
+					this->mMatrix.setBackground(Id, LIGHTCOLOR_BLACK);
+					this->mMatrix.setOffColor(Id, LIGHTCOLOR_TRAFFIC_RED_OFF);
+					this->mMatrix.setColor(Id, LIGHTCOLOR_TRAFFIC_RED_ON);
+					break;
+				case('2'):
+					this->mMatrix.setBackground(Id, LIGHTCOLOR_BLACK);
+					this->mMatrix.setOffColor(Id, LIGHTCOLOR_TRAFFIC_YELLOW_OFF);
+					this->mMatrix.setColor(Id, LIGHTCOLOR_TRAFFIC_YELLOW_ON);
+					break;
+				case('3'):
+					this->mMatrix.setBackground(Id, LIGHTCOLOR_BLACK);
+					this->mMatrix.setOffColor(Id, LIGHTCOLOR_TRAFFIC_GREEN_OFF);
+					this->mMatrix.setColor(Id, LIGHTCOLOR_TRAFFIC_GREEN_ON);
+					break;
+				default:
+					this->mMatrix.setBackground(Id, LIGHTCOLOREX_ERROR_COLOR);
+					break;
+				
+			}
+		}
 	}
 }

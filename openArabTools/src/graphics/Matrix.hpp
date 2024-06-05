@@ -128,9 +128,9 @@ namespace OpenArabTools {
 
 		Internal::GLWindow mWindow;
 
-		Internal::CircleColor* mColor; //array of lights color
+		Internal::CircleColor* mrColor; //array of lights color
 		Internal::GLShaderBuffer<Internal::CircleColor> mColorBuf;
-		int* mIsOn; //array if lights on/off
+		int* mrIsOn; //array if lights on/off
 		Internal::GLShaderBuffer<int> mIsOnBuf;
 
 		bool mInit;

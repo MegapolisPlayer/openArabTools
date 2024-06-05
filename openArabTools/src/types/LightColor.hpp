@@ -29,28 +29,36 @@ namespace OpenArabTools {
 		LIGHTCOLOR_YELLOW
 	};
 
+	//Extended LightColor colors
+	enum LightColorEx : uint8_t {
+		LIGHTCOLOREX_DARK_GREEN = (LIGHTCOLOR_YELLOW + 1),
+		LIGHTCOLOREX_DARKER_GREEN,
+		LIGHTCOLOREX_LIGHT_BLUE,
+		LIGHTCOLOREX_DARK_BLUE,
+		LIGHTCOLOREX_CESKEDRAHY_LIGHT_BLUE,
+		LIGHTCOLOREX_CESKEDRAHY_DARK_BLUE,
+		LIGHTCOLOREX_ERROR_COLOR
+	};
+
 	//LightColor structure
 	struct OPENARABTOOLS_OBJ LightColor {
 		float R, G, B;
 
 		LightColor() noexcept;
-
 		LightColor (const LightColorD aColor) noexcept;
-
+		LightColor (const LightColorEx aColor) noexcept;
 		LightColor (const float aR, const float aG, const float aB) noexcept;
 
 		LightColor& Set(const LightColorD aColor) noexcept;
+		LightColor& Set(const LightColorEx aColor) noexcept;
 
 		LightColor& RGB(const float aR, const float aG, const float aB) noexcept;
-
 		LightColor& RGB255(const U08 aR, const U08 aG, const U08 aB) noexcept;
 
 		LightColor& Darken() noexcept;
-
 		LightColor& Lighten() noexcept;
 
 		LightColor& operator=(const LightColor& aColor) noexcept;
-
 		bool operator==(const LightColor& aOther) const noexcept;
 
 		~LightColor() noexcept;

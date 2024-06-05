@@ -11,9 +11,10 @@
 #include <mutex>
 #include <numeric>
 #include <array>
+#include <fstream>
 #endif
 
-//Uncomment this line to recieve full debug information from OAT
+//Uncomment this line to include full debug information when building OAT
 //#define OPENARABTOOLS_PRINT_DEBUG_INFO
 
 #ifdef _WIN32

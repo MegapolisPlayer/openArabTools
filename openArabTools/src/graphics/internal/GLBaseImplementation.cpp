@@ -27,38 +27,38 @@ namespace OpenArabTools {
 		//VBO object
 
 		GLVertexBuffer::GLVertexBuffer() noexcept {
-			this->mBuffer = GLInvalidHandle;
+			this->mBuffer = csGLInvalidHandle;
 			this->mVertices = 0;
 			this->mVertSize = 0;
 			this->mInit = false;
 		}
-		GLVertexBuffer::GLVertexBuffer(float* const aData, const U64 aVertices, const U64 aVerticesSize) noexcept {
-			this->Set(aData, aVertices, aVerticesSize);
+		GLVertexBuffer::GLVertexBuffer(float* const arData, const U64 aVertices, const U64 aVerticesSize) noexcept {
+			this->Set(arData, aVertices, aVerticesSize);
 		}
 
-		void GLVertexBuffer::Set(float* const aData, const U64 aVertices, const U64 aVerticesSize) noexcept {
+		void GLVertexBuffer::Set(float* const arData, const U64 aVertices, const U64 aVerticesSize) noexcept {
 			if (this->mInit) { this->Reset(); }
 			this->mVertices = aVertices;
 			this->mVertSize = aVerticesSize;
 			glGenBuffers(1, &this->mBuffer);
 			glBindBuffer(GL_ARRAY_BUFFER, this->mBuffer);
-			glBufferData(GL_ARRAY_BUFFER, this->mVertices * this->mVertSize * sizeof(float), aData, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, this->mVertices * this->mVertSize * sizeof(float), arData, GL_STATIC_DRAW);
 			this->mInit = true;
 		}
 
-		void GLVertexBuffer::EnableAttribute(const U64 aAmountValues, GLVertexArray* const aArray) noexcept {
+		void GLVertexBuffer::EnableAttribute(const U64 aAmountValues, GLVertexArray* const apArray) noexcept {
 			if (!this->mInit) return;
-			aArray->Bind();
+			apArray->Bind();
 			this->Bind();
-			glEnableVertexAttribArray(aArray->Counter);
-			glVertexAttribPointer(aArray->Counter, aAmountValues, GL_FLOAT, GL_FALSE, this->mVertSize * sizeof(float), (const void*)(std::accumulate(this->mCounterOffsets.begin(), this->mCounterOffsets.end(), 0) * sizeof(float)));
-			this->mCounters.push_back(aArray->Counter);
+			glEnableVertexAttribArray(apArray->Counter);
+			glVertexAttribPointer(apArray->Counter, aAmountValues, GL_FLOAT, GL_FALSE, this->mVertSize * sizeof(float), (const void*)(std::accumulate(this->mCounterOffsets.begin(), this->mCounterOffsets.end(), 0) * sizeof(float)));
+			this->mCounters.push_back(apArray->Counter);
 			this->mCounterOffsets.push_back(aAmountValues);
-			aArray->Counter++;
+			apArray->Counter++;
 		}
-		void GLVertexBuffer::EnableAttribute(const U64 aCounterOverride, const U64 aAmountValues, GLVertexArray* const aArray) noexcept {
+		void GLVertexBuffer::EnableAttribute(const U64 aCounterOverride, const U64 aAmountValues, GLVertexArray* const apArray) noexcept {
 			if (!this->mInit) return;
-			aArray->Bind();
+			apArray->Bind();
 			this->Bind();
 			glEnableVertexAttribArray(aCounterOverride);
 			glVertexAttribPointer(aCounterOverride, aAmountValues, GL_FLOAT, GL_FALSE, this->mVertSize * sizeof(float), (const void*)(std::accumulate(this->mCounterOffsets.begin(), this->mCounterOffsets.end(), 0) * sizeof(float)));
@@ -66,8 +66,8 @@ namespace OpenArabTools {
 			this->mCounterOffsets.push_back(aAmountValues);
 		}
 
-		void GLVertexBuffer::RestoreAttributes(GLVertexArray* const aArray) noexcept {
-			aArray->Bind();
+		void GLVertexBuffer::RestoreAttributes(GLVertexArray* const apArray) noexcept {
+			apArray->Bind();
 			this->Bind();
 			for (U64 i = 0; i < this->mCounters.size(); i++) {
 				glEnableVertexAttribArray(this->mCounters[i]);
@@ -88,7 +88,7 @@ namespace OpenArabTools {
 			if (!this->mInit) { return; }
 			this->Unbind();
 			glDeleteBuffers(1, &this->mBuffer);
-			this->mBuffer = GLInvalidHandle;
+			this->mBuffer = csGLInvalidHandle;
 			this->mVertices = 0;
 			this->mVertSize = 0;
 			this->mInit = false;
@@ -126,13 +126,13 @@ namespace OpenArabTools {
 		//POSX, POSY, TLX, TLY
 		// Position , Top Left
 
-		#define VERTEX_SIZE 4
+		static constexpr U64 csVertexSize = 4;
 
-		U64 GenerateTileVertices(float** const aBuffer, const U64 aCircleAmountX, const U64 aCircleAmountY) noexcept {
+		U64 GenerateTileVertices(float** const aprBuffer, const U64 aCircleAmountX, const U64 aCircleAmountY) noexcept {
 			U64 VerticesAmount = aCircleAmountX * aCircleAmountY * 4;
 
-			*aBuffer = (float*)malloc(sizeof(float) * VerticesAmount * VERTEX_SIZE);
-			if (*aBuffer == nullptr) {
+			*aprBuffer = (float*)malloc(sizeof(float) * VerticesAmount * csVertexSize);
+			if (*aprBuffer == nullptr) {
 				Error::error("Vertex Generation error: allocation failed");
 				return INT_MAX;
 			}
@@ -150,40 +150,40 @@ namespace OpenArabTools {
 				//for each vertex in object
 				for (U64 j = 0; j < 4; j++) {
 					//size * id of column + if on right - offset
-					(*aBuffer)[(i + j) * VERTEX_SIZE + 0] = (CircleSizeX * (int(i / VERTEX_SIZE) % aCircleAmountX) + ((j == 1 || j == 2) ? CircleSizeX : 0)) - 1.0;
+					(*aprBuffer)[(i + j) * csVertexSize + 0] = (CircleSizeX * (int(i / csVertexSize) % aCircleAmountX) + ((j == 1 || j == 2) ? CircleSizeX : 0)) - 1.0;
 					//size * id of row + if on bottom - offset
-					(*aBuffer)[(i + j) * VERTEX_SIZE + 1] = -((CircleSizeY * int(i / VERTEX_SIZE / aCircleAmountX) + ((j == 2 || j == 3) ? CircleSizeY : 0)) - 1.0);
+					(*aprBuffer)[(i + j) * csVertexSize + 1] = -((CircleSizeY * int(i / csVertexSize / aCircleAmountX) + ((j == 2 || j == 3) ? CircleSizeY : 0)) - 1.0);
 					
 					//top left coords
-					(*aBuffer)[(i + j) * VERTEX_SIZE + 2] = (*aBuffer)[i * VERTEX_SIZE + 0];
-					(*aBuffer)[(i + j) * VERTEX_SIZE + 3] = (*aBuffer)[i * VERTEX_SIZE + 1];
+					(*aprBuffer)[(i + j) * csVertexSize + 2] = (*aprBuffer)[i * csVertexSize + 0];
+					(*aprBuffer)[(i + j) * csVertexSize + 3] = (*aprBuffer)[i * csVertexSize + 1];
 				}
 			}
 
 			return VerticesAmount;
 		}
-		void ApplyChangesV(float** const aBuffer, const U64 aAmount, GLVertexBuffer* const aObject) noexcept {
-			aObject->Set(*aBuffer, aAmount, 4);
-			free(*aBuffer);
+		void ApplyChangesV(float** const appBuffer, const U64 aAmount, GLVertexBuffer* const aObject) noexcept {
+			aObject->Set(*appBuffer, aAmount, 4);
+			free(*appBuffer);
 		}
 
 		//IBO object
 
 		GLIndexBuffer::GLIndexBuffer() noexcept {
-			this->mBuffer = GLInvalidHandle;
+			this->mBuffer = csGLInvalidHandle;
 			this->mAmount = 0;
 			this->mInit = false;
 		}
-		GLIndexBuffer::GLIndexBuffer(unsigned int* const aData, const U64 aAmount) noexcept {
-			this->Set(aData, aAmount);
+		GLIndexBuffer::GLIndexBuffer(unsigned int* const arData, const U64 aAmount) noexcept {
+			this->Set(arData, aAmount);
 		}
 
-		void GLIndexBuffer::Set(unsigned int* const aData, const U64 aAmount) noexcept {
+		void GLIndexBuffer::Set(unsigned int* const arData, const U64 aAmount) noexcept {
 			if (this->mInit) { this->Reset(); }
 			this->mAmount = aAmount;
 			glGenBuffers(1, &this->mBuffer);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->mBuffer);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->mAmount * sizeof(unsigned int), aData, GL_STATIC_DRAW);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->mAmount * sizeof(unsigned int), arData, GL_STATIC_DRAW);
 			this->mInit = true;
 		}
 
@@ -197,7 +197,7 @@ namespace OpenArabTools {
 			if (!this->mInit) { return; }
 			this->Unbind();
 			glDeleteBuffers(1, &this->mBuffer);
-			this->mBuffer = GLInvalidHandle;
+			this->mBuffer = csGLInvalidHandle;
 			this->mAmount = 0;
 			this->mInit = false;
 		}
@@ -245,14 +245,14 @@ namespace OpenArabTools {
 			free(*aBuffer);
 		}
 
-		[[nodiscard]] GLHandle MakeShader(const char* aVertSource, const char* aFragSource) noexcept {
+		[[nodiscard]] GLHandle MakeShader(const char* arVertSource, const char* arFragSource) noexcept {
 			GLHandle Shader = glCreateProgram();
 			GLHandle VertexShader = glCreateShader(GL_VERTEX_SHADER);
 			GLHandle FragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
-			glShaderSource(VertexShader, 1, &aVertSource, NULL);
+			glShaderSource(VertexShader, 1, &arVertSource, NULL);
 			glCompileShader(VertexShader);
-			glShaderSource(FragmentShader, 1, &aFragSource, NULL);
+			glShaderSource(FragmentShader, 1, &arFragSource, NULL);
 			glCompileShader(FragmentShader);
 
 			S32 CompiledVS;
@@ -261,7 +261,7 @@ namespace OpenArabTools {
 				char Buffer[100]; int size;
 				glGetShaderInfoLog(VertexShader, 100, &size, Buffer);
 				Error::error("Vertex Shader error: ", Buffer);
-				return GLInvalidHandle;
+				return csGLInvalidHandle;
 			}
 			S32 CompiledFS;
 			glGetShaderiv(FragmentShader, GL_COMPILE_STATUS, &CompiledFS);
@@ -269,10 +269,10 @@ namespace OpenArabTools {
 				char Buffer[100]; int size;
 				glGetShaderInfoLog(FragmentShader, 100, &size, Buffer);
 				Error::error("Fragment Shader error: ", Buffer);
-				return GLInvalidHandle;
+				return csGLInvalidHandle;
 			}
 
-			if (CompiledVS == GL_FALSE || CompiledFS == GL_FALSE) { return GLInvalidHandle; }
+			if (CompiledVS == GL_FALSE || CompiledFS == GL_FALSE) { return csGLInvalidHandle; }
 
 			glAttachShader(Shader, VertexShader);
 			glAttachShader(Shader, FragmentShader);
@@ -360,20 +360,20 @@ namespace OpenArabTools {
 			;
 
 		namespace Debug {
-			void PrintVertexArray(float** aArray, const U64 aAmountOfVertices, const U64 aVertexSize, const U64 aVertexPrecisionOverride) noexcept {
+			void PrintVertexArray(float** aprArray, const U64 aAmountOfVertices, const U64 aVertexSize, const U64 aVertexPrecisionOverride) noexcept {
 				std::ios DefaultCout(nullptr); std::cerr.copyfmt(DefaultCout);
 				std::cerr << std::fixed << std::setprecision(aVertexPrecisionOverride);
 				for (uint64_t i = 0; i < aAmountOfVertices * aVertexSize; i++) {
 					if (i % aVertexSize == 0 && i != 0) std::cerr << '\n';
-					std::cerr << (*aArray)[i] << ',';
+					std::cerr << (*aprArray)[i] << ',';
 				}
 				std::cerr << '\n';
 				std::cerr.copyfmt(DefaultCout);
 			}
-			void PrintIndexArray(unsigned int** aArray, const U64 aAmountOfObjects, const U64 aIndicesPerObject, const U64 aNumberWidthOverride) noexcept {
+			void PrintIndexArray(unsigned int** aprArray, const U64 aAmountOfObjects, const U64 aIndicesPerObject, const U64 aNumberWidthOverride) noexcept {
 				for (uint64_t i = 0; i < aAmountOfObjects * aIndicesPerObject; i++) {
 					if (i % aIndicesPerObject == 0 && i != 0) std::cerr << '\n';
-					std::cerr << std::setw(aNumberWidthOverride) << std::setfill('0') << (*aArray)[i] << ',';
+					std::cerr << std::setw(aNumberWidthOverride) << std::setfill('0') << (*aprArray)[i] << ',';
 				}
 				std::cerr << '\n';
 			}

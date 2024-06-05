@@ -26,7 +26,7 @@ namespace OpenArabTools {
 			void ShowWindow() noexcept;
 			void HideWindow() noexcept;
 
-			void SetTitle(const char* aTitle) noexcept;
+			void SetTitle(const char* arTitle) noexcept;
 			std::string GetTitle() const noexcept;
 
 			void Resize(const U64 aWidth, const U64 aHeight) noexcept;
@@ -38,7 +38,7 @@ namespace OpenArabTools {
 			void SetBackground(const Dec aR, const Dec aG, const Dec aB, const Dec aA) noexcept;
 
 			//Internal radius - radius of empty space in middle of circle, almost never used
-			void PrepareUniforms(U64 aAmountCirclesX, U64 aAmountCirclesY, Dec aInternalRadius = 0.0) noexcept;
+			void PrepareUniforms(const U64 aAmountCirclesX, const U64 aAmountCirclesY, const Dec aInternalRadius = 0.0) noexcept;
 
 			void BindContext() noexcept;
 
@@ -82,7 +82,9 @@ namespace OpenArabTools {
 			U64 mFrameNo;
 			std::string mTitle;
 
-			static void SizeCallback(GLFWwindow* aWindow, const int aWidth, const int aHeight) noexcept;
+			static U64 msDefaultWindowSize;
+
+			static void SizeCallback(GLFWwindow* apWindow, const int aWidth, const int aHeight) noexcept;
 			void HandleResize(const U64 aWidth, const U64 aHeight) noexcept;
 			void HandleUserResize(const U64 aWidth, const U64 aHeight) noexcept;
 

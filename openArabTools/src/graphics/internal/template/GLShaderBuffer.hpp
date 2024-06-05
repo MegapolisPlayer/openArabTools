@@ -7,9 +7,9 @@ namespace OpenArabTools {
 	namespace Internal {
 		template<typename DataType, U64 Multiplier>
 		GLShaderBuffer<DataType, Multiplier>::GLShaderBuffer() noexcept {
-			this->mBuffer = GLInvalidHandle;
+			this->mBuffer = csGLInvalidHandle;
 			this->mSize = 0;
-			this->mVAOCount = GLInvalidHandle;
+			this->mVAOCount = csGLInvalidHandle;
 			this->mInit = false;
 		}
 		template<typename DataType, U64 Multiplier>
@@ -20,7 +20,7 @@ namespace OpenArabTools {
 
 		template<typename DataType, U64 Multiplier>
 		void GLShaderBuffer<DataType, Multiplier>::Set(DataType* aData, const U64 aAmount, GLVertexArray* const aArray) noexcept {
-			if (this->mVAOCount == GLInvalidHandle) { this->mVAOCount = aArray->Counter; aArray->Counter++; }
+			if (this->mVAOCount == csGLInvalidHandle) { this->mVAOCount = aArray->Counter; aArray->Counter++; }
 			if (this->mInit) {
 				glDeleteBuffers(1, &this->mBuffer);
 				//this could be done better but this isnt much of a performance loss
@@ -61,9 +61,9 @@ namespace OpenArabTools {
 		void GLShaderBuffer<DataType, Multiplier>::Reset() noexcept {
 			if (!this->mInit) return;
 			glDeleteBuffers(1, &this->mBuffer);
-			this->mBuffer = GLInvalidHandle;
+			this->mBuffer = csGLInvalidHandle;
 			this->mSize = 0;
-			this->mVAOCount = GLInvalidHandle;
+			this->mVAOCount = csGLInvalidHandle;
 			this->mInit = false;
 		}
 

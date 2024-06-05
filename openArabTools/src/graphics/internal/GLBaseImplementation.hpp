@@ -5,7 +5,7 @@ namespace OpenArabTools {
 	namespace Internal {
 
 		typedef uint32_t GLHandle;
-		constexpr static GLHandle GLInvalidHandle = INT32_MAX;
+		constexpr static GLHandle csGLInvalidHandle = INT32_MAX;
 
 		//Fx - foreground on, Ox - foreground off, Bx - background
 		struct CircleColor {

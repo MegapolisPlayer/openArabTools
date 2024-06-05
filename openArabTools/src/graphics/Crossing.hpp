@@ -2,10 +2,10 @@
 #include "Semaphore.hpp"
 
 namespace OpenArabTools {
-	#define SEMAPHORE_A 0
-	#define SEMAPHORE_B 1
-	#define SEMAPHORE_C 2
-	#define SEMAPHORE_D 3
+	constexpr U64 SEMAPHOREID_A = 0;
+	constexpr U64 SEMAPHOREID_B = 1;
+	constexpr U64 SEMAPHOREID_C = 2;
+	constexpr U64 SEMAPHOREID_D = 3;
 
 	class OPENARABTOOLS_OBJ CrossingSemaphoreAccessor {
 	public:
@@ -49,6 +49,7 @@ namespace OpenArabTools {
 		friend class CrossingSemaphoreAccessor;
 
 		Crossing() noexcept;
+		Crossing(const std::string& aFilename) noexcept;
 
 		void showWindow() noexcept;
 		void hideWindow() noexcept;
@@ -78,6 +79,9 @@ namespace OpenArabTools {
 		~Crossing() noexcept;
 	private:
 		Matrix mMatrix;
+
+		U64 getQuadrantId(const U64 aX, const U64 aY) noexcept;
+		void drawFromString(const std::string& aString) noexcept;
 
 		//Semaphore 0: Exists, Red, Yellow, Green
 		//Semaphore 1: Exists, Red, Yellow, Green
