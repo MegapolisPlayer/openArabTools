@@ -3,18 +3,18 @@
 
 namespace OpenArabTools {
 	struct OPENARABTOOLS_OBJ Shape {
-		U64 X, Y;
+		uint64_t X, Y;
 		LightColor Color;
 	};
 
 	struct OPENARABTOOLS_OBJ Square : public Shape {
-		U64 SizeX, SizeY;
+		uint64_t SizeX, SizeY;
 	};
 	struct OPENARABTOOLS_OBJ Circle : public Shape {
-		U64 Radeon;
+		uint64_t Radeon;
 	};
 	struct OPENARABTOOLS_OBJ Image : public Shape {
-		U64 SizeX, SizeY, ImageWidth, ImageHeight;
+		uint64_t SizeX, SizeY, ImageWidth, ImageHeight;
 	};
 
 	class OPENARABTOOLS_OBJ Canvas {

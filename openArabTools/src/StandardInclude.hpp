@@ -12,6 +12,7 @@
 #include <numeric>
 #include <array>
 #include <fstream>
+#include <random>
 #endif
 
 //Uncomment this line to include full debug information when building OAT
@@ -32,22 +33,8 @@
 #endif
 
 namespace OpenArabTools {
-	//General declarations of shorthand fixed-width types
-
-	typedef int8_t   S08;
-	typedef int16_t  S16;
-	typedef int32_t  S32;
-	typedef int64_t  S64;
-	typedef uint8_t  U08;
-	typedef uint16_t U16;
-	typedef uint32_t U32;
-	typedef uint64_t U64;
-
-	//Decimal number
-	typedef long double Dec;
-
 	//Callback for a function called by RunConcurrently (params: No. of thread from 0 (main), Id of job, do not return)
-	typedef void(RunConcurrentlyCallback)(const U08, const U64);
+	typedef void(RunConcurrentlyCallback)(const uint8_t, const uint64_t);
 
 	namespace Internal {
 		//Amount of initializations

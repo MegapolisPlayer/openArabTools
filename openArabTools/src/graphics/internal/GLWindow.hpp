@@ -15,7 +15,7 @@ namespace OpenArabTools {
 			friend class OPENARABTOOLS_OBJ ::OpenArabTools::Matrix;
 
 			GLWindow() noexcept; //default 500, 500 (X,Y)
-			GLWindow(const U64 aWidth, const U64 aHeight) noexcept;
+			GLWindow(const uint64_t aWidth, const uint64_t aHeight) noexcept;
 			GLWindow(const GLWindow& aOther) noexcept;
 			GLWindow(GLWindow&& aOther) noexcept;
 			GLWindow& operator=(const GLWindow& aOther) noexcept;
@@ -29,16 +29,16 @@ namespace OpenArabTools {
 			void SetTitle(const char* arTitle) noexcept;
 			std::string GetTitle() const noexcept;
 
-			void Resize(const U64 aWidth, const U64 aHeight) noexcept;
-			U64 SizeX() const noexcept;
-			U64 SizeY() const noexcept;
+			void Resize(const uint64_t aWidth, const uint64_t aHeight) noexcept;
+			uint64_t SizeX() const noexcept;
+			uint64_t SizeY() const noexcept;
 
-			void SetBackground(const Dec aAll) noexcept;
-			void SetBackground(const Dec aRGB, const Dec aA) noexcept;
-			void SetBackground(const Dec aR, const Dec aG, const Dec aB, const Dec aA) noexcept;
+			void SetBackground(const double_t aAll) noexcept;
+			void SetBackground(const double_t aRGB, const double_t aA) noexcept;
+			void SetBackground(const double_t aR, const double_t aG, const double_t aB, const double_t aA) noexcept;
 
 			//Internal radius - radius of empty space in middle of circle, almost never used
-			void PrepareUniforms(const U64 aAmountCirclesX, const U64 aAmountCirclesY, const Dec aInternalRadius = 0.0) noexcept;
+			void PrepareUniforms(const uint64_t aAmountCirclesX, const uint64_t aAmountCirclesY, const double_t aInternalRadius = 0.0) noexcept;
 
 			void BindContext() noexcept;
 
@@ -50,7 +50,7 @@ namespace OpenArabTools {
 
 			void Reset() noexcept;
 
-			U64 FrameNo() const noexcept; //gets. no of frame
+			uint64_t FrameNo() const noexcept; //gets. no of frame
 			void FrameNoReset() noexcept; //resets frame no
 
 			~GLWindow() noexcept;
@@ -78,15 +78,15 @@ namespace OpenArabTools {
 
 		private: //PRIVATE SECTION
 			GLFWwindow* mWindow;
-			U64 mWidth, mHeight;
-			U64 mFrameNo;
+			uint64_t mWidth, mHeight;
+			uint64_t mFrameNo;
 			std::string mTitle;
 
-			static U64 msDefaultWindowSize;
+			static uint64_t msDefaultWindowSize;
 
 			static void SizeCallback(GLFWwindow* apWindow, const int aWidth, const int aHeight) noexcept;
-			void HandleResize(const U64 aWidth, const U64 aHeight) noexcept;
-			void HandleUserResize(const U64 aWidth, const U64 aHeight) noexcept;
+			void HandleResize(const uint64_t aWidth, const uint64_t aHeight) noexcept;
+			void HandleUserResize(const uint64_t aWidth, const uint64_t aHeight) noexcept;
 
 			void CreateWindow() noexcept;
 

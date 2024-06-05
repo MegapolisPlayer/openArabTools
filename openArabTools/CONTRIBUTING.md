@@ -6,8 +6,8 @@
 - Follow the naming style: class names **CapitalCase/PascalCase**, (member) functions with **camelCase** (same naming as ArabTools)
 - Local variables follow **CapitalCase/PascalCase**
 - Non-public member variables prefixed with `m`, e.g. `mMember1` or `mMember2`
-- Parameters to functions prefixed with `a`, e.g. `void MyObject.myFunc(S32 aParameter, U32 aParameter2)`
-- Static **variables** are prefixed with `s`, e.g. `static U64 sVar = 42;`
+- Parameters to functions prefixed with `a`, e.g. `void MyObject.myFunc(int32_t aParameter, uint32_t aParameter2)`
+- Static **variables** are prefixed with `s`, e.g. `static uint64_t sVar = 42;`
 - Constants/readonly variables use `c`
 - Pointers use `p`, pointers to pointers use `pp` and so on
 - Raw arrays use `r` instead of `p`. A pointer to a raw array is `prPtrToArray` and a 2D raw array is `rr2DArray`

@@ -150,7 +150,7 @@ namespace OpenArabTools {
 	void Semaphore::showWindowAndRun() noexcept {
 		this->mMatrix.showWindowAndRun();
 	}
-	bool Semaphore::sleep(const U64 aMs) noexcept {
+	bool Semaphore::sleep(const uint64_t aMs) noexcept {
 		return this->mMatrix.sleep(aMs);
 	}
 

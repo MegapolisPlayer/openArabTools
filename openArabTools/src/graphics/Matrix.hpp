@@ -13,7 +13,7 @@ namespace OpenArabTools {
 	class OPENARABTOOLS_OBJ Matrix {
 	public:
 		Matrix() noexcept;
-		Matrix(const U64 aSizeX, const U64 aSizeY) noexcept;
+		Matrix(const uint64_t aSizeX, const uint64_t aSizeY) noexcept;
 		Matrix(const Matrix& aOther) noexcept;
 		Matrix(Matrix&& aOther) noexcept;
 		Matrix& operator=(const Matrix& aOther) noexcept;
@@ -32,52 +32,52 @@ namespace OpenArabTools {
 
 		void setBackground(const LightColor aColor) noexcept;
 
-		void setBackground(const U64 aId, const LightColor& aColor) noexcept;
+		void setBackground(const uint64_t aId, const LightColor& aColor) noexcept;
 
-		void setBackground(const U64 aColumn, const U64 aRow, const LightColor& aColor) noexcept;
+		void setBackground(const uint64_t aColumn, const uint64_t aRow, const LightColor& aColor) noexcept;
 
 		void setColor(const LightColor& aColor) noexcept;
 
-		void setColor(const U64 aId, const LightColor& aColor) noexcept;
+		void setColor(const uint64_t aId, const LightColor& aColor) noexcept;
 
-		void setColor(const U64 aColumn, const U64 aRow, const LightColor& aColor) noexcept;
+		void setColor(const uint64_t aColumn, const uint64_t aRow, const LightColor& aColor) noexcept;
 
 		void setOff() noexcept;
-		void setOff(const U64 aId) noexcept;
-		void setOff(const U64 aColumn, const U64 aRow) noexcept;
+		void setOff(const uint64_t aId) noexcept;
+		void setOff(const uint64_t aColumn, const uint64_t aRow) noexcept;
 		void setOn() noexcept;
-		void setOn(const U64 aId) noexcept;
-		void setOn(const U64 aColumn, const U64 aRow) noexcept;
+		void setOn(const uint64_t aId) noexcept;
+		void setOn(const uint64_t aColumn, const uint64_t aRow) noexcept;
 		void setOnOff(const bool aOnOff) noexcept;
-		void setOnOff(const U64 aId, const bool aOnOff) noexcept;
-		void setOnOff(const U64 aColumn, const U64 aRow, const bool aOnOff) noexcept;
+		void setOnOff(const uint64_t aId, const bool aOnOff) noexcept;
+		void setOnOff(const uint64_t aColumn, const uint64_t aRow, const bool aOnOff) noexcept;
 
 		//
 		// Getters
 		//
 
 		LightColor getBackground() const noexcept;
-		LightColor getBackground(const U64 aId) const noexcept;
-		LightColor getBackground(const U64 aColumn, const U64 aRow) const noexcept;
+		LightColor getBackground(const uint64_t aId) const noexcept;
+		LightColor getBackground(const uint64_t aColumn, const uint64_t aRow) const noexcept;
 
 		LightColor getColor() const noexcept;
-		LightColor getColor(const U64 aId) const noexcept;
-		LightColor getColor(const U64 aColumn, const U64 aRow) const noexcept;
+		LightColor getColor(const uint64_t aId) const noexcept;
+		LightColor getColor(const uint64_t aColumn, const uint64_t aRow) const noexcept;
 
 		std::string getTitle() const noexcept;
-		U64 getWidth() const noexcept;
-		U64 getHeight() const noexcept;
-		U64 getSize() const noexcept;
+		uint64_t getWidth() const noexcept;
+		uint64_t getHeight() const noexcept;
+		uint64_t getSize() const noexcept;
 
 		//If size 1x1 -> Returns if light off, otherwise checks the top-left
 		bool isOff() const noexcept;
-		bool isOff(const U64 aId) const noexcept;
-		bool isOff(const U64 aColumn, const U64 aRow) const noexcept;
+		bool isOff(const uint64_t aId) const noexcept;
+		bool isOff(const uint64_t aColumn, const uint64_t aRow) const noexcept;
 
 		//If size 1x1 -> Returns if light on, otherwise checks the top-left
 		bool isOn() const noexcept;
-		bool isOn(const U64 aId) const noexcept;
-		bool isOn(const U64 aColumn, const U64 aRow) const noexcept;
+		bool isOn(const uint64_t aId) const noexcept;
+		bool isOn(const uint64_t aColumn, const uint64_t aRow) const noexcept;
 
 		//
 		// OpenArabTools necessities
@@ -97,34 +97,34 @@ namespace OpenArabTools {
 		//
 
 		void setOffColor(const LightColor& aColor) noexcept;
-		void setOffColor(const U64 aId, const LightColor& aColor) noexcept;
-		void setOffColor(const U64 aColumn, const U64 aRow, const LightColor& aColor) noexcept;
+		void setOffColor(const uint64_t aId, const LightColor& aColor) noexcept;
+		void setOffColor(const uint64_t aColumn, const uint64_t aRow, const LightColor& aColor) noexcept;
 		
 		void setColorAlpha(const float aAlpha) noexcept;
-		void setColorAlpha(const U64 aId, const float aAlpha) noexcept;
-		void setColorAlpha(const U64 aColumn, const U64 aRow, const float aAlpha) noexcept;
+		void setColorAlpha(const uint64_t aId, const float aAlpha) noexcept;
+		void setColorAlpha(const uint64_t aColumn, const uint64_t aRow, const float aAlpha) noexcept;
 		void setOffColorAlpha(const float aAlpha) noexcept;
-		void setOffColorAlpha(const U64 aId, const float aAlpha) noexcept;
-		void setOffColorAlpha(const U64 aColumn, const U64 aRow, const float aAlpha) noexcept;
+		void setOffColorAlpha(const uint64_t aId, const float aAlpha) noexcept;
+		void setOffColorAlpha(const uint64_t aColumn, const uint64_t aRow, const float aAlpha) noexcept;
 		void setBackgroundAlpha(const float aAlpha) noexcept;
-		void setBackgroundAlpha(const U64 aId, const float aAlpha) noexcept;
-		void setBackgroundAlpha(const U64 aColumn, const U64 aRow, const float aAlpha) noexcept;
+		void setBackgroundAlpha(const uint64_t aId, const float aAlpha) noexcept;
+		void setBackgroundAlpha(const uint64_t aColumn, const uint64_t aRow, const float aAlpha) noexcept;
 
 		void showWindowAndRun() noexcept;
 
-		void set(const U64 aSizeX, const U64 aSizeY) noexcept;
+		void set(const uint64_t aSizeX, const uint64_t aSizeY) noexcept;
 		void reset() noexcept;
 
-		void resizeMatrix(const U64 aNewX, const U64 aNewY) noexcept;
+		void resizeMatrix(const uint64_t aNewX, const uint64_t aNewY) noexcept;
 
 		//Sleeps on this thread while still updating window, returns true if window stayed open (and false if window closed)
 		//NOTE: invalidates Matrix if window closed
-		bool sleep(const U64 aMs) noexcept;
+		bool sleep(const uint64_t aMs) noexcept;
 
 		//Destructor
 		~Matrix() noexcept;
 	//private:
-		U64 mSizeX, mSizeY;
+		uint64_t mSizeX, mSizeY;
 
 		Internal::GLWindow mWindow;
 
@@ -140,7 +140,7 @@ namespace OpenArabTools {
 		void UploadColorToShader() noexcept;
 		void UploadStateToShader() noexcept;
 
-		void CheckRangeID(const U64 aId) noexcept;
-		void CheckRangeCR(const U64 aCol, const U64 aRow) noexcept;
+		void CheckRangeID(const uint64_t aId) noexcept;
+		void CheckRangeCR(const uint64_t aCol, const uint64_t aRow) noexcept;
 	};
 }

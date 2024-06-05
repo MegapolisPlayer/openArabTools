@@ -32,11 +32,11 @@ namespace OpenArabTools {
 			this->mVertSize = 0;
 			this->mInit = false;
 		}
-		GLVertexBuffer::GLVertexBuffer(float* const arData, const U64 aVertices, const U64 aVerticesSize) noexcept {
+		GLVertexBuffer::GLVertexBuffer(float* const arData, const uint64_t aVertices, const uint64_t aVerticesSize) noexcept {
 			this->Set(arData, aVertices, aVerticesSize);
 		}
 
-		void GLVertexBuffer::Set(float* const arData, const U64 aVertices, const U64 aVerticesSize) noexcept {
+		void GLVertexBuffer::Set(float* const arData, const uint64_t aVertices, const uint64_t aVerticesSize) noexcept {
 			if (this->mInit) { this->Reset(); }
 			this->mVertices = aVertices;
 			this->mVertSize = aVerticesSize;
@@ -46,7 +46,7 @@ namespace OpenArabTools {
 			this->mInit = true;
 		}
 
-		void GLVertexBuffer::EnableAttribute(const U64 aAmountValues, GLVertexArray* const apArray) noexcept {
+		void GLVertexBuffer::EnableAttribute(const uint64_t aAmountValues, GLVertexArray* const apArray) noexcept {
 			if (!this->mInit) return;
 			apArray->Bind();
 			this->Bind();
@@ -56,7 +56,7 @@ namespace OpenArabTools {
 			this->mCounterOffsets.push_back(aAmountValues);
 			apArray->Counter++;
 		}
-		void GLVertexBuffer::EnableAttribute(const U64 aCounterOverride, const U64 aAmountValues, GLVertexArray* const apArray) noexcept {
+		void GLVertexBuffer::EnableAttribute(const uint64_t aCounterOverride, const uint64_t aAmountValues, GLVertexArray* const apArray) noexcept {
 			if (!this->mInit) return;
 			apArray->Bind();
 			this->Bind();
@@ -69,7 +69,7 @@ namespace OpenArabTools {
 		void GLVertexBuffer::RestoreAttributes(GLVertexArray* const apArray) noexcept {
 			apArray->Bind();
 			this->Bind();
-			for (U64 i = 0; i < this->mCounters.size(); i++) {
+			for (uint64_t i = 0; i < this->mCounters.size(); i++) {
 				glEnableVertexAttribArray(this->mCounters[i]);
 				glVertexAttribPointer(
 					this->mCounters[i], this->mCounterOffsets[i], GL_FLOAT, GL_FALSE, this->mVertSize * sizeof(float),
@@ -105,13 +105,13 @@ namespace OpenArabTools {
 		GLHandle GLVertexBuffer::GetHandle() const noexcept {
 			return this->mBuffer;
 		}
-		U64 GLVertexBuffer::GetNumberOfVertices() const noexcept {
+		uint64_t GLVertexBuffer::GetNumberOfVertices() const noexcept {
 			return this->mVertices;
 		}
-		U64 GLVertexBuffer::GetSizeOfVertex() const noexcept {
+		uint64_t GLVertexBuffer::GetSizeOfVertex() const noexcept {
 			return this->mVertSize;
 		}
-		U64 GLVertexBuffer::GetAmountOfNumbers() const noexcept {
+		uint64_t GLVertexBuffer::GetAmountOfNumbers() const noexcept {
 			return this->mVertices * this->mVertSize;
 		}
 
@@ -126,10 +126,10 @@ namespace OpenArabTools {
 		//POSX, POSY, TLX, TLY
 		// Position , Top Left
 
-		static constexpr U64 csVertexSize = 4;
+		static constexpr uint64_t csVertexSize = 4;
 
-		U64 GenerateTileVertices(float** const aprBuffer, const U64 aCircleAmountX, const U64 aCircleAmountY) noexcept {
-			U64 VerticesAmount = aCircleAmountX * aCircleAmountY * 4;
+		uint64_t GenerateTileVertices(float** const aprBuffer, const uint64_t aCircleAmountX, const uint64_t aCircleAmountY) noexcept {
+			uint64_t VerticesAmount = aCircleAmountX * aCircleAmountY * 4;
 
 			*aprBuffer = (float*)malloc(sizeof(float) * VerticesAmount * csVertexSize);
 			if (*aprBuffer == nullptr) {
@@ -146,9 +146,9 @@ namespace OpenArabTools {
 			float CircleSizeY = (2.0 / aCircleAmountY);
 
 			//for each object
-			for (U64 i = 0; i < VerticesAmount; i += 4) {
+			for (uint64_t i = 0; i < VerticesAmount; i += 4) {
 				//for each vertex in object
-				for (U64 j = 0; j < 4; j++) {
+				for (uint64_t j = 0; j < 4; j++) {
 					//size * id of column + if on right - offset
 					(*aprBuffer)[(i + j) * csVertexSize + 0] = (CircleSizeX * (int(i / csVertexSize) % aCircleAmountX) + ((j == 1 || j == 2) ? CircleSizeX : 0)) - 1.0;
 					//size * id of row + if on bottom - offset
@@ -162,7 +162,7 @@ namespace OpenArabTools {
 
 			return VerticesAmount;
 		}
-		void ApplyChangesV(float** const appBuffer, const U64 aAmount, GLVertexBuffer* const aObject) noexcept {
+		void ApplyChangesV(float** const appBuffer, const uint64_t aAmount, GLVertexBuffer* const aObject) noexcept {
 			aObject->Set(*appBuffer, aAmount, 4);
 			free(*appBuffer);
 		}
@@ -174,11 +174,11 @@ namespace OpenArabTools {
 			this->mAmount = 0;
 			this->mInit = false;
 		}
-		GLIndexBuffer::GLIndexBuffer(unsigned int* const arData, const U64 aAmount) noexcept {
+		GLIndexBuffer::GLIndexBuffer(unsigned int* const arData, const uint64_t aAmount) noexcept {
 			this->Set(arData, aAmount);
 		}
 
-		void GLIndexBuffer::Set(unsigned int* const arData, const U64 aAmount) noexcept {
+		void GLIndexBuffer::Set(unsigned int* const arData, const uint64_t aAmount) noexcept {
 			if (this->mInit) { this->Reset(); }
 			this->mAmount = aAmount;
 			glGenBuffers(1, &this->mBuffer);
@@ -202,7 +202,7 @@ namespace OpenArabTools {
 			this->mInit = false;
 		}
 
-		void GLIndexBuffer::Draw(const U64 aOffsetNumbers, const U64 aAmountToDraw) noexcept {
+		void GLIndexBuffer::Draw(const uint64_t aOffsetNumbers, const uint64_t aAmountToDraw) noexcept {
 			this->Bind();
 			glDrawElements(GL_TRIANGLES, aAmountToDraw == 0 ? this->mAmount : aAmountToDraw, GL_UNSIGNED_INT, (const void*)(aOffsetNumbers * sizeof(unsigned int)));
 		}
@@ -210,7 +210,7 @@ namespace OpenArabTools {
 		GLHandle GLIndexBuffer::GetHandle() const noexcept {
 			return this->mBuffer;
 		}
-		U64 GLIndexBuffer::GetNumberOfIndices() const noexcept {
+		uint64_t GLIndexBuffer::GetNumberOfIndices() const noexcept {
 			return this->mAmount;
 		}
 
@@ -220,7 +220,7 @@ namespace OpenArabTools {
 
 		//Indices generation
 
-		void GenerateTileIndices(unsigned int** aBuffer, const U64 aAmount) {
+		void GenerateTileIndices(unsigned int** aBuffer, const uint64_t aAmount) {
 			*aBuffer = (unsigned int*)malloc(sizeof(unsigned int) * aAmount * 6);
 			if (*aBuffer == nullptr) {
 				Error::error("Index Generation error: allocation failed"); return;
@@ -230,7 +230,7 @@ namespace OpenArabTools {
 			// pattern:
 			// 0,1,2,2,3,0
 
-			for (U64 i = 0; i < aAmount; i++) {
+			for (uint64_t i = 0; i < aAmount; i++) {
 				(*aBuffer)[i * 6] = i * 4;
 				(*aBuffer)[i * 6 + 1] = i * 4 + 1;
 				(*aBuffer)[i * 6 + 2] = i * 4 + 2;
@@ -240,7 +240,7 @@ namespace OpenArabTools {
 			}
 
 		}
-		void ApplyChangesI(unsigned int** const aBuffer, const U64 aAmount, GLIndexBuffer* const aObject) noexcept {
+		void ApplyChangesI(unsigned int** const aBuffer, const uint64_t aAmount, GLIndexBuffer* const aObject) noexcept {
 			aObject->Set(*aBuffer, aAmount * 6);
 			free(*aBuffer);
 		}
@@ -255,7 +255,7 @@ namespace OpenArabTools {
 			glShaderSource(FragmentShader, 1, &arFragSource, NULL);
 			glCompileShader(FragmentShader);
 
-			S32 CompiledVS;
+			int32_t CompiledVS;
 			glGetShaderiv(VertexShader, GL_COMPILE_STATUS, &CompiledVS);
 			if (CompiledVS == GL_FALSE) {
 				char Buffer[100]; int size;
@@ -263,7 +263,7 @@ namespace OpenArabTools {
 				Error::error("Vertex Shader error: ", Buffer);
 				return csGLInvalidHandle;
 			}
-			S32 CompiledFS;
+			int32_t CompiledFS;
 			glGetShaderiv(FragmentShader, GL_COMPILE_STATUS, &CompiledFS);
 			if (CompiledFS == GL_FALSE) {
 				char Buffer[100]; int size;
@@ -346,21 +346,24 @@ namespace OpenArabTools {
 			"	float ActualDistance = distance(CenterPoint, UV);\n"
 									//if >IRadius and not(>ERadiusM) then we are good
 			"	float ResultCircle = step(IRadius, ActualDistance) * (1.0 - step(ERadiusM, ActualDistance));\n"
+				//F - foreground, O - off color, B - background
 			"	vec4 CF = vec4(ColorInformation[ObjectID].FR, ColorInformation[ObjectID].FG, ColorInformation[ObjectID].FB, ColorInformation[ObjectID].FA);\n"
 			"	vec4 CO = vec4(ColorInformation[ObjectID].OR, ColorInformation[ObjectID].OG, ColorInformation[ObjectID].OB, ColorInformation[ObjectID].OA);\n"
 			"	vec4 CB = vec4(ColorInformation[ObjectID].BR, ColorInformation[ObjectID].BG, ColorInformation[ObjectID].BB, ColorInformation[ObjectID].BA);\n"
 			"	OutColor = ("
 					//either CF or CO
-			"		(CF * vec4(ResultCircle) * vec4(IsLightOn[ObjectID])) + "
-			"		(CO * vec4(ResultCircle) * vec4(!IsLightOn[ObjectID])) + "
-					//background on outside always, if OFF.alpha != 1: background everywhere
-			"		(CB * vec4(1.0 - ResultCircle)) + (CB * vec4(ResultCircle) * vec4(1.0 - CO.w) * vec4(!IsLightOn[ObjectID]))"
+			"		(CF * vec4(ResultCircle) * vec4(CF.w) * vec4(IsLightOn[ObjectID])) + "
+			"		(CO * vec4(ResultCircle) * vec4(CO.w) * vec4(!IsLightOn[ObjectID])) + "
+					//background on outside always, if OFF.alpha != 1 or FG.alpha != 1: background everywhere
+			"		(CB * vec4(1.0 - ResultCircle)) + "
+			"		(CB * vec4(ResultCircle) * vec4(1.0 - CO.w) * vec4(!IsLightOn[ObjectID])) + "
+			"		(CB * vec4(ResultCircle) * vec4(1.0 - CF.w) * vec4(IsLightOn[ObjectID]))"
 			"	);\n"
 			"}\n"
 			;
 
 		namespace Debug {
-			void PrintVertexArray(float** aprArray, const U64 aAmountOfVertices, const U64 aVertexSize, const U64 aVertexPrecisionOverride) noexcept {
+			void PrintVertexArray(float** aprArray, const uint64_t aAmountOfVertices, const uint64_t aVertexSize, const uint64_t aVertexPrecisionOverride) noexcept {
 				std::ios DefaultCout(nullptr); std::cerr.copyfmt(DefaultCout);
 				std::cerr << std::fixed << std::setprecision(aVertexPrecisionOverride);
 				for (uint64_t i = 0; i < aAmountOfVertices * aVertexSize; i++) {
@@ -370,7 +373,7 @@ namespace OpenArabTools {
 				std::cerr << '\n';
 				std::cerr.copyfmt(DefaultCout);
 			}
-			void PrintIndexArray(unsigned int** aprArray, const U64 aAmountOfObjects, const U64 aIndicesPerObject, const U64 aNumberWidthOverride) noexcept {
+			void PrintIndexArray(unsigned int** aprArray, const uint64_t aAmountOfObjects, const uint64_t aIndicesPerObject, const uint64_t aNumberWidthOverride) noexcept {
 				for (uint64_t i = 0; i < aAmountOfObjects * aIndicesPerObject; i++) {
 					if (i % aIndicesPerObject == 0 && i != 0) std::cerr << '\n';
 					std::cerr << std::setw(aNumberWidthOverride) << std::setfill('0') << (*aprArray)[i] << ',';

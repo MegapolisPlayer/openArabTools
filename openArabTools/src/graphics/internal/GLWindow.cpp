@@ -7,13 +7,13 @@
 
 namespace OpenArabTools {
 	namespace Internal {
-		U64 GLWindow::msDefaultWindowSize = 650;
+		uint64_t GLWindow::msDefaultWindowSize = 650;
 
 		GLWindow::GLWindow() noexcept 
 		: mWidth(msDefaultWindowSize), mHeight(msDefaultWindowSize), mFrameNo(0), mTitle("openArabTools")
 		{ this->CreateWindow(); }
 
-		GLWindow::GLWindow(const U64 aWidth, const U64 aHeight) noexcept
+		GLWindow::GLWindow(const uint64_t aWidth, const uint64_t aHeight) noexcept
 		: mWidth(aWidth), mHeight(aHeight), mFrameNo(0), mTitle("openArabTools")
 		{ this->CreateWindow(); }
 
@@ -107,7 +107,7 @@ namespace OpenArabTools {
 		std::string GLWindow::GetTitle() const noexcept {
 			return this->mTitle;
 		}
-		void GLWindow::Resize(const U64 aWidth, const U64 aHeight) noexcept {
+		void GLWindow::Resize(const uint64_t aWidth, const uint64_t aHeight) noexcept {
 #ifdef OPENARABTOOLS_PRINT_DEBUG_INFO
 			Error::warning("System window resize.");
 #endif
@@ -117,25 +117,25 @@ namespace OpenArabTools {
 			glUniform2f(this->glCSUResolution, this->mWidth, this->mHeight);
 			glfwSetWindowSize(this->mWindow, this->mWidth, this->mHeight); //doesnt call callback!
 		}
-		U64 GLWindow::SizeX() const noexcept {
+		uint64_t GLWindow::SizeX() const noexcept {
 			return this->mWidth;
 		}
-		U64 GLWindow::SizeY() const noexcept {
+		uint64_t GLWindow::SizeY() const noexcept {
 			return this->mHeight;
 		}
-		void GLWindow::SetBackground(const Dec aAll) noexcept {
+		void GLWindow::SetBackground(const double_t aAll) noexcept {
 			glClear(GL_COLOR_BUFFER_BIT);
 			glClearColor(aAll, aAll, aAll, aAll);
 		}
-		void GLWindow::SetBackground(const Dec aRGB, const Dec aA) noexcept {
+		void GLWindow::SetBackground(const double_t aRGB, const double_t aA) noexcept {
 			glClear(GL_COLOR_BUFFER_BIT);
 			glClearColor(aRGB, aRGB, aRGB, aA);
 		}
-		void GLWindow::SetBackground(const Dec aR, const Dec aG, const Dec aB, const Dec aA) noexcept {
+		void GLWindow::SetBackground(const double_t aR, const double_t aG, const double_t aB, const double_t aA) noexcept {
 			glClear(GL_COLOR_BUFFER_BIT);
 			glClearColor(aR, aG, aB, aA);
 		}
-		void GLWindow::PrepareUniforms(const U64 aAmountCirclesX, const U64 aAmountCirclesY, const Dec aInternalRadius) noexcept {
+		void GLWindow::PrepareUniforms(const uint64_t aAmountCirclesX, const uint64_t aAmountCirclesY, const double_t aInternalRadius) noexcept {
 			this->glVAO.Bind();
 			this->glIBO.Bind();
 
@@ -178,7 +178,7 @@ namespace OpenArabTools {
 			};
 			ShadersDestroy();
 		}
-		U64 GLWindow::FrameNo() const noexcept {
+		uint64_t GLWindow::FrameNo() const noexcept {
 			return this->mFrameNo;
 		}
 		void GLWindow::FrameNoReset() noexcept {
@@ -193,7 +193,7 @@ namespace OpenArabTools {
 		void GLWindow::SizeCallback(GLFWwindow* apWindow, const int aWidth, const int aHeight) noexcept {
 			((GLWindow*)glfwGetWindowUserPointer(apWindow))->HandleUserResize(aWidth, aHeight);
 		}
-		void GLWindow::HandleUserResize(const U64 aWidth, const U64 aHeight) noexcept {
+		void GLWindow::HandleUserResize(const uint64_t aWidth, const uint64_t aHeight) noexcept {
 			//TODO: add resizing support
 #ifdef OPENARABTOOLS_PRINT_DEBUG_INFO
 			Error::warning("User window resize.");

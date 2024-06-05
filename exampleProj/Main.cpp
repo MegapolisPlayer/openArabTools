@@ -30,6 +30,19 @@ int main() {
 
 	{
 		ArabTools::Crossing cr;
+
+		ArabTools::CrossingSemaphoreAccessor* csa1 = cr.getSemaphore(0);
+		ArabTools::CrossingSemaphoreAccessor* csa2 = cr.getSemaphore(1);
+		ArabTools::CrossingSemaphoreAccessor* csa3 = cr.getSemaphore(2);
+		ArabTools::CrossingSemaphoreAccessor* csa4 = cr.getSemaphore(3);
+
+		csa1->setGreenOn();
+		csa2->setGreenOn();
+		csa3->setGreenOn();
+		csa4->setGreenOn();
+
+		cr.hideSemaphore(0);
+
 		cr.showWindowAndRun();
 	}
 

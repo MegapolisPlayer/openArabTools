@@ -3,7 +3,7 @@
 
 namespace OpenArabTools {
 	//ArabTools Semaphore orientation
-	enum struct SemaphoreOrientation : U08 {
+	enum struct SemaphoreOrientation : uint8_t {
 		NORMAL, UPSIDEUP = NORMAL, 
 		UPSIDEDOWN, UPSIDELEFT, UPSIDERIGHT
 	};
@@ -13,7 +13,7 @@ namespace OpenArabTools {
 	public:
 		//Constructor, creates normal semaphore
 		Semaphore() noexcept;
-
+		//Constructor, creates semaphore with orientation
 		Semaphore(SemaphoreOrientation aOrientation) noexcept;
 
 		void showWindow() noexcept;
@@ -51,7 +51,7 @@ namespace OpenArabTools {
 		void setTitle(const std::string& aTitle) noexcept;
 
 		void showWindowAndRun() noexcept;
-		bool sleep(const U64 aMs) noexcept;
+		bool sleep(const uint64_t aMs) noexcept;
 
 		~Semaphore() noexcept;
 	private:

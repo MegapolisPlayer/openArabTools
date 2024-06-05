@@ -5,14 +5,14 @@ namespace OpenArabTools {
 	class OPENARABTOOLS_OBJ Dice {
 	public:
 		Dice();
-		Dice(U64 aSpace);
-		Dice(U64 aSpace, U64 aBorder);
+		Dice(const uint64_t aSpace);
+		Dice(const uint64_t aSpace, const uint64_t aBorder);
 
 		void showWindow() noexcept;
 		void hideWindow() noexcept;
 
-		void setValue(U64 aValue) noexcept;
-		U64 getValue(U64 aValue) const noexcept;
+		void setValue(const uint64_t aValue) noexcept;
+		uint64_t getValue(const uint64_t aValue) const noexcept;
 
 		//
 		// OpenArabTools necessities
@@ -32,11 +32,11 @@ namespace OpenArabTools {
 		void setTitle(const std::string& aTitle) noexcept;
 
 		void showWindowAndRun() noexcept;
-		bool sleep(const U64 aMs) noexcept;
+		bool sleep(const uint64_t aMs) noexcept;
 
 		~Dice();
 	private:
 		Matrix mMatrix;
-		U64 mValue, mSpace, mBorder;
+		uint64_t mValue, mSpace, mBorder;
 	};
 }

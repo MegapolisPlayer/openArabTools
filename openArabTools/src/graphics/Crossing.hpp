@@ -2,17 +2,18 @@
 #include "Semaphore.hpp"
 
 namespace OpenArabTools {
-	constexpr U64 SEMAPHOREID_A = 0;
-	constexpr U64 SEMAPHOREID_B = 1;
-	constexpr U64 SEMAPHOREID_C = 2;
-	constexpr U64 SEMAPHOREID_D = 3;
+	constexpr uint64_t SEMAPHOREID_A = 0;
+	constexpr uint64_t SEMAPHOREID_B = 1;
+	constexpr uint64_t SEMAPHOREID_C = 2;
+	constexpr uint64_t SEMAPHOREID_D = 3;
 
+	//Accessor for semaphores drawn on Crossing.
 	class OPENARABTOOLS_OBJ CrossingSemaphoreAccessor {
 	public:
 		friend class Crossing;
 
 		//When called manually creates an object not bound by the automatic destruction on Crossing close - Use at your own risk!
-		CrossingSemaphoreAccessor(Crossing* aParent, const U64 aSemaphoreId) noexcept;
+		CrossingSemaphoreAccessor(Crossing* aParent, const uint64_t aSemaphoreId) noexcept;
 
 		CrossingSemaphoreAccessor() = delete;
 		CrossingSemaphoreAccessor(const CrossingSemaphoreAccessor& aOther) = delete;
@@ -41,9 +42,17 @@ namespace OpenArabTools {
 		~CrossingSemaphoreAccessor() noexcept;
 	private:
 		Crossing* mParent;
-		U64 mSemaphoreId;
+		uint64_t mSemaphoreId;
 	};
 
+	//Diagram of crossing window:
+	//   |
+	//  0|1
+	//---+---
+	//  2|3
+	//   |
+		
+	//Class showcasing a simple crossing with multiple independent semaphores
 	class OPENARABTOOLS_OBJ Crossing {
 	public:
 		friend class CrossingSemaphoreAccessor;
@@ -54,10 +63,11 @@ namespace OpenArabTools {
 		void showWindow() noexcept;
 		void hideWindow() noexcept;
 
-		std::weak_ptr<CrossingSemaphoreAccessor> getSemaphore(const U64 aId) noexcept;
+		//Returns a pointer to the accessor.
+		CrossingSemaphoreAccessor* const getSemaphore(const uint64_t aId) noexcept;
 
-		void showSemaphore(const U64 aId) noexcept;
-		void hideSemaphore(const U64 aId) noexcept;
+		void showSemaphore(const uint64_t aId) noexcept;
+		void hideSemaphore(const uint64_t aId) noexcept;
 
 		//
 		// OpenArabTools necessities
@@ -74,28 +84,25 @@ namespace OpenArabTools {
 		void setTitle(const std::string& aTitle) noexcept;
 
 		void showWindowAndRun() noexcept;
-		bool sleep(const U64 aMs) noexcept;
+		bool sleep(const uint64_t aMs) noexcept;
 
 		~Crossing() noexcept;
 	private:
 		Matrix mMatrix;
 
-		U64 getQuadrantId(const U64 aX, const U64 aY) noexcept;
+		uint64_t getQuadrantId(const uint64_t aId) noexcept;
+
 		void drawFromString(const std::string& aString) noexcept;
 
-		//Semaphore 0: Exists, Red, Yellow, Green
-		//Semaphore 1: Exists, Red, Yellow, Green
-		//Semaphore 2: Exists, Red, Yellow, Green
-		//Semaphore 3: Exists, Red, Yellow, Green
-		std::array<bool, 16> mSemaphoreStates;
+		//Semaphore info
+		struct SemaphoreInfo {
+			uint64_t RedX = 0, RedY = 0;
+			uint64_t YellowX = 0, YellowY = 0;
+			uint64_t GreenX = 0, GreenY = 0;
+			bool Hidden = true;
+		};
+		std::array<SemaphoreInfo, 4> mSemaphoreInfo;
 
-		//Diagram of window:
-		//   R   R = Road
-		//  0R1
-		//RRRRRRR
-		//  2R3
-		//   R
-
-		std::vector<std::shared_ptr<CrossingSemaphoreAccessor>> mAccessors;
+		std::vector<CrossingSemaphoreAccessor*> mAccessors;
 	};
 }

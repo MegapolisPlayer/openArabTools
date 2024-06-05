@@ -42,20 +42,28 @@ namespace OpenArabTools {
 
 	//LightColor structure
 	struct OPENARABTOOLS_OBJ LightColor {
+		//Individual R, G, and B values of the color.
 		float R, G, B;
 
 		LightColor() noexcept;
-		LightColor (const LightColorD aColor) noexcept;
-		LightColor (const LightColorEx aColor) noexcept;
-		LightColor (const float aR, const float aG, const float aB) noexcept;
+		LightColor(const LightColorD aColor) noexcept;
+		LightColor(const LightColorEx aColor) noexcept;
+		LightColor(const float aR, const float aG, const float aB) noexcept;
+		LightColor(const uint8_t aR, const uint8_t aG, const uint8_t aB) noexcept;
 
+		//Sets color from values in LightColorD
 		LightColor& Set(const LightColorD aColor) noexcept;
+		//Sets color from values in LightColorEx
 		LightColor& Set(const LightColorEx aColor) noexcept;
 
+		//Sets color from values in range 0-1
 		LightColor& RGB(const float aR, const float aG, const float aB) noexcept;
-		LightColor& RGB255(const U08 aR, const U08 aG, const U08 aB) noexcept;
+		//Sets color from values in range 0-255
+		LightColor& RGB255(const uint8_t aR, const uint8_t aG, const uint8_t aB) noexcept;
 
+		//Makes color darker
 		LightColor& Darken() noexcept;
+		//Makes color lighter
 		LightColor& Lighten() noexcept;
 
 		LightColor& operator=(const LightColor& aColor) noexcept;

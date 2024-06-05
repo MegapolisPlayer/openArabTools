@@ -5,7 +5,7 @@ namespace OpenArabTools {
 		this->mMatrix.set(8, 8);
 		this->applyChessboardStyle(CHESSBOARD_STYLE_DEFAULT_WOOD);
 	}
-	Chessboard::Chessboard(const U64 aSizeX, const U64 aSizeY) noexcept {
+	Chessboard::Chessboard(const uint64_t aSizeX, const uint64_t aSizeY) noexcept {
 		this->mMatrix.set(aSizeX, aSizeY);
 		this->applyChessboardStyle(CHESSBOARD_STYLE_DEFAULT_WOOD);
 	}
@@ -17,7 +17,7 @@ namespace OpenArabTools {
 		this->mMatrix.hideWindow();
 	}
 
-	void Chessboard::put(const U64 aColumn, const U64 aRow, PieceColor aPiece) noexcept {
+	void Chessboard::put(const uint64_t aColumn, const uint64_t aRow, PieceColor aPiece) noexcept {
 		if (aPiece == CHESSBOARD_PIECE_NONE) this->remove(aColumn, aRow);
 
 		switch (aPiece) {
@@ -28,11 +28,11 @@ namespace OpenArabTools {
 
 		this->mMatrix.setOn(aColumn, aRow);
 	}
-	void Chessboard::remove(const U64 aColumn, const U64 aRow) noexcept {
+	void Chessboard::remove(const uint64_t aColumn, const uint64_t aRow) noexcept {
 		this->mMatrix.setOff(aColumn, aRow);
 	}
 
-	PieceColor Chessboard::get(const U64 aId) const noexcept {
+	PieceColor Chessboard::get(const uint64_t aId) const noexcept {
 		if (!this->mMatrix.isOn(aId))
 			return CHESSBOARD_PIECE_NONE;
 
@@ -41,7 +41,7 @@ namespace OpenArabTools {
 		else
 			return CHESSBOARD_PIECE_BLACK;
 	}
-	PieceColor Chessboard::get(const U64 aColumn, const U64 aRow) const noexcept {
+	PieceColor Chessboard::get(const uint64_t aColumn, const uint64_t aRow) const noexcept {
 		if (!this->mMatrix.isOn(aColumn, aRow))
 			return CHESSBOARD_PIECE_NONE;
 
@@ -51,13 +51,13 @@ namespace OpenArabTools {
 			return CHESSBOARD_PIECE_BLACK;
 	}
 
-	U64 Chessboard::getWidth() const noexcept {
+	uint64_t Chessboard::getWidth() const noexcept {
 		return this->mMatrix.getWidth();
 	}
-	U64 Chessboard::getHeight() const noexcept {
+	uint64_t Chessboard::getHeight() const noexcept {
 		return this->mMatrix.getHeight();
 	}
-	U64 Chessboard::getSize() const noexcept {
+	uint64_t Chessboard::getSize() const noexcept {
 		return this->mMatrix.getSize();
 	}
 
@@ -74,7 +74,7 @@ namespace OpenArabTools {
 	void Chessboard::showWindowAndRun() noexcept {
 		this->mMatrix.showWindowAndRun();
 	}
-	bool Chessboard::sleep(const U64 aMs) noexcept {
+	bool Chessboard::sleep(const uint64_t aMs) noexcept {
 		return this->mMatrix.sleep(aMs);
 	}
 
@@ -85,7 +85,7 @@ namespace OpenArabTools {
 		}
 	}
 	void Chessboard::applyChessboardStyle(const LightColor& aLight, const LightColor& aDark) noexcept {
-		for (U64 i = 0; i < this->mMatrix.getSize(); i++) {
+		for (uint64_t i = 0; i < this->mMatrix.getSize(); i++) {
 			switch ((i + (i / this->mMatrix.getWidth())) % 2) {
 				case(true): this->mMatrix.setBackground(i, aLight); break;
 				case(false): this->mMatrix.setBackground(i, aDark); break;

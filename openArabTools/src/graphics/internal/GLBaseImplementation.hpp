@@ -59,18 +59,18 @@ namespace OpenArabTools {
 			~GLVertexArray() noexcept;
 
 			GLHandle Array;
-			U64 Counter;
+			uint64_t Counter;
 		};
 
 		class OPENARABTOOLS_OBJ GLVertexBuffer {
 		public:
 			GLVertexBuffer() noexcept;
-			GLVertexBuffer(float* const aData, const U64 aVertices, const U64 aVerticesSize) noexcept;
+			GLVertexBuffer(float* const aData, const uint64_t aVertices, const uint64_t aVerticesSize) noexcept;
 
-			void Set(float* const aData, const U64 aVertices, const U64 aVerticesSize) noexcept;
+			void Set(float* const aData, const uint64_t aVertices, const uint64_t aVerticesSize) noexcept;
 
-			void EnableAttribute(const U64 aAmountValues, GLVertexArray* const aArray) noexcept;
-			void EnableAttribute(const U64 aCounterOverride, const U64 aAmountValues, GLVertexArray* const aArray) noexcept;
+			void EnableAttribute(const uint64_t aAmountValues, GLVertexArray* const aArray) noexcept;
+			void EnableAttribute(const uint64_t aCounterOverride, const uint64_t aAmountValues, GLVertexArray* const aArray) noexcept;
 
 			void RestoreAttributes(GLVertexArray* const aArray) noexcept;
 
@@ -82,19 +82,19 @@ namespace OpenArabTools {
 			bool AreCountersSaved() const noexcept;
 
 			GLHandle GetHandle() const noexcept;
-			U64 GetNumberOfVertices() const noexcept;
-			U64 GetSizeOfVertex() const noexcept;
-			U64 GetAmountOfNumbers() const noexcept;
+			uint64_t GetNumberOfVertices() const noexcept;
+			uint64_t GetSizeOfVertex() const noexcept;
+			uint64_t GetAmountOfNumbers() const noexcept;
 
 			~GLVertexBuffer() noexcept;
 		private:
 			GLHandle mBuffer;
-			U64 mVertices;
-			U64 mVertSize;
+			uint64_t mVertices;
+			uint64_t mVertSize;
 			bool mInit;
 
-			std::vector<U64> mCounters;
-			std::vector<U64> mCounterOffsets;
+			std::vector<uint64_t> mCounters;
+			std::vector<uint64_t> mCounterOffsets;
 		};
 
 		//VBO generation utils
@@ -104,39 +104,39 @@ namespace OpenArabTools {
 		// Position , Top Left
 
 		//Allocates memory, returns amount of vertices.
-		OPENARABTOOLS_OBJ U64 GenerateTileVertices(float** const aBuffer, const U64 aCircleAmountX, const U64 aCircleAmountY) noexcept;
+		OPENARABTOOLS_OBJ uint64_t GenerateTileVertices(float** const aBuffer, const uint64_t aCircleAmountX, const uint64_t aCircleAmountY) noexcept;
 		//Frees memory allocated by GenerateTileVertices
-		OPENARABTOOLS_OBJ void ApplyChangesV(float** const aBuffer, const U64 aAmount, GLVertexBuffer* const aObject) noexcept;
+		OPENARABTOOLS_OBJ void ApplyChangesV(float** const aBuffer, const uint64_t aAmount, GLVertexBuffer* const aObject) noexcept;
 
 		class OPENARABTOOLS_OBJ GLIndexBuffer {
 		public:
 			GLIndexBuffer() noexcept;
-			GLIndexBuffer(unsigned int* const aData, const U64 aAmount) noexcept;
+			GLIndexBuffer(unsigned int* const aData, const uint64_t aAmount) noexcept;
 
-			void Set(unsigned int* const aData, const U64 aAmount) noexcept;
+			void Set(unsigned int* const aData, const uint64_t aAmount) noexcept;
 
 			void Bind() noexcept;
 			void Unbind() noexcept;
 			void Reset() noexcept;
 
-			void Draw(const U64 aOffsetNumbers = 0, const U64 aAmountToDraw = 0) noexcept;
+			void Draw(const uint64_t aOffsetNumbers = 0, const uint64_t aAmountToDraw = 0) noexcept;
 
 			GLHandle GetHandle() const noexcept;
-			U64 GetNumberOfIndices() const noexcept;
+			uint64_t GetNumberOfIndices() const noexcept;
 
 			~GLIndexBuffer() noexcept;
 		private:
 			GLHandle mBuffer;
-			U64 mAmount;
+			uint64_t mAmount;
 			bool mInit;
 		};
 
 		//IBO generation
 
 		//Allocates memory, takes amount of OBJECTS (**NOT** vertices!!)
-		OPENARABTOOLS_OBJ void GenerateTileIndices(unsigned int** aBuffer, const U64 aAmount);
+		OPENARABTOOLS_OBJ void GenerateTileIndices(unsigned int** aBuffer, const uint64_t aAmount);
 		//Frees memory allocated by GenerateTileIndices, also takes amount of OBJECTS (**NOT** vertices!!)
-		OPENARABTOOLS_OBJ void ApplyChangesI(unsigned int** const aBuffer, const U64 aAmount, GLIndexBuffer* const aObject) noexcept;
+		OPENARABTOOLS_OBJ void ApplyChangesI(unsigned int** const aBuffer, const uint64_t aAmount, GLIndexBuffer* const aObject) noexcept;
 
 		OPENARABTOOLS_OBJ [[nodiscard]] GLHandle MakeShader(const char* aVertSource, const char* aFragSource) noexcept;
 
@@ -151,13 +151,13 @@ namespace OpenArabTools {
 
 		//SSBO
 
-		template<typename DataType, U64 Multiplier = 1>
+		template<typename DataType, uint64_t Multiplier = 1>
 		class GLShaderBuffer {
 		public:
 			GLShaderBuffer() noexcept;
-			GLShaderBuffer(DataType* aData, const U64 aAmount, GLVertexArray* const aArray) noexcept;
+			GLShaderBuffer(DataType* aData, const uint64_t aAmount, GLVertexArray* const aArray) noexcept;
 
-			void Set(DataType* aData, const U64 aAmount, GLVertexArray* const aArray) noexcept;
+			void Set(DataType* aData, const uint64_t aAmount, GLVertexArray* const aArray) noexcept;
 			void Update(DataType* aNewData) noexcept;
 
 			void Bind() noexcept;
@@ -166,20 +166,20 @@ namespace OpenArabTools {
 			void Reset() noexcept;
 
 			GLHandle GetHandle() const noexcept;
-			U64 GetSize() const noexcept;
+			uint64_t GetSize() const noexcept;
 
 			~GLShaderBuffer() noexcept;
 		private:
 			GLHandle mBuffer;
-			U64 mSize;
-			U64 mVAOCount;
+			uint64_t mSize;
+			uint64_t mVAOCount;
 			bool mInit;
 		};
 
 		//Debug functions, not user-facing
 		namespace Debug {
-			OPENARABTOOLS_OBJ void PrintVertexArray(float** aArray, const U64 aAmountOfVertices, const U64 aVertexSize, const U64 aVertexPrecisionOverride = 2) noexcept;
-			OPENARABTOOLS_OBJ void PrintIndexArray(unsigned int** aArray, const U64 aAmountOfObjects, const U64 aIndicesPerObject, const U64 aNumberWidthOverride = 4) noexcept;
+			OPENARABTOOLS_OBJ void PrintVertexArray(float** aArray, const uint64_t aAmountOfVertices, const uint64_t aVertexSize, const uint64_t aVertexPrecisionOverride = 2) noexcept;
+			OPENARABTOOLS_OBJ void PrintIndexArray(unsigned int** aArray, const uint64_t aAmountOfObjects, const uint64_t aIndicesPerObject, const uint64_t aNumberWidthOverride = 4) noexcept;
 		}
 
 	} //namespace Internal

@@ -6,11 +6,11 @@ namespace OpenArabTools {
 	OPENARABTOOLS_OBJ constexpr const char* Version() noexcept;
 
 	//Returns the OpenArabTools build ID
-	OPENARABTOOLS_OBJ constexpr U64 buildID() noexcept;
+	OPENARABTOOLS_OBJ constexpr uint64_t buildID() noexcept;
 
 	namespace Utils {
 		//Sleeps on this thread, returns true for compatibility with ArabTools
-		OPENARABTOOLS_OBJ bool sleep(const U64 aMs) noexcept;
+		OPENARABTOOLS_OBJ bool sleep(const uint64_t aMs) noexcept;
 
 		//NOTE: C style strings must be null terminated.
 
@@ -26,12 +26,18 @@ namespace OpenArabTools {
 
 		//Runs function in [aFunction] on multiple threads [aCount] times, returns immediately or if aWaitReturn is set after the functions complete the tasks
 		//NOTE: returns immediately if another instance is already running, lambdas also possible
-		OPENARABTOOLS_OBJ void runConcurrently(const U64 aCount, const bool aWaitReturn, RunConcurrentlyCallback aFunction) noexcept;
+		OPENARABTOOLS_OBJ void runConcurrently(const uint64_t aCount, const bool aWaitReturn, RunConcurrentlyCallback aFunction) noexcept;
+
+		//(Extension) Just gets a bool, 50% false, 50% true
+		OPENARABTOOLS_OBJ bool getRandomBool() noexcept;
 	}
 
+	//Class for measuring time of a scope. Just create it in the scope to be measured
 	class OPENARABTOOLS_OBJ ScopedTimer {
 	public:
+		//Starts the timer
 		ScopedTimer(const char* aName) noexcept;
+		//Stops the timer
 		~ScopedTimer() noexcept;
 	private:
 		const char* mName;

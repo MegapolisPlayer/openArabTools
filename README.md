@@ -45,7 +45,7 @@ Example: Running concurrently in C++ with openArabTools
 ```cpp
 #include "OpenArabTools.hpp"
 
-void Function(const ArabTools::U08 ThreadId, const ArabTools::U64 Id) {
+void Function(const ArabTools::uint8_t ThreadId, const ArabTools::uint64_t Id) {
 	//do something
 	return;
 }

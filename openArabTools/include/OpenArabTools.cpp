@@ -44,7 +44,7 @@ namespace OpenArabTools {
 			"Based on ArabTools 1.5.37 (19.03.2020), (C) Copyright 2014-2020 Ing. Daniel Kahoun. All rights reserved.\n";
 	}
 
-	constexpr U64 buildID() noexcept {
+	constexpr uint64_t buildID() noexcept {
 		return 0;
 		//0.1.0 in development -> builds 0-
 		//0.1.0 release        -> build  
