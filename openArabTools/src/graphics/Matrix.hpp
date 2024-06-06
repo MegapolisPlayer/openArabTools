@@ -19,9 +19,7 @@ namespace OpenArabTools {
 		Matrix& operator=(const Matrix& aOther) noexcept;
 		Matrix& operator=(Matrix&& aOther) noexcept;
 
-		//Shows the window
 		void showWindow() noexcept;
-		//Hides the windows
 		void hideWindow() noexcept;
 
 		//
@@ -31,15 +29,11 @@ namespace OpenArabTools {
 		void setTitle(const std::string& aTitle) noexcept;
 
 		void setBackground(const LightColor aColor) noexcept;
-
 		void setBackground(const uint64_t aId, const LightColor& aColor) noexcept;
-
 		void setBackground(const uint64_t aColumn, const uint64_t aRow, const LightColor& aColor) noexcept;
 
 		void setColor(const LightColor& aColor) noexcept;
-
 		void setColor(const uint64_t aId, const LightColor& aColor) noexcept;
-
 		void setColor(const uint64_t aColumn, const uint64_t aRow, const LightColor& aColor) noexcept;
 
 		void setOff() noexcept;
@@ -85,10 +79,8 @@ namespace OpenArabTools {
 
 		//Returns if window is open
 		bool open() const noexcept;
-
 		//Call this in a loop, returns if window still open
 		bool update() noexcept;
-
 		//Call this once, blocks execution until window closed!
 		void run() noexcept;
 

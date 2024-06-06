@@ -66,6 +66,13 @@ namespace OpenArabTools {
 		return this->mMatrix.run();
 	}
 
+	void Dice::setBackground(const LightColor& aLC) noexcept {
+		this->mMatrix.setBackground(aLC);
+	}
+	void Dice::setColor(const LightColor& aLC) noexcept {
+		this->mMatrix.setColor(aLC);
+	}
+
 	void Dice::disableAll() noexcept {
 		for (uint64_t i = 0; i < this->mMatrix.getSize(); i++) {
 			this->mMatrix.setOff(i);

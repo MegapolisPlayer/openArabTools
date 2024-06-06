@@ -64,8 +64,13 @@ namespace OpenArabTools {
 	CrossingSemaphoreAccessor::~CrossingSemaphoreAccessor() noexcept {}
 
 	//validation macros, set default size
-	static constexpr const uint64_t sCrossingStandardSizeX = 30;
-	static constexpr const uint64_t sCrossingStandardSizeY = 30;
+	static constexpr const uint64_t csCrossingStandardSizeX = 30;
+	static constexpr const uint64_t csCrossingStandardSizeY = 30;
+
+	static_assert(csCrossingStandardSizeX % 2 == 0, "Crossing X size must be even!");
+	static_assert(csCrossingStandardSizeY % 2 == 0, "Crossing Y size must be even!");
+
+	// TODO: add more colors (lowercase letters correspond to LightColorD colors)
 
 	const char* DefaultCrossingStyle =
 		"GGGGGGGGGGGGGPRRPGGGGGGGGGGGGG"
@@ -101,7 +106,7 @@ namespace OpenArabTools {
 	;
 
 	Crossing::Crossing() noexcept {
-		this->mMatrix.set(sCrossingStandardSizeX, sCrossingStandardSizeY);
+		this->mMatrix.set(csCrossingStandardSizeX, csCrossingStandardSizeY);
 		this->mSemaphoreInfo = {};
 
 		//Draw 4-way crossing using matrix background and foreground
@@ -111,7 +116,7 @@ namespace OpenArabTools {
 		this->drawFromString(DefaultCrossingStyle);
 	}
 	Crossing::Crossing(const std::string& aFilename) noexcept {
-		this->mMatrix.set(sCrossingStandardSizeX, sCrossingStandardSizeY);
+		this->mMatrix.set(csCrossingStandardSizeX, csCrossingStandardSizeY);
 		this->mSemaphoreInfo = {};
 
 		std::ifstream File;
@@ -121,6 +126,23 @@ namespace OpenArabTools {
 			Error::error("Provided Crossing information file does not exist.");
 			return;
 		}
+
+		std::string FileContents;
+
+		//load string from file
+
+		char Buffer;
+		while (true) {
+			File >> Buffer;
+			if (File.eof()) { break; }
+			FileContents.push_back(Buffer);
+		}
+
+		//remove newlines
+		std::erase(FileContents, '\n');
+
+		this->validateString(FileContents); //validateString throws its own errors into the error handling system
+		this->drawFromString(FileContents);
 
 		File.close();
 
@@ -145,7 +167,36 @@ namespace OpenArabTools {
 	void Crossing::showSemaphore(const uint64_t aId) noexcept {
 		if (aId >= 4) { Error::error("Semaphore ID out of range"); return; }
 
-		
+		//enable (make visible) lights
+
+		this->mMatrix.setColorAlpha(this->mSemaphoreInfo[aId].RedX, this->mSemaphoreInfo[aId].RedY, 1.0f);
+		this->mMatrix.setOffColorAlpha(this->mSemaphoreInfo[aId].RedX, this->mSemaphoreInfo[aId].RedY, 1.0f);
+
+		this->mMatrix.setColorAlpha(this->mSemaphoreInfo[aId].YellowX, this->mSemaphoreInfo[aId].YellowY, 1.0f);
+		this->mMatrix.setOffColorAlpha(this->mSemaphoreInfo[aId].YellowX, this->mSemaphoreInfo[aId].YellowY, 1.0f);
+
+		this->mMatrix.setColorAlpha(this->mSemaphoreInfo[aId].GreenX, this->mSemaphoreInfo[aId].GreenY, 1.0f);
+		this->mMatrix.setOffColorAlpha(this->mSemaphoreInfo[aId].GreenX, this->mSemaphoreInfo[aId].GreenY, 1.0f);
+
+		//set black background for everything
+		for (int8_t x = -1; x <= 1; x++) {
+			for (int8_t y = -1; y <= 1; y++) {
+				uint64_t MatrixWidth = this->mMatrix.getWidth();
+				uint64_t MatrixHeight = this->mMatrix.getHeight();
+				if (this->mSemaphoreInfo[aId].RedX + x < 0 || this->mSemaphoreInfo[aId].RedX + x >= MatrixWidth ||
+					this->mSemaphoreInfo[aId].RedY + y < 0 || this->mSemaphoreInfo[aId].RedY + y >= MatrixHeight ||
+					this->mSemaphoreInfo[aId].YellowX + x < 0 || this->mSemaphoreInfo[aId].YellowX + x >= MatrixWidth ||
+					this->mSemaphoreInfo[aId].YellowY + y < 0 || this->mSemaphoreInfo[aId].YellowY + y >= MatrixHeight ||
+					this->mSemaphoreInfo[aId].GreenX + x < 0 || this->mSemaphoreInfo[aId].GreenX + x >= MatrixWidth ||
+					this->mSemaphoreInfo[aId].GreenY + y < 0 || this->mSemaphoreInfo[aId].GreenY + y >= MatrixHeight) {
+					continue;
+				}
+
+				this->mMatrix.setBackground(this->mSemaphoreInfo[aId].RedX + x, this->mSemaphoreInfo[aId].RedY + y, LIGHTCOLOR_BLACK);
+				this->mMatrix.setBackground(this->mSemaphoreInfo[aId].YellowX + x, this->mSemaphoreInfo[aId].YellowY + y, LIGHTCOLOR_BLACK);
+				this->mMatrix.setBackground(this->mSemaphoreInfo[aId].GreenX + x, this->mSemaphoreInfo[aId].GreenY + y, LIGHTCOLOR_BLACK);
+			}
+		}
 	}
 	void Crossing::hideSemaphore(const uint64_t aId) noexcept {
 		if (aId >= 4) { Error::error("Semaphore ID out of range"); return; }
@@ -161,7 +212,7 @@ namespace OpenArabTools {
 		this->mMatrix.setColorAlpha(this->mSemaphoreInfo[aId].GreenX, this->mSemaphoreInfo[aId].GreenY, 0.0f);
 		this->mMatrix.setOffColorAlpha(this->mSemaphoreInfo[aId].GreenX, this->mSemaphoreInfo[aId].GreenY, 0.0f);
 
-		//reset everything around them
+		//set grass background for everything around them
 		for (int8_t x = -1; x <= 1; x++) {
 			for (int8_t y = -1; y <= 1; y++) {
 				uint64_t MatrixWidth = this->mMatrix.getWidth();
@@ -212,9 +263,33 @@ namespace OpenArabTools {
 	//helper - quadrants:
 	//01 //+1 from right
 	//23 //+2 from bottom
+	//no problems with "what if is semaphore in the middle" - size ALWAYS an even integer
 	uint64_t Crossing::getQuadrantId(const uint64_t aId) noexcept {
 		// from right + 2(from bottom)
 		return uint64_t((aId % this->mMatrix.getWidth()) >= this->mMatrix.getWidth() / 2) + (2 * uint64_t((aId / this->mMatrix.getWidth()) >= this->mMatrix.getHeight() / 2));
+	}
+
+	//validating input from file
+	void Crossing::validateString(const std::string& aString) noexcept {
+		if (aString.size() != csCrossingStandardSizeX * csCrossingStandardSizeY) {
+			Error::error("Invalid size of Crossing graphical string!"); return;
+		}
+		//There must be exactly 4 characters of type "1", "2", "3" 
+		uint64_t OneAmount = 0, TwoAmount = 0, ThreeAmount = 0;
+		for (const char Character : aString) {
+			switch (Character) {
+			case('1'):
+				OneAmount++; break;
+			case('2'):
+				TwoAmount++; break;
+			case('3'):
+				ThreeAmount++; break;
+			}
+		}
+
+		if (OneAmount != 4 || TwoAmount != 4 || ThreeAmount != 4) {
+			Error::error("Invalid amount of semaphore lights in Crossing graphical string!"); return;
+		}
 	}
 
 	void Crossing::drawFromString(const std::string& aString) noexcept {

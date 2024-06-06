@@ -29,12 +29,12 @@ int main() {
 	//}
 
 	{
-		ArabTools::Crossing cr;
+		ArabTools::Crossing cr("crossing2.oat");
 
-		ArabTools::CrossingSemaphoreAccessor* csa1 = cr.getSemaphore(0);
-		ArabTools::CrossingSemaphoreAccessor* csa2 = cr.getSemaphore(1);
-		ArabTools::CrossingSemaphoreAccessor* csa3 = cr.getSemaphore(2);
-		ArabTools::CrossingSemaphoreAccessor* csa4 = cr.getSemaphore(3);
+		ArabTools::CSemaphore* csa1 = cr.getSemaphore(0);
+		ArabTools::CSemaphore* csa2 = cr.getSemaphore(1);
+		ArabTools::CSemaphore* csa3 = cr.getSemaphore(2);
+		ArabTools::CSemaphore* csa4 = cr.getSemaphore(3);
 
 		csa1->setGreenOn();
 		csa2->setGreenOn();
@@ -42,6 +42,7 @@ int main() {
 		csa4->setGreenOn();
 
 		cr.hideSemaphore(0);
+		cr.showSemaphore(0);
 
 		cr.showWindowAndRun();
 	}

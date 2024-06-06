@@ -45,6 +45,8 @@ namespace OpenArabTools {
 		uint64_t mSemaphoreId;
 	};
 
+	using CSemaphore = CrossingSemaphoreAccessor;
+
 	//Diagram of crossing window:
 	//   |
 	//  0|1
@@ -92,6 +94,7 @@ namespace OpenArabTools {
 
 		uint64_t getQuadrantId(const uint64_t aId) noexcept;
 
+		void validateString(const std::string& aString) noexcept;
 		void drawFromString(const std::string& aString) noexcept;
 
 		//Semaphore info

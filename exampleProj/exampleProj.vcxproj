@@ -99,6 +99,9 @@
       <Project>{444b758f-91c5-4617-8b6f-abb49db62eef}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="crossing2.oat" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

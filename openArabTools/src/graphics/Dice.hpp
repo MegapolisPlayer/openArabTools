@@ -2,6 +2,7 @@
 #include "Matrix.hpp"
 
 namespace OpenArabTools {
+	//A class showing a simple 3x3 dice with some configuration options.
 	class OPENARABTOOLS_OBJ Dice {
 	public:
 		Dice();
@@ -25,6 +26,9 @@ namespace OpenArabTools {
 		//
 		// OpenArabTools extensions
 		//
+
+		void setBackground(const LightColor& aLC) noexcept;
+		void setColor(const LightColor& aLC) noexcept;
 
 		void disableAll() noexcept;
 		void enableAll() noexcept;
