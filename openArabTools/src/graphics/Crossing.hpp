@@ -45,6 +45,7 @@ namespace OpenArabTools {
 		uint64_t mSemaphoreId;
 	};
 
+	//Accessor for semaphores drawn on Crossing.
 	using CSemaphore = CrossingSemaphoreAccessor;
 
 	//Diagram of crossing window:
