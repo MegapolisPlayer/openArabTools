@@ -47,7 +47,7 @@ namespace OpenArabTools {
 
 		~Canvas() noexcept;
 	private:
-		Internal::GLWindow mWindow;
+		//Internal::GLPassthroughWindow mWindow;
 		std::vector<Shape> mShapes;
 		LightColor mFG, mBG;
 	};

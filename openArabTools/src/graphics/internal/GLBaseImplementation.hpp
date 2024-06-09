@@ -3,6 +3,9 @@
 
 namespace OpenArabTools {
 	namespace Internal {
+#ifdef _DEBUG
+		OPENARABTOOLS_OBJ void GLDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
+#endif
 
 		typedef uint32_t GLHandle;
 		constexpr static GLHandle csGLInvalidHandle = INT32_MAX;
@@ -53,33 +56,51 @@ namespace OpenArabTools {
 		public:
 			GLVertexArray() noexcept;
 
-			void Bind() noexcept;
-			void Unbind() noexcept;
+			void Make() noexcept;
+
+			void Bind() const noexcept;
+			void Unbind() const noexcept;
+
+			void Reset() noexcept;
 
 			~GLVertexArray() noexcept;
 
 			GLHandle Array;
 			uint64_t Counter;
+		private:
+			bool mInit;
 		};
 
 		class OPENARABTOOLS_OBJ GLVertexBuffer {
 		public:
 			GLVertexBuffer() noexcept;
-			GLVertexBuffer(float* const aData, const uint64_t aVertices, const uint64_t aVerticesSize) noexcept;
+			GLVertexBuffer(GLfloat* const aData, const uint64_t aVertices, const uint64_t aVerticesSize) noexcept;
 
-			void Set(float* const aData, const uint64_t aVertices, const uint64_t aVerticesSize) noexcept;
+			//Copying is done by a special function to allow copying between window contexts.
+
+			GLVertexBuffer(const GLVertexBuffer& aOther) noexcept = delete;
+			GLVertexBuffer& operator=(const GLVertexBuffer& aOther) noexcept = delete;
+
+			//Moving is allowed
+
+			GLVertexBuffer(GLVertexBuffer&& aOther) noexcept;
+			GLVertexBuffer& operator=(GLVertexBuffer&& aOther) noexcept;
+
+			void Set(GLfloat* const aData, const uint64_t aVertices, const uint64_t aVerticesSize) noexcept;
 
 			void EnableAttribute(const uint64_t aAmountValues, GLVertexArray* const aArray) noexcept;
 			void EnableAttribute(const uint64_t aCounterOverride, const uint64_t aAmountValues, GLVertexArray* const aArray) noexcept;
 
 			void RestoreAttributes(GLVertexArray* const aArray) noexcept;
 
-			void Bind() noexcept;
-			void Unbind() noexcept;
+			void Bind() const noexcept;
+			void Unbind() const noexcept;
 			void Reset() noexcept;
 			void ResetVectors() noexcept;
 
 			bool AreCountersSaved() const noexcept;
+
+			bool IsValid() const noexcept;
 
 			GLHandle GetHandle() const noexcept;
 			uint64_t GetNumberOfVertices() const noexcept;
@@ -92,7 +113,6 @@ namespace OpenArabTools {
 			uint64_t mVertices;
 			uint64_t mVertSize;
 			bool mInit;
-
 			std::vector<uint64_t> mCounters;
 			std::vector<uint64_t> mCounterOffsets;
 		};
@@ -104,22 +124,34 @@ namespace OpenArabTools {
 		// Position , Top Left
 
 		//Allocates memory, returns amount of vertices.
-		OPENARABTOOLS_OBJ uint64_t GenerateTileVertices(float** const aBuffer, const uint64_t aCircleAmountX, const uint64_t aCircleAmountY) noexcept;
+		OPENARABTOOLS_OBJ uint64_t GenerateTileVertices(GLfloat** const aBuffer, const uint64_t aCircleAmountX, const uint64_t aCircleAmountY) noexcept;
 		//Frees memory allocated by GenerateTileVertices
-		OPENARABTOOLS_OBJ void ApplyChangesV(float** const aBuffer, const uint64_t aAmount, GLVertexBuffer* const aObject) noexcept;
+		OPENARABTOOLS_OBJ void ApplyChangesV(GLfloat** const aBuffer, const uint64_t aAmount, GLVertexBuffer* const aObject) noexcept;
 
 		class OPENARABTOOLS_OBJ GLIndexBuffer {
 		public:
 			GLIndexBuffer() noexcept;
-			GLIndexBuffer(unsigned int* const aData, const uint64_t aAmount) noexcept;
+			GLIndexBuffer(GLuint* const aData, const uint64_t aAmount) noexcept;
 
-			void Set(unsigned int* const aData, const uint64_t aAmount) noexcept;
+			//Copying is done by a special function to allow copying between window contexts.
 
-			void Bind() noexcept;
-			void Unbind() noexcept;
+			GLIndexBuffer(const GLIndexBuffer& aOther) noexcept = delete;
+			GLIndexBuffer& operator=(const GLIndexBuffer& aOther) noexcept = delete;
+
+			//Moving is allowed
+
+			GLIndexBuffer(GLIndexBuffer&& aOther) noexcept;
+			GLIndexBuffer& operator=(GLIndexBuffer&& aOther) noexcept;
+
+			void Set(GLuint* const aData, const uint64_t aAmount) noexcept;
+
+			void Bind() const noexcept;
+			void Unbind() const noexcept;
 			void Reset() noexcept;
 
 			void Draw(const uint64_t aOffsetNumbers = 0, const uint64_t aAmountToDraw = 0) noexcept;
+
+			bool IsValid() const noexcept;
 
 			GLHandle GetHandle() const noexcept;
 			uint64_t GetNumberOfIndices() const noexcept;
@@ -134,18 +166,19 @@ namespace OpenArabTools {
 		//IBO generation
 
 		//Allocates memory, takes amount of OBJECTS (**NOT** vertices!!)
-		OPENARABTOOLS_OBJ void GenerateTileIndices(unsigned int** aBuffer, const uint64_t aAmount);
+		OPENARABTOOLS_OBJ void GenerateTileIndices(GLuint** aBuffer, const uint64_t aAmount);
 		//Frees memory allocated by GenerateTileIndices, also takes amount of OBJECTS (**NOT** vertices!!)
-		OPENARABTOOLS_OBJ void ApplyChangesI(unsigned int** const aBuffer, const uint64_t aAmount, GLIndexBuffer* const aObject) noexcept;
+		OPENARABTOOLS_OBJ void ApplyChangesI(GLuint** const aBuffer, const uint64_t aAmount, GLIndexBuffer* const aObject) noexcept;
 
 		OPENARABTOOLS_OBJ [[nodiscard]] GLHandle MakeShader(const char* aVertSource, const char* aFragSource) noexcept;
 
 		//Shader variables, instantiated by window classes
 
+		OPENARABTOOLS_OBJ extern const char* const VertexPassSource;
+		OPENARABTOOLS_OBJ extern const char* const FragmentPassSource;
+
 		OPENARABTOOLS_OBJ extern const char* const VertexCircleSource;
 		OPENARABTOOLS_OBJ extern const char* const FragmentCircleSource;
-
-		//Shaders defined in GLWindow.hpp and GLWindow.cpp (must be in OpenGL context!)
 
 		OPENARABTOOLS_OBJ GLHandle GetUniform(const GLHandle aShader, const char* aName) noexcept;
 
@@ -178,8 +211,8 @@ namespace OpenArabTools {
 
 		//Debug functions, not user-facing
 		namespace Debug {
-			OPENARABTOOLS_OBJ void PrintVertexArray(float** aArray, const uint64_t aAmountOfVertices, const uint64_t aVertexSize, const uint64_t aVertexPrecisionOverride = 2) noexcept;
-			OPENARABTOOLS_OBJ void PrintIndexArray(unsigned int** aArray, const uint64_t aAmountOfObjects, const uint64_t aIndicesPerObject, const uint64_t aNumberWidthOverride = 4) noexcept;
+			OPENARABTOOLS_OBJ void PrintVertexArray(GLfloat** aArray, const uint64_t aAmountOfVertices, const uint64_t aVertexSize, const uint64_t aVertexPrecisionOverride = 2) noexcept;
+			OPENARABTOOLS_OBJ void PrintIndexArray(GLuint** aArray, const uint64_t aAmountOfObjects, const uint64_t aIndicesPerObject, const uint64_t aNumberWidthOverride = 4) noexcept;
 		}
 
 	} //namespace Internal

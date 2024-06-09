@@ -5,45 +5,125 @@
 
 namespace OpenArabTools {
 	namespace Internal {
+#ifdef _DEBUG
+		void GLDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
+			if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) { return; } //ignore notifications
+
+			std::cerr << "OpenGL ";
+			switch (severity) {
+				case GL_DEBUG_SEVERITY_HIGH:
+					std::cerr << "High"; break;
+				case GL_DEBUG_SEVERITY_MEDIUM:
+					std::cerr << "Medium"; break;
+				case GL_DEBUG_SEVERITY_LOW:
+					std::cerr << "Low"; break;
+				case GL_DEBUG_SEVERITY_NOTIFICATION:
+					std::cerr << "Info"; break;
+				default: break;
+			}
+			std::cerr << ", ";
+			switch (type) {
+				case GL_DEBUG_TYPE_ERROR:
+					std::cerr << "Error"; break;
+				case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
+					std::cerr << "Deprecation"; break;
+				case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
+					std::cerr << "Undefined behaviour/bug"; break;
+				case GL_DEBUG_TYPE_PERFORMANCE:
+					std::cerr << "Performance"; break;
+				case GL_DEBUG_TYPE_PORTABILITY:
+					std::cerr << "Portability"; break;
+				default:
+					std::cerr << "Unknown (" << type << ")";
+			}
+			std::cerr << ", " << message << " (" << id << ")" << std::endl;
+		}
+#endif
+
 		//VAO object
 
-		GLVertexArray::GLVertexArray() noexcept {
+		GLVertexArray::GLVertexArray() noexcept
+			: Array(csGLInvalidHandle), Counter(0), mInit(false) {}
+
+		void GLVertexArray::Make() noexcept {
+			if (this->mInit) { 
+				Error::error("Double init of VAO!");
+				return;
+			}
 			glGenVertexArrays(1, &this->Array);
 			glBindVertexArray(this->Array);
-			this->Counter = 0;
+			this->mInit = true;
 		}
-
-		void GLVertexArray::Bind() noexcept {
+		
+		void GLVertexArray::Bind() const noexcept {
 			glBindVertexArray(this->Array);
 		}
-		void GLVertexArray::Unbind() noexcept {
+		void GLVertexArray::Unbind() const noexcept {
 			glBindVertexArray(0);
 		}
 
-		GLVertexArray::~GLVertexArray() noexcept {
+		void GLVertexArray::Reset() noexcept {
+			if (!this->mInit) { return; }
 			glDeleteVertexArrays(1, &this->Array);
+			this->mInit = false;
+		}
+
+		GLVertexArray::~GLVertexArray() noexcept {
+			if (this->mInit) {
+				glDeleteVertexArrays(1, &this->Array);
+			}
 		}
 
 		//VBO object
 
-		GLVertexBuffer::GLVertexBuffer() noexcept {
-			this->mBuffer = csGLInvalidHandle;
-			this->mVertices = 0;
-			this->mVertSize = 0;
-			this->mInit = false;
-		}
-		GLVertexBuffer::GLVertexBuffer(float* const arData, const uint64_t aVertices, const uint64_t aVerticesSize) noexcept {
+		GLVertexBuffer::GLVertexBuffer() noexcept
+			: mBuffer(csGLInvalidHandle), mVertices(0), mVertSize(0), mInit(false) {}
+		GLVertexBuffer::GLVertexBuffer(GLfloat* const arData, const uint64_t aVertices, const uint64_t aVerticesSize) noexcept {
 			this->Set(arData, aVertices, aVerticesSize);
 		}
 
-		void GLVertexBuffer::Set(float* const arData, const uint64_t aVertices, const uint64_t aVerticesSize) noexcept {
+		GLVertexBuffer::GLVertexBuffer(GLVertexBuffer&& aOther) noexcept {
+			this->mBuffer = aOther.mBuffer;
+			aOther.mBuffer = csGLInvalidHandle;
+			this->mVertices = aOther.mVertices;
+			aOther.mVertices = 0;
+			this->mVertSize = aOther.mVertSize;
+			aOther.mVertSize = 0;
+			this->mInit = aOther.mInit;
+			aOther.mInit = false;
+
+			this->mCounters = std::move(aOther.mCounters);
+			this->mCounterOffsets = std::move(aOther.mCounterOffsets);
+		}
+		GLVertexBuffer& GLVertexBuffer::operator=(GLVertexBuffer&& aOther) noexcept {
+			this->Reset();
+
+			this->mBuffer = aOther.mBuffer;
+			aOther.mBuffer = csGLInvalidHandle;
+			this->mVertices = aOther.mVertices;
+			aOther.mVertices = 0;
+			this->mVertSize = aOther.mVertSize;
+			aOther.mVertSize = 0;
+			this->mInit = aOther.mInit;
+			aOther.mInit = false;
+
+			this->mCounters = std::move(aOther.mCounters);
+			this->mCounterOffsets = std::move(aOther.mCounterOffsets);
+
+			return *this;
+		}
+
+		void GLVertexBuffer::Set(GLfloat* const arData, const uint64_t aVertices, const uint64_t aVerticesSize) noexcept {
 			if (this->mInit) { this->Reset(); }
 			this->mVertices = aVertices;
 			this->mVertSize = aVerticesSize;
 			glGenBuffers(1, &this->mBuffer);
 			glBindBuffer(GL_ARRAY_BUFFER, this->mBuffer);
-			glBufferData(GL_ARRAY_BUFFER, this->mVertices * this->mVertSize * sizeof(float), arData, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, this->mVertices * this->mVertSize * sizeof(GLfloat), arData, GL_STATIC_DRAW);
 			this->mInit = true;
+			int val;
+			glBindBuffer(GL_ARRAY_BUFFER, this->mBuffer);
+			glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &val);
 		}
 
 		void GLVertexBuffer::EnableAttribute(const uint64_t aAmountValues, GLVertexArray* const apArray) noexcept {
@@ -51,7 +131,7 @@ namespace OpenArabTools {
 			apArray->Bind();
 			this->Bind();
 			glEnableVertexAttribArray(apArray->Counter);
-			glVertexAttribPointer(apArray->Counter, aAmountValues, GL_FLOAT, GL_FALSE, this->mVertSize * sizeof(float), (const void*)(std::accumulate(this->mCounterOffsets.begin(), this->mCounterOffsets.end(), 0) * sizeof(float)));
+			glVertexAttribPointer(apArray->Counter, aAmountValues, GL_FLOAT, GL_FALSE, this->mVertSize * sizeof(GLfloat), (const void*)(std::accumulate(this->mCounterOffsets.begin(), this->mCounterOffsets.end(), 0) * sizeof(GLfloat)));
 			this->mCounters.push_back(apArray->Counter);
 			this->mCounterOffsets.push_back(aAmountValues);
 			apArray->Counter++;
@@ -61,7 +141,7 @@ namespace OpenArabTools {
 			apArray->Bind();
 			this->Bind();
 			glEnableVertexAttribArray(aCounterOverride);
-			glVertexAttribPointer(aCounterOverride, aAmountValues, GL_FLOAT, GL_FALSE, this->mVertSize * sizeof(float), (const void*)(std::accumulate(this->mCounterOffsets.begin(), this->mCounterOffsets.end(), 0) * sizeof(float)));
+			glVertexAttribPointer(aCounterOverride, aAmountValues, GL_FLOAT, GL_FALSE, this->mVertSize * sizeof(GLfloat), (const void*)(std::accumulate(this->mCounterOffsets.begin(), this->mCounterOffsets.end(), 0) * sizeof(GLfloat)));
 			this->mCounters.push_back(aCounterOverride);
 			this->mCounterOffsets.push_back(aAmountValues);
 		}
@@ -72,16 +152,16 @@ namespace OpenArabTools {
 			for (uint64_t i = 0; i < this->mCounters.size(); i++) {
 				glEnableVertexAttribArray(this->mCounters[i]);
 				glVertexAttribPointer(
-					this->mCounters[i], this->mCounterOffsets[i], GL_FLOAT, GL_FALSE, this->mVertSize * sizeof(float),
-					(const void*)(std::accumulate(this->mCounterOffsets.begin(), this->mCounterOffsets.begin() + i, 0) * sizeof(float))
+					this->mCounters[i], this->mCounterOffsets[i], GL_FLOAT, GL_FALSE, this->mVertSize * sizeof(GLfloat),
+					(const void*)(std::accumulate(this->mCounterOffsets.begin(), this->mCounterOffsets.begin() + i, 0) * sizeof(GLfloat))
 				);
 			}
 		}
 
-		void GLVertexBuffer::Bind() noexcept {
+		void GLVertexBuffer::Bind() const noexcept {
 			glBindBuffer(GL_ARRAY_BUFFER, this->mBuffer);
 		}
-		void GLVertexBuffer::Unbind() noexcept {
+		void GLVertexBuffer::Unbind() const noexcept {
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 		}
 		void GLVertexBuffer::Reset() noexcept {
@@ -100,6 +180,9 @@ namespace OpenArabTools {
 
 		bool GLVertexBuffer::AreCountersSaved() const noexcept {
 			return !(this->mCounters.empty() && this->mCounterOffsets.empty());
+		}
+		bool GLVertexBuffer::IsValid() const noexcept {
+			return this->mInit;
 		}
 
 		GLHandle GLVertexBuffer::GetHandle() const noexcept {
@@ -128,10 +211,10 @@ namespace OpenArabTools {
 
 		static constexpr uint64_t csVertexSize = 4;
 
-		uint64_t GenerateTileVertices(float** const aprBuffer, const uint64_t aCircleAmountX, const uint64_t aCircleAmountY) noexcept {
+		uint64_t GenerateTileVertices(GLfloat** const aprBuffer, const uint64_t aCircleAmountX, const uint64_t aCircleAmountY) noexcept {
 			uint64_t VerticesAmount = aCircleAmountX * aCircleAmountY * 4;
 
-			*aprBuffer = (float*)malloc(sizeof(float) * VerticesAmount * csVertexSize);
+			*aprBuffer = (GLfloat*)malloc(sizeof(GLfloat) * VerticesAmount * csVertexSize);
 			if (*aprBuffer == nullptr) {
 				Error::error("Vertex Generation error: allocation failed");
 				return INT_MAX;
@@ -142,8 +225,8 @@ namespace OpenArabTools {
 			//j - local vertex
 			//k - local incrementer
 
-			float CircleSizeX = (2.0 / aCircleAmountX);
-			float CircleSizeY = (2.0 / aCircleAmountY);
+			GLfloat CircleSizeX = (2.0 / aCircleAmountX);
+			GLfloat CircleSizeY = (2.0 / aCircleAmountY);
 
 			//for each object
 			for (uint64_t i = 0; i < VerticesAmount; i += 4) {
@@ -162,35 +245,52 @@ namespace OpenArabTools {
 
 			return VerticesAmount;
 		}
-		void ApplyChangesV(float** const appBuffer, const uint64_t aAmount, GLVertexBuffer* const aObject) noexcept {
+		void ApplyChangesV(GLfloat** const appBuffer, const uint64_t aAmount, GLVertexBuffer* const aObject) noexcept {
 			aObject->Set(*appBuffer, aAmount, 4);
 			free(*appBuffer);
 		}
 
 		//IBO object
 
-		GLIndexBuffer::GLIndexBuffer() noexcept {
-			this->mBuffer = csGLInvalidHandle;
-			this->mAmount = 0;
-			this->mInit = false;
-		}
-		GLIndexBuffer::GLIndexBuffer(unsigned int* const arData, const uint64_t aAmount) noexcept {
+		GLIndexBuffer::GLIndexBuffer() noexcept
+			: mBuffer(csGLInvalidHandle), mAmount(0), mInit(false) {}
+		GLIndexBuffer::GLIndexBuffer(GLuint* const arData, const uint64_t aAmount) noexcept {
 			this->Set(arData, aAmount);
 		}
 
-		void GLIndexBuffer::Set(unsigned int* const arData, const uint64_t aAmount) noexcept {
+		GLIndexBuffer::GLIndexBuffer(GLIndexBuffer&& aOther) noexcept {
+			this->mBuffer = aOther.mBuffer;
+			aOther.mBuffer = csGLInvalidHandle;
+			this->mAmount = aOther.mAmount;
+			aOther.mAmount = 0;
+			this->mInit = aOther.mInit;
+			aOther.mInit = false;
+		}
+		GLIndexBuffer& GLIndexBuffer::operator=(GLIndexBuffer&& aOther) noexcept {
+			this->Reset();
+
+			this->mBuffer = aOther.mBuffer;
+			aOther.mBuffer = csGLInvalidHandle;
+			this->mAmount = aOther.mAmount;
+			aOther.mAmount = 0;
+			this->mInit = aOther.mInit;
+			aOther.mInit = false;
+			return *this;
+		}
+
+		void GLIndexBuffer::Set(GLuint* const arData, const uint64_t aAmount) noexcept {
 			if (this->mInit) { this->Reset(); }
 			this->mAmount = aAmount;
 			glGenBuffers(1, &this->mBuffer);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->mBuffer);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->mAmount * sizeof(unsigned int), arData, GL_STATIC_DRAW);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->mAmount * sizeof(GLuint), arData, GL_STATIC_DRAW);
 			this->mInit = true;
 		}
 
-		void GLIndexBuffer::Bind() noexcept {
+		void GLIndexBuffer::Bind() const noexcept {
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->mBuffer);
 		}
-		void GLIndexBuffer::Unbind() noexcept {
+		void GLIndexBuffer::Unbind() const noexcept {
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		}
 		void GLIndexBuffer::Reset() noexcept {
@@ -204,7 +304,7 @@ namespace OpenArabTools {
 
 		void GLIndexBuffer::Draw(const uint64_t aOffsetNumbers, const uint64_t aAmountToDraw) noexcept {
 			this->Bind();
-			glDrawElements(GL_TRIANGLES, aAmountToDraw == 0 ? this->mAmount : aAmountToDraw, GL_UNSIGNED_INT, (const void*)(aOffsetNumbers * sizeof(unsigned int)));
+			glDrawElements(GL_TRIANGLES, aAmountToDraw == 0 ? this->mAmount : aAmountToDraw, GL_UNSIGNED_INT, (const void*)(aOffsetNumbers * sizeof(GLuint)));
 		}
 
 		GLHandle GLIndexBuffer::GetHandle() const noexcept {
@@ -214,14 +314,18 @@ namespace OpenArabTools {
 			return this->mAmount;
 		}
 
+		bool GLIndexBuffer::IsValid() const noexcept {
+			return this->mInit;
+		}
+
 		GLIndexBuffer::~GLIndexBuffer() noexcept {
 			this->Reset();
 		}
 
 		//Indices generation
 
-		void GenerateTileIndices(unsigned int** aBuffer, const uint64_t aAmount) {
-			*aBuffer = (unsigned int*)malloc(sizeof(unsigned int) * aAmount * 6);
+		void GenerateTileIndices(GLuint** aBuffer, const uint64_t aAmount) {
+			*aBuffer = (GLuint*)malloc(sizeof(GLuint) * aAmount * 6);
 			if (*aBuffer == nullptr) {
 				Error::error("Index Generation error: allocation failed"); return;
 			}
@@ -240,7 +344,7 @@ namespace OpenArabTools {
 			}
 
 		}
-		void ApplyChangesI(unsigned int** const aBuffer, const uint64_t aAmount, GLIndexBuffer* const aObject) noexcept {
+		void ApplyChangesI(GLuint** const aBuffer, const uint64_t aAmount, GLIndexBuffer* const aObject) noexcept {
 			aObject->Set(*aBuffer, aAmount * 6);
 			free(*aBuffer);
 		}
@@ -283,8 +387,16 @@ namespace OpenArabTools {
 			glDeleteShader(VertexShader);
 			glDeleteShader(FragmentShader);
 
+
 			return Shader;
 		}
+
+		const char* const VertexPassSource =
+			"#version 460 core\n"
+			;
+		const char* const FragmentPassSource = 
+			"#version 460 core\n"
+			;
 
 		//Circles
 		//2 POS, 4 COLOR+ALPHA, 4 BG, 2 TOPLEFT
@@ -363,7 +475,7 @@ namespace OpenArabTools {
 			;
 
 		namespace Debug {
-			void PrintVertexArray(float** aprArray, const uint64_t aAmountOfVertices, const uint64_t aVertexSize, const uint64_t aVertexPrecisionOverride) noexcept {
+			void PrintVertexArray(GLfloat** aprArray, const uint64_t aAmountOfVertices, const uint64_t aVertexSize, const uint64_t aVertexPrecisionOverride) noexcept {
 				std::ios DefaultCout(nullptr); std::cerr.copyfmt(DefaultCout);
 				std::cerr << std::fixed << std::setprecision(aVertexPrecisionOverride);
 				for (uint64_t i = 0; i < aAmountOfVertices * aVertexSize; i++) {
@@ -373,7 +485,7 @@ namespace OpenArabTools {
 				std::cerr << '\n';
 				std::cerr.copyfmt(DefaultCout);
 			}
-			void PrintIndexArray(unsigned int** aprArray, const uint64_t aAmountOfObjects, const uint64_t aIndicesPerObject, const uint64_t aNumberWidthOverride) noexcept {
+			void PrintIndexArray(GLuint** aprArray, const uint64_t aAmountOfObjects, const uint64_t aIndicesPerObject, const uint64_t aNumberWidthOverride) noexcept {
 				for (uint64_t i = 0; i < aAmountOfObjects * aIndicesPerObject; i++) {
 					if (i % aIndicesPerObject == 0 && i != 0) std::cerr << '\n';
 					std::cerr << std::setw(aNumberWidthOverride) << std::setfill('0') << (*aprArray)[i] << ',';

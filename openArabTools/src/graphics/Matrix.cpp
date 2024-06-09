@@ -1,13 +1,11 @@
 #include "Matrix.hpp"
 
-//TODO update style to match CONTRIBUTING.md
-
 namespace OpenArabTools {
 	Matrix::Matrix() noexcept 
 	: mSizeX(0), mSizeY(0), mrColor(nullptr), mrIsOn(nullptr), mInit(false) {}
 
-	Matrix::Matrix(const uint64_t aSizeX, const uint64_t aSizeY) noexcept {
-		this->mInit = false;
+	Matrix::Matrix(const uint64_t aSizeX, const uint64_t aSizeY) noexcept
+		: mInit(false) {
 		this->set(aSizeX, aSizeY);
 	}
 	Matrix::Matrix(const Matrix& aOther) noexcept
@@ -19,8 +17,7 @@ namespace OpenArabTools {
 			Error::error("Matrix copy self assigment detected."); return;
 		}
 
-		this->mInit = false;
-		this->mWindow = Internal::GLWindow(aOther.mSizeX, aOther.mSizeY);
+		this->mWindow = aOther.mWindow;
 		this->set(aOther.mSizeX, aOther.mSizeY);
 
 		for (uint64_t i = 0; i < aOther.mSizeX * aOther.mSizeY; i++) {
@@ -31,13 +28,19 @@ namespace OpenArabTools {
 		this->UploadStateToShader();
 	}
 	Matrix::Matrix(Matrix&& aOther) noexcept {
+		if (&aOther == this) {
+			Error::error("Matrix copy self assigment detected."); return;
+		}
+
 		this->mSizeX = aOther.mSizeX;
 		this->mSizeY = aOther.mSizeY;
-		this->mWindow = aOther.mWindow;
+		this->mWindow = std::move(aOther.mWindow);
 		this->mrColor = aOther.mrColor;
-		this->mColorBuf = aOther.mColorBuf;
+		aOther.mrColor = nullptr;
+		this->mColorBuf = std::move(aOther.mColorBuf);
 		this->mrIsOn = aOther.mrIsOn;
-		this->mIsOnBuf = aOther.mIsOnBuf;
+		aOther.mrIsOn = nullptr;
+		this->mIsOnBuf = std::move(aOther.mIsOnBuf);
 		this->mInit = aOther.mInit;
 
 		//we take ownership, no free in aOther (we free), do so with all pointers
@@ -51,8 +54,10 @@ namespace OpenArabTools {
 			Error::error("Matrix copy self assigment detected."); return *this;
 		}
 
-		this->reset();
-		this->mWindow = Internal::GLWindow(aOther.mSizeX, aOther.mSizeY);
+		if (this->mInit) {
+			this->reset();
+		}
+		this->mWindow = aOther.mWindow;
 		this->set(aOther.mSizeX, aOther.mSizeY);
 
 		for (uint64_t i = 0; i < aOther.mSizeX * aOther.mSizeY; i++) {
@@ -65,24 +70,23 @@ namespace OpenArabTools {
 		return *this;
 	}
 	Matrix& Matrix::operator=(Matrix&& aOther) noexcept {
-		if (!aOther.mInit) {
-			this->reset();
-			return *this; //aOther not initialized
-		}
 		if (&aOther == this) {
 			Error::error("Matrix copy self assigment detected."); return *this;
 		}
 
 		this->mSizeX = aOther.mSizeX;
 		this->mSizeY = aOther.mSizeY;
-		this->mWindow = aOther.mWindow;
+		this->mWindow = std::move(aOther.mWindow);
 		this->mrColor = aOther.mrColor;
-		this->mColorBuf = aOther.mColorBuf;
+		aOther.mrColor = nullptr;
+		this->mColorBuf = std::move(aOther.mColorBuf);
 		this->mrIsOn = aOther.mrIsOn;
-		this->mIsOnBuf = aOther.mIsOnBuf;
+		aOther.mrIsOn = nullptr;
+		this->mIsOnBuf = std::move(aOther.mIsOnBuf);
 		this->mInit = aOther.mInit;
 
-		aOther.mInit = false; //same as in move constructor
+		//we take ownership, no free in aOther (we free), do so with all pointers
+		aOther.mInit = false; //this covers mIsOn, mColor
 
 		return *this;
 	}
@@ -240,9 +244,19 @@ namespace OpenArabTools {
 		if (!this->mWindow.IsWindowOpen()) {
 			this->reset();
 		}
+		if (this->mWindow.IsWindowHidden()) {
+			this->mWindow.ShowWindow();
+		}
+
+		//bind and ready OpenGL stuff
 		this->mColorBuf.Bind();
 		this->mIsOnBuf.Bind();
+		this->mWindow.BindShader();
+		
+		//actual, batched draw call
 		this->mWindow.glIBO.Draw();
+
+		//process window stuff
 		this->mWindow.Process();
 		return this->mWindow.IsWindowOpen();
 	}
@@ -323,6 +337,7 @@ namespace OpenArabTools {
 		//select larger (size X or size Y), size should never be larger than 800px
 		uint64_t CircleSize = 800 / ((this->mSizeX > this->mSizeY) ? this->mSizeX : this->mSizeY);
 
+		//limit 130px
 		if (CircleSize > 130) {
 			CircleSize = 130;
 		}
@@ -355,7 +370,7 @@ namespace OpenArabTools {
 
 		float* VerticesData;
 		uint64_t VertexSize = Internal::GenerateTileVertices(&VerticesData, this->mSizeX, this->mSizeY);
-		unsigned int* IndicesData;
+		GLuint* IndicesData;
 		Internal::GenerateTileIndices(&IndicesData, VertexSize / 4);
 
 #ifdef OPENARABTOOLS_PRINT_DEBUG_INFO
@@ -446,6 +461,8 @@ namespace OpenArabTools {
 		glUseProgram(this->mWindow.glCircleShader);
 		this->mIsOnBuf.Update(this->mrIsOn);
 	}
+
+	//TODO: add error handling to Matrix
 
 	void Matrix::CheckRangeID(const uint64_t aId) noexcept {
 

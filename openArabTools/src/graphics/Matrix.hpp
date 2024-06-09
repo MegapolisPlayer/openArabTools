@@ -118,7 +118,7 @@ namespace OpenArabTools {
 	//private:
 		uint64_t mSizeX, mSizeY;
 
-		Internal::GLWindow mWindow;
+		Internal::GLCircleWindow mWindow;
 
 		Internal::CircleColor* mrColor; //array of lights color
 		Internal::GLShaderBuffer<Internal::CircleColor> mColorBuf;

@@ -40,7 +40,7 @@ namespace OpenArabTools {
 			if (!this->mInit) {	Error::error("SSBO not initialized."); return; }
 
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, this->mBuffer);
-			glBufferData(GL_SHADER_STORAGE_BUFFER, this->mSize * sizeof(DataType) * Multiplier, aNewData, GL_DYNAMIC_DRAW);
+			glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, this->mSize * sizeof(DataType) * Multiplier, aNewData);
 		}
 
 		template<typename DataType, uint64_t Multiplier>
