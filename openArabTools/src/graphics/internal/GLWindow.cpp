@@ -32,6 +32,7 @@ namespace OpenArabTools {
 			this->mTitle = aOther.mTitle;
 
 			this->CreateWindow();
+
 			BufferCopy(aOther, *this);
 		}
 		GLWindow::GLWindow(GLWindow&& aOther) noexcept
@@ -47,11 +48,13 @@ namespace OpenArabTools {
 			this->mTitle = std::move(aOther.mTitle);
 
 			this->mWindow = aOther.mWindow;
-			aOther.mWindow = nullptr;
+			this->BindContext();
 
 			this->glVAO = std::move(aOther.glVAO);
 			this->glVBO = std::move(aOther.glVBO);
 			this->glIBO = std::move(aOther.glIBO);
+
+			aOther.mWindow = nullptr;
 		}
 		GLWindow& GLWindow::operator=(const GLWindow& aOther) noexcept {
 			if (&aOther == this) {
@@ -66,6 +69,7 @@ namespace OpenArabTools {
 			this->mTitle = aOther.mTitle;
 
 			this->CreateWindow();
+
 			BufferCopy(aOther, *this);
 
 			return *this;
@@ -74,6 +78,7 @@ namespace OpenArabTools {
 			if (&aOther == this) {
 				Error::error("Self-assignment in GLWindow detected."); return *this;
 			}
+
 			this->Reset();
 			if (!aOther.mWindow) { return *this; }
 
@@ -83,11 +88,13 @@ namespace OpenArabTools {
 			this->mTitle = std::move(aOther.mTitle);
 
 			this->mWindow = aOther.mWindow;
-			aOther.mWindow = nullptr;
+			this->BindContext();
 
 			this->glVAO = std::move(aOther.glVAO);
 			this->glVBO = std::move(aOther.glVBO);
 			this->glIBO = std::move(aOther.glIBO);
+
+			aOther.mWindow = nullptr;
 
 			return *this;
 		}
@@ -157,6 +164,7 @@ namespace OpenArabTools {
 		}
 		void GLWindow::Reset() noexcept {
 			if (this->mWindow != nullptr) {
+				glfwMakeContextCurrent(NULL); //important: FREE CONTEXT
 				glfwDestroyWindow(this->mWindow);
 				this->mWindow = nullptr;
 			};
@@ -170,6 +178,7 @@ namespace OpenArabTools {
 			this->mFrameNo = 0;
 		}
 		GLWindow::~GLWindow() noexcept {
+			this->glVAO.Reset();
 			this->Reset();
 		}
 
@@ -202,6 +211,8 @@ namespace OpenArabTools {
 
 #ifdef _DEBUG
 			glDebugMessageCallback(Internal::GLDebugCallback, nullptr);
+			glEnable(GL_DEBUG_OUTPUT);
+			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 #endif
 
 			glewInit();
@@ -215,6 +226,7 @@ namespace OpenArabTools {
 		}
 
 		//OpenGL kinda sucks when copying buffers: save data, switch to different context and upload data back
+		//Cannot use glCopy(Named)BufferSubData because objects are in different contexts
 
 		void BufferCopy(const GLWindow& aWindow1, GLWindow& aWindow2) noexcept {
 			if (aWindow1.mWindow == nullptr) {
@@ -250,11 +262,11 @@ namespace OpenArabTools {
 		//GLWindow cannot init shaders: in CreateWindow(), ShaderInit is called but derived class not yet made! (ShadersInit is different)
 
 		GLCircleWindow::GLCircleWindow()
-			: glCircleShader(csGLInvalidHandle), glCSUSize(csGLInvalidHandle), glCSUResolution(csGLInvalidHandle), glCSUInternalRadius(csGLInvalidHandle), glCSUExternalRadius(csGLInvalidHandle) {
+			: GLWindow(), glCircleShader(csGLInvalidHandle), glCSUSize(csGLInvalidHandle), glCSUResolution(csGLInvalidHandle), glCSUInternalRadius(csGLInvalidHandle), glCSUExternalRadius(csGLInvalidHandle) {
 			this->ShadersInit();
 		}
 		GLCircleWindow::GLCircleWindow(const uint64_t aWidth, const uint64_t aHeight) noexcept
-			: glCircleShader(csGLInvalidHandle), glCSUSize(csGLInvalidHandle), glCSUResolution(csGLInvalidHandle), glCSUInternalRadius(csGLInvalidHandle), glCSUExternalRadius(csGLInvalidHandle) {
+			: GLWindow(aWidth, aHeight), glCircleShader(csGLInvalidHandle), glCSUSize(csGLInvalidHandle), glCSUResolution(csGLInvalidHandle), glCSUInternalRadius(csGLInvalidHandle), glCSUExternalRadius(csGLInvalidHandle) {
 			this->ShadersInit();
 		}
 		GLCircleWindow::GLCircleWindow(const GLCircleWindow& aOther) noexcept {
@@ -269,6 +281,7 @@ namespace OpenArabTools {
 			this->glCSUResolution = aOther.glCSUResolution;
 			this->glCSUInternalRadius = aOther.glCSUInternalRadius;
 			this->glCSUExternalRadius = aOther.glCSUExternalRadius;
+			this->ShadersInit();
 		}
 		GLCircleWindow& GLCircleWindow::operator=(const GLCircleWindow& aOther) noexcept {
 			GLWindow::operator=(aOther);
@@ -310,6 +323,11 @@ namespace OpenArabTools {
 			);
 			glUniform2f(this->glCSUSize, 2.0 / aAmountCirclesX, 2.0 / aAmountCirclesY);
 		}
+
+		GLCircleWindow::~GLCircleWindow() noexcept {
+			this->Reset();
+		}
+
 		void GLCircleWindow::ShadersInit() noexcept {
 			this->glCircleShader = Internal::MakeShader(Internal::VertexCircleSource, Internal::FragmentCircleSource);
 			this->glCSUSize = glGetUniformLocation(this->glCircleShader, "Size");

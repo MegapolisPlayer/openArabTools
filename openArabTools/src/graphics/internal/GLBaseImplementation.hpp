@@ -56,6 +56,12 @@ namespace OpenArabTools {
 		public:
 			GLVertexArray() noexcept;
 
+			GLVertexArray(const GLVertexArray& aOther) noexcept = delete;
+			GLVertexArray& operator=(const GLVertexArray& aOther) noexcept = delete;
+
+			GLVertexArray(GLVertexArray&& aOther) noexcept;
+			GLVertexArray& operator=(GLVertexArray&& aOther) noexcept;
+
 			void Make() noexcept;
 
 			void Bind() const noexcept;
@@ -76,12 +82,10 @@ namespace OpenArabTools {
 			GLVertexBuffer() noexcept;
 			GLVertexBuffer(GLfloat* const aData, const uint64_t aVertices, const uint64_t aVerticesSize) noexcept;
 
-			//Copying is done by a special function to allow copying between window contexts.
+			//Copying and moving is done by a special function to allow copying between window contexts.
 
 			GLVertexBuffer(const GLVertexBuffer& aOther) noexcept = delete;
 			GLVertexBuffer& operator=(const GLVertexBuffer& aOther) noexcept = delete;
-
-			//Moving is allowed
 
 			GLVertexBuffer(GLVertexBuffer&& aOther) noexcept;
 			GLVertexBuffer& operator=(GLVertexBuffer&& aOther) noexcept;
@@ -133,12 +137,10 @@ namespace OpenArabTools {
 			GLIndexBuffer() noexcept;
 			GLIndexBuffer(GLuint* const aData, const uint64_t aAmount) noexcept;
 
-			//Copying is done by a special function to allow copying between window contexts.
+			//Copying and moving is done by a special function to allow copying between window contexts.
 
 			GLIndexBuffer(const GLIndexBuffer& aOther) noexcept = delete;
 			GLIndexBuffer& operator=(const GLIndexBuffer& aOther) noexcept = delete;
-
-			//Moving is allowed
 
 			GLIndexBuffer(GLIndexBuffer&& aOther) noexcept;
 			GLIndexBuffer& operator=(GLIndexBuffer&& aOther) noexcept;
@@ -190,7 +192,13 @@ namespace OpenArabTools {
 			GLShaderBuffer() noexcept;
 			GLShaderBuffer(DataType* aData, const uint64_t aAmount, GLVertexArray* const aArray) noexcept;
 
-			void Set(DataType* aData, const uint64_t aAmount, GLVertexArray* const aArray) noexcept;
+			GLShaderBuffer(const GLShaderBuffer& aOther) noexcept = delete;
+			GLShaderBuffer<DataType, Multiplier>& operator=(const GLShaderBuffer& aOther) noexcept = delete;
+
+			GLShaderBuffer(GLShaderBuffer&& aOther) noexcept;
+			GLShaderBuffer<DataType, Multiplier>& operator=(GLShaderBuffer<DataType, Multiplier>&& aOther) noexcept;
+
+			void Set(DataType* aData, const uint64_t aAmount, const uint64_t aId, GLVertexArray* const aArray) noexcept;
 			void Update(DataType* aNewData) noexcept;
 
 			void Bind() noexcept;
@@ -205,7 +213,7 @@ namespace OpenArabTools {
 		private:
 			GLHandle mBuffer;
 			uint64_t mSize;
-			uint64_t mVAOCount;
+			uint64_t mId;
 			bool mInit;
 		};
 

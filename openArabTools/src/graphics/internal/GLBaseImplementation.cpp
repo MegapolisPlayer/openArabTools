@@ -36,7 +36,11 @@ namespace OpenArabTools {
 				default:
 					std::cerr << "Unknown (" << type << ")";
 			}
-			std::cerr << ", " << message << " (" << id << ")" << std::endl;
+			std::cerr << ", " << message << " (" << id << ")";
+			if (userParam != nullptr) {
+				std::cerr << " in function " << (const char*)userParam;
+			}
+			std::cerr << std::endl;
 		}
 #endif
 
@@ -44,6 +48,25 @@ namespace OpenArabTools {
 
 		GLVertexArray::GLVertexArray() noexcept
 			: Array(csGLInvalidHandle), Counter(0), mInit(false) {}
+
+		GLVertexArray::GLVertexArray(GLVertexArray&& aOther) noexcept {
+			this->Array = aOther.Array;
+			aOther.Array = csGLInvalidHandle;
+			this->Counter = 0;
+			aOther.Counter = 0;
+			this->mInit = aOther.mInit;
+			aOther.mInit = false;
+		}
+		GLVertexArray& GLVertexArray::operator=(GLVertexArray&& aOther) noexcept {
+			this->Array = aOther.Array;
+			aOther.Array = csGLInvalidHandle;
+			this->Counter = 0;
+			aOther.Counter = 0;
+			this->mInit = aOther.mInit;
+			aOther.mInit = false;
+
+			return *this;
+		}
 
 		void GLVertexArray::Make() noexcept {
 			if (this->mInit) { 
@@ -63,7 +86,10 @@ namespace OpenArabTools {
 		}
 
 		void GLVertexArray::Reset() noexcept {
-			if (!this->mInit) { return; }
+			if (!this->mInit) { 
+				//sometimes reset for safety, no error here
+				return;
+			}
 			glDeleteVertexArrays(1, &this->Array);
 			this->mInit = false;
 		}
@@ -91,13 +117,10 @@ namespace OpenArabTools {
 			aOther.mVertSize = 0;
 			this->mInit = aOther.mInit;
 			aOther.mInit = false;
-
 			this->mCounters = std::move(aOther.mCounters);
 			this->mCounterOffsets = std::move(aOther.mCounterOffsets);
 		}
 		GLVertexBuffer& GLVertexBuffer::operator=(GLVertexBuffer&& aOther) noexcept {
-			this->Reset();
-
 			this->mBuffer = aOther.mBuffer;
 			aOther.mBuffer = csGLInvalidHandle;
 			this->mVertices = aOther.mVertices;
@@ -106,7 +129,6 @@ namespace OpenArabTools {
 			aOther.mVertSize = 0;
 			this->mInit = aOther.mInit;
 			aOther.mInit = false;
-
 			this->mCounters = std::move(aOther.mCounters);
 			this->mCounterOffsets = std::move(aOther.mCounterOffsets);
 
@@ -267,14 +289,13 @@ namespace OpenArabTools {
 			aOther.mInit = false;
 		}
 		GLIndexBuffer& GLIndexBuffer::operator=(GLIndexBuffer&& aOther) noexcept {
-			this->Reset();
-
 			this->mBuffer = aOther.mBuffer;
 			aOther.mBuffer = csGLInvalidHandle;
 			this->mAmount = aOther.mAmount;
 			aOther.mAmount = 0;
 			this->mInit = aOther.mInit;
 			aOther.mInit = false;
+
 			return *this;
 		}
 

@@ -17,7 +17,7 @@ namespace OpenArabTools {
 		//Main Window Class - cannot be instantiated
 		class OPENARABTOOLS_OBJ GLWindow {
 			friend class OPENARABTOOLS_OBJ ::OpenArabTools::Matrix;
-			friend OPENARABTOOLS_OBJ void BufferCopy(const GLWindow& aWindow1, GLWindow& aWindow2) noexcept;
+			friend void BufferCopy(const GLWindow& aWindow1, GLWindow& aWindow2) noexcept;
 		public:
 			GLWindow() noexcept; //default 500, 500 (X,Y)
 			GLWindow(const uint64_t aWidth, const uint64_t aHeight) noexcept;
@@ -103,7 +103,7 @@ namespace OpenArabTools {
 			//Internal radius - radius of empty space in middle of circle, almost never used
 			void PrepareUniforms(const uint64_t aAmountCirclesX, const uint64_t aAmountCirclesY, const double_t aInternalRadius = 0.0) noexcept;
 
-
+			~GLCircleWindow() noexcept;
 
 			//shaders, per window (must be in OpenGL context)
 			//CS = Circle Shader, U = Uniform, S = SSBO

@@ -26,6 +26,8 @@ namespace OpenArabTools {
 		}
 		this->UploadColorToShader();
 		this->UploadStateToShader();
+
+		this->mInit = true;
 	}
 	Matrix::Matrix(Matrix&& aOther) noexcept {
 		if (&aOther == this) {
@@ -66,6 +68,8 @@ namespace OpenArabTools {
 		}
 		this->UploadColorToShader();
 		this->UploadStateToShader();
+
+		this->mInit = true;
 
 		return *this;
 	}
@@ -249,6 +253,7 @@ namespace OpenArabTools {
 		}
 
 		//bind and ready OpenGL stuff
+		this->mWindow.BindContext();
 		this->mColorBuf.Bind();
 		this->mIsOnBuf.Bind();
 		this->mWindow.BindShader();
@@ -368,6 +373,8 @@ namespace OpenArabTools {
 
 		//generation
 
+		this->mWindow.BindContext();
+
 		float* VerticesData;
 		uint64_t VertexSize = Internal::GenerateTileVertices(&VerticesData, this->mSizeX, this->mSizeY);
 		GLuint* IndicesData;
@@ -395,8 +402,8 @@ namespace OpenArabTools {
 
 		this->mWindow.PrepareUniforms(this->mSizeX, this->mSizeY);
 
-		this->mColorBuf.Set(this->mrColor, this->mSizeX * this->mSizeY, &this->mWindow.glVAO);
-		this->mIsOnBuf.Set(this->mrIsOn, this->mSizeX * this->mSizeY, &this->mWindow.glVAO);
+		this->mColorBuf.Set(this->mrColor, this->mSizeX * this->mSizeY, 2, &this->mWindow.glVAO);
+		this->mIsOnBuf.Set(this->mrIsOn, this->mSizeX * this->mSizeY, 3, &this->mWindow.glVAO);
 
 		this->mWindow.ShowWindow();
 
@@ -413,6 +420,8 @@ namespace OpenArabTools {
 		this->mWindow.HideWindow();
 		this->mSizeX = 0;
 		this->mSizeY = 0;
+		this->mColorBuf.Reset();
+		this->mIsOnBuf.Reset();
 		free(this->mrColor);
 		free(this->mrIsOn);
 		this->mInit = false;
@@ -453,11 +462,13 @@ namespace OpenArabTools {
 	//private
 
 	void Matrix::UploadColorToShader() noexcept {
+		this->mWindow.BindContext();
 		glUseProgram(this->mWindow.glCircleShader);
 		this->mColorBuf.Update(this->mrColor);
 	}
 
 	void Matrix::UploadStateToShader() noexcept {
+		this->mWindow.BindContext();
 		glUseProgram(this->mWindow.glCircleShader);
 		this->mIsOnBuf.Update(this->mrIsOn);
 	}
