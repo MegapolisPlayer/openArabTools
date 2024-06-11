@@ -58,6 +58,9 @@
     <None Include="src\remote\README.md" />
     <None Include="src\types\README.md" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="docs\Logo.png" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

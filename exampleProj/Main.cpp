@@ -1,21 +1,22 @@
-﻿//Demo program
-#include "OpenArabTools.hpp"
+﻿#include "OpenArabTools.hpp"
 
 int main() {
 	ArabTools::init();
-	
-	ArabTools::Matrix m = ArabTools::Matrix(2, 2);
-	m = ArabTools::Matrix(7, 2);
 
-	{
-		ArabTools::Matrix m2;
-		m2 = m;
-		m2.setBackground(ArabTools::LIGHTCOLOREX_DARK_GREEN);
-		m2.showWindowAndRun();
-	}
+	ArabTools::Matrix m(7, 3); //make a 7x3 matrix
 
-	m.setBackground(ArabTools::LIGHTCOLOR_ORANGE);
-	m.setOn(0, 1);
+	//enable some lights
+	m.setOn(0, 0);
+	m.setOn(1, 1);
+	m.setOn(2, 0);
+	m.setOn(3, 1);
+	m.setOn(4, 0);
+
+	//we can set colors AFTER set on/off (but we also can set them before)
+	m.setBackground(ArabTools::LIGHTCOLOREX_CESKEDRAHY_DARK_BLUE); //LIGHTCOLOREX enum
+	m.setColor(ArabTools::LightColor((uint8_t)255, (uint8_t)255, (uint8_t)0)); //convert to uint8_t to trigger correct constructor
+	m.setOffColor(ArabTools::LIGHTCOLOR_DARK_GRAY); //LIGHTCOLOR enum
+
 	m.showWindowAndRun();
 
 	ArabTools::terminate();

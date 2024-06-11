@@ -370,6 +370,8 @@ namespace OpenArabTools {
 			free(*aBuffer);
 		}
 
+		// SHADERS
+
 		[[nodiscard]] GLHandle MakeShader(const char* arVertSource, const char* arFragSource) noexcept {
 			GLHandle Shader = glCreateProgram();
 			GLHandle VertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -412,10 +414,19 @@ namespace OpenArabTools {
 			return Shader;
 		}
 
+		// SHADER CODE
+
 		const char* const VertexPassSource =
 			"#version 460 core\n"
 			;
 		const char* const FragmentPassSource = 
+			"#version 460 core\n"
+			;
+
+		const char* const VertexSimpleCircleSource =
+			"#version 460 core\n"
+			;
+		const char* const FragmentSimpleCircleSource =
 			"#version 460 core\n"
 			;
 

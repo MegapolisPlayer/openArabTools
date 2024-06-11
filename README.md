@@ -12,6 +12,7 @@ The documentation for openArabTools is accessible in the `docs` folder.
 
 Simply include the `OpenArabTools.hpp` header and link the library.
 The process will depend whether you are using Visual Studio, CodeLite or any other IDE.
+Documentation is in the `docs/` folder in the Markdown format.
 
 # Comparison to the original ArabTools
 
@@ -29,15 +30,16 @@ class Main {
 ```
 In C++ with openArabTools:
 
-(NOTE: Other namespaces may be used: OpenArabTools = ArabTools = oAT = AT)
+*(NOTE: Other namespaces may be used: OpenArabTools = ArabTools = oAT = AT)*
 
 ```cpp
 #include "OpenArabTools.hpp"
 
 int main() {
-	OpenArabTools::init();
-	OpenArabTools::Semaphore s;
+	ArabTools::init();
+	ArabTools::Semaphore s;
 	s.showWindowAndRun();
+	ArabTools::terminate();
 }
 ```
 
@@ -53,6 +55,7 @@ void Function(const ArabTools::uint8_t ThreadId, const ArabTools::uint64_t Id) {
 int main() {
 	ArabTools::init();
 	ArabTools::Utils::runConcurrently(100000, true, Function);
+	ArabTools::terminate();
 }
 ```
 

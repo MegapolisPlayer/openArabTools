@@ -261,6 +261,8 @@ namespace OpenArabTools {
 
 		//GLWindow cannot init shaders: in CreateWindow(), ShaderInit is called but derived class not yet made! (ShadersInit is different)
 
+		//GLCircleWindow
+
 		GLCircleWindow::GLCircleWindow()
 			: GLWindow(), glCircleShader(csGLInvalidHandle), glCSUSize(csGLInvalidHandle), glCSUResolution(csGLInvalidHandle), glCSUInternalRadius(csGLInvalidHandle), glCSUExternalRadius(csGLInvalidHandle) {
 			this->ShadersInit();
@@ -272,16 +274,17 @@ namespace OpenArabTools {
 		GLCircleWindow::GLCircleWindow(const GLCircleWindow& aOther) noexcept {
 			GLWindow::operator=(aOther);
 			this->BindContext();
+			this->ShadersDestroy();
 			this->ShadersInit();
 		}
 		GLCircleWindow::GLCircleWindow(GLCircleWindow&& aOther) noexcept
 			: GLWindow(std::move(aOther)) {
 			this->glCircleShader = aOther.glCircleShader;
+			aOther.glCircleShader = csGLInvalidHandle;
 			this->glCSUSize = aOther.glCSUSize;
 			this->glCSUResolution = aOther.glCSUResolution;
 			this->glCSUInternalRadius = aOther.glCSUInternalRadius;
 			this->glCSUExternalRadius = aOther.glCSUExternalRadius;
-			this->ShadersInit();
 		}
 		GLCircleWindow& GLCircleWindow::operator=(const GLCircleWindow& aOther) noexcept {
 			GLWindow::operator=(aOther);
@@ -294,6 +297,7 @@ namespace OpenArabTools {
 		GLCircleWindow& GLCircleWindow::operator=(GLCircleWindow&& aOther) noexcept {
 			GLWindow::operator=(std::move(aOther));
 			this->glCircleShader = aOther.glCircleShader;
+			aOther.glCircleShader = csGLInvalidHandle;
 			this->glCSUSize = aOther.glCSUSize;
 			this->glCSUResolution = aOther.glCSUResolution;
 			this->glCSUInternalRadius = aOther.glCSUInternalRadius;
@@ -342,6 +346,75 @@ namespace OpenArabTools {
 			}
 			glDeleteProgram(this->glCircleShader);
 			this->glCircleShader = csGLInvalidHandle;
+		}
+
+		//GLPassthroughWindow
+		
+		GLPassthroughWindow::GLPassthroughWindow() noexcept
+			: GLWindow(), glShader(csGLInvalidHandle), glSimpleCircle(csGLInvalidHandle) {
+			this->ShadersInit();
+		}
+		GLPassthroughWindow::GLPassthroughWindow(const uint64_t aWidth, const uint64_t aHeight) noexcept
+			: GLWindow(aWidth, aHeight), glShader(csGLInvalidHandle), glSimpleCircle(csGLInvalidHandle) {
+			this->ShadersInit();
+		}
+		GLPassthroughWindow::GLPassthroughWindow(const GLCircleWindow& aOther) noexcept 
+			: GLWindow(aOther), glShader(csGLInvalidHandle), glSimpleCircle(csGLInvalidHandle) {
+			this->BindContext();
+			this->ShadersDestroy();
+			this->ShadersInit();
+		}
+		GLPassthroughWindow::GLPassthroughWindow(GLPassthroughWindow&& aOther) noexcept 
+			: GLWindow(aOther), glShader(csGLInvalidHandle), glSimpleCircle(csGLInvalidHandle) {
+			this->glShader = aOther.glShader;
+			aOther.glShader = csGLInvalidHandle;
+			this->glSimpleCircle = aOther.glSimpleCircle;
+			aOther.glSimpleCircle = csGLInvalidHandle;
+		}
+		GLPassthroughWindow& GLPassthroughWindow::operator=(const GLPassthroughWindow& aOther) noexcept {
+			GLWindow::operator=(aOther);
+			this->BindContext();
+			this->ShadersDestroy();
+			this->ShadersInit();
+			return *this;
+		}
+		GLPassthroughWindow& GLPassthroughWindow::operator=(GLPassthroughWindow&& aOther) noexcept {
+			GLWindow::operator=(std::move(aOther));
+			this->glShader = aOther.glShader;
+			aOther.glShader = csGLInvalidHandle;
+			this->glSimpleCircle = aOther.glSimpleCircle;
+			aOther.glSimpleCircle = csGLInvalidHandle;
+			return *this;
+		}
+
+		void GLPassthroughWindow::Reset() noexcept {
+			GLWindow::Reset();
+			this->ShadersDestroy();
+		}
+		void GLPassthroughWindow::BindShader() const noexcept {
+			glUseProgram(this->glShader);
+		}
+		void GLPassthroughWindow::BindCircleShader() const noexcept {
+			glUseProgram(this->glSimpleCircle);
+		}
+		GLPassthroughWindow::~GLPassthroughWindow() noexcept {
+			this->Reset();
+		}
+
+		void GLPassthroughWindow::ShadersInit() noexcept {
+			this->glShader = Internal::MakeShader(Internal::VertexCircleSource, Internal::FragmentCircleSource);
+			this->glSimpleCircle = Internal::MakeShader(Internal::VertexCircleSource, Internal::FragmentCircleSource);
+			glUseProgram(this->glShader);
+		}
+		void GLPassthroughWindow::ShadersDestroy() noexcept {
+			if (this->glShader != csGLInvalidHandle) {
+				glDeleteProgram(this->glShader);
+				this->glShader = csGLInvalidHandle;
+			}
+			if (this->glSimpleCircle != csGLInvalidHandle) {
+				glDeleteProgram(this->glSimpleCircle);
+				this->glSimpleCircle = csGLInvalidHandle;
+			}
 		}
 	}
 }

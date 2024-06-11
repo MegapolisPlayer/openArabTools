@@ -51,6 +51,8 @@ namespace OpenArabTools {
 		LightColor(const float aR, const float aG, const float aB) noexcept;
 		LightColor(const uint8_t aR, const uint8_t aG, const uint8_t aB) noexcept;
 
+		LightColor(const LightColor& aOther) noexcept;
+
 		//Sets color from values in LightColorD
 		LightColor& Set(const LightColorD aColor) noexcept;
 		//Sets color from values in LightColorEx
@@ -66,7 +68,7 @@ namespace OpenArabTools {
 		//Makes color lighter
 		LightColor& Lighten() noexcept;
 
-		LightColor& operator=(const LightColor& aColor) noexcept;
+		LightColor& operator=(const LightColor& aOther) noexcept;
 		bool operator==(const LightColor& aOther) const noexcept;
 
 		~LightColor() noexcept;

@@ -119,24 +119,31 @@ namespace OpenArabTools {
 			virtual void ShadersDestroy() noexcept override;
 		};
 
-		/*
-		//Normal window, outputs same color without modification (for Canvas and derivatives)
+		//Normal window, outputs same color without modification and also contains shader for making simple circles (for Canvas and derivatives)
 		class OPENARABTOOLS_OBJ GLPassthroughWindow : public GLWindow {
 		public:
-			GLPassthroughWindow();
+			GLPassthroughWindow() noexcept;
 			GLPassthroughWindow(const uint64_t aWidth, const uint64_t aHeight) noexcept;
 			GLPassthroughWindow(const GLCircleWindow& aOther) noexcept;
 			GLPassthroughWindow(GLPassthroughWindow&& aOther) noexcept;
 			GLPassthroughWindow& operator=(const GLPassthroughWindow& aOther) noexcept;
 			GLPassthroughWindow& operator=(GLPassthroughWindow&& aOther) noexcept;
 
+			virtual void Reset() noexcept override;
+			virtual void BindShader() const noexcept override;
+			void BindCircleShader() const noexcept;
+
+			~GLPassthroughWindow() noexcept;
+
 			//passthrough shader
 			GLHandle glShader;
+
+			//simple circle shader
+			GLHandle glSimpleCircle;
 		protected:
 			void ShadersInit() noexcept override;
 			void ShadersDestroy() noexcept override;
 		};
-		*/
 	}
 }
 
