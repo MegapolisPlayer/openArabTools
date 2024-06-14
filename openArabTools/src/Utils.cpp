@@ -106,7 +106,8 @@ namespace OpenArabTools {
 			while (Internal::sThreadAmount != Internal::sThreadAmountFinished);
 		}
 
-		static std::mt19937_64 engine;
+		static std::random_device rd;
+		static std::mt19937_64 engine(rd());
 		static std::uniform_int_distribution uid(0, 1);
 
 		bool getRandomBool() noexcept {

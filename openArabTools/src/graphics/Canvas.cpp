@@ -2,7 +2,7 @@
 
 namespace OpenArabTools {
 	Shape::Shape() noexcept
-		: mX(0), mY(0), mColor(LIGHTCOLOR_BLACK) {}
+		: mX(0), mY(0), mSizeX(0), mSizeY(0), mColor(LIGHTCOLOR_BLACK), mUsesRoundedShader(false) {}
 
 	void Shape::setX(const uint64_t aX) noexcept {
 		this->mX = aX;
@@ -34,32 +34,42 @@ namespace OpenArabTools {
 
 	Shape::~Shape() noexcept {}
 
-	Square::Square() noexcept 
-		: Shape(), mSize(10) {}
+	Square::Square() noexcept
+		: Shape() {
+		this->mSizeX = 10;
+		this->mSizeY = 10;
+	}
 
 	void Square::setWidth(const uint64_t aWidth) noexcept {
-		this->mSize = aWidth;
+		this->mSizeX = aWidth; this->mSizeY = aWidth;
 	}
 	uint64_t Square::getWidth() const noexcept {
-		return this->mSize;
+		return this->mSizeX;
 	}
 
 	Square::~Square() noexcept {}
 
 	Circle::Circle() noexcept
-		: Shape(), mRadius(10) {}
+		: Shape() {
+		this->mSizeX = 10;
+		this->mSizeY = 10;
+		this->mUsesRoundedShader = true;
+	}
 
 	void Circle::setRadius(const uint64_t aRadius) noexcept {
-		this->mRadius = aRadius;
+		this->mSizeX = aRadius; this->mSizeY = aRadius;
 	}
 	uint64_t Circle::getRadius() const noexcept {
-		return this->mRadius;
+		return this->mSizeX;
 	}
 
 	Circle::~Circle() noexcept {}
 
 	Rectangle::Rectangle() noexcept 
-		: Shape(), mSizeX(20), mSizeY(10) {}
+		: Shape() {
+		this->mSizeX = 20;
+		this->mSizeY = 10;
+	}
 
 	void Rectangle::setWidth(const uint64_t aWidth) noexcept {
 		this->mSizeX = aWidth;
@@ -77,24 +87,86 @@ namespace OpenArabTools {
 
 	Rectangle::~Rectangle() noexcept {}
 
-	Canvas::Canvas() noexcept {
-	
-	}
-	Canvas::Canvas(const std::string& aTitle) noexcept {
+	//Canvas
+	static constexpr uint64_t csMaxDrawableObjects = 2048;
+	static constexpr uint64_t csVertexSize = 11; //2 for pos, 2 for top left, 1 for outer opacity, 4 color
 
+	Canvas::Canvas() noexcept
+		: mVBOData(nullptr), mInit(false) {
+		this->set(600, 300, "openArabTools Canvas");
 	}
-	Canvas::Canvas(const uint64_t aWidth, const uint64_t aHeight, const std::string& aTitle) noexcept {
+	Canvas::Canvas(const std::string& aTitle) noexcept
+		: mVBOData(nullptr), mInit(false) {
+		this->set(600, 300, aTitle);
+	}
+	Canvas::Canvas(const uint64_t aWidth, const uint64_t aHeight, const std::string& aTitle) noexcept
+		: mVBOData(nullptr), mInit(false) {
+		this->set(aWidth, aHeight, aTitle);
+	}
 
+	Canvas::Canvas(const Canvas& aOther) noexcept
+		: mVBOData(nullptr), mInit(false) {
+		if (!aOther.mInit) {
+			return; //aOther not initialized
+		}
+		if (&aOther == this) {
+			Error::error("Canvas copy self assigment detected."); return;
+		}
+
+		this->set(aOther.mWindow.SizeX(), aOther.mWindow.SizeY(), aOther.mWindow.GetTitle());
+	}
+	Canvas::Canvas(Canvas&& aOther) noexcept {
+		this->mWindow = std::move(aOther.mWindow);
+		this->mShapes = std::move(aOther.mShapes);
+		this->mVBOData = aOther.mVBOData;
+		aOther.mVBOData = nullptr;
+		this->mInit = aOther.mInit;
+		aOther.mInit = false;
+	}
+	Canvas& Canvas::operator=(const Canvas& aOther) noexcept {
+		if (!aOther.mInit) {
+			this->reset(); return *this; //aOther not initialized
+		}
+		if (&aOther == this) {
+			Error::error("Canvas copy self assigment detected."); return *this;
+		}
+
+		if (this->mInit) {
+			this->reset();
+		}
+		//inits VBOData, Init
+		this->set(aOther.mWindow.SizeX(), aOther.mWindow.SizeY(), aOther.mWindow.GetTitle());
+
+		return *this;
+	}
+	Canvas& Canvas::operator=(Canvas&& aOther) noexcept {
+		this->mWindow = std::move(aOther.mWindow);
+		this->mShapes = std::move(aOther.mShapes);
+		this->mVBOData = aOther.mVBOData;
+		aOther.mVBOData = nullptr;
+		this->mInit = aOther.mInit;
+		aOther.mInit = false;
+		return *this;
 	}
 
 	uint64_t Canvas::add(const Shape& aShape) noexcept {
 		this->mShapes.push_back(aShape);
-		return this->mShapes.size() - 1; //id of shape
+		uint64_t ShapeId = this->mShapes.size() - 1;
+
+		this->updateVBOData(ShapeId, aShape);
+
+		return ShapeId; //id of shape
+	}
+	uint64_t Canvas::updateShape(const uint64_t aShapeId, const Shape& aNewData) noexcept {
+		this->mShapes[aShapeId] = aNewData;
+		this->updateVBOData(aShapeId, aNewData);
+		return aShapeId;
 	}
 	void Canvas::remove(const uint64_t aShapeId) noexcept {
 		for (uint64_t i = 0; i < this->mShapes.size(); i++) {
 			if (i == aShapeId) {
 				this->mShapes.erase(this->mShapes.begin() + i);
+				this->eraseVBOData(aShapeId);
 				return;
 			}
 		}
@@ -104,8 +176,8 @@ namespace OpenArabTools {
 		this->update();
 	}
 
-	void Canvas::setBackground() noexcept {
-
+	void Canvas::setBackground(const LightColor& aLC) noexcept {
+		this->mWindow.SetBackground(aLC.R, aLC.G, aLC.B, 1.0f);
 	}
 
 	void Canvas::paint() noexcept {
@@ -116,7 +188,19 @@ namespace OpenArabTools {
 		return this->mWindow.IsWindowOpen();
 	}
 	bool Canvas::update() noexcept {
+		if (!this->mInit) {
+			Error::warning("Updating dead Canvas object, consider checking return value of update().");
+			return false;
+		}
+		if (!this->mWindow.IsWindowOpen()) {
+			this->reset();
+		}
+		if (this->mWindow.IsWindowHidden()) {
+			this->mWindow.ShowWindow();
+		}
+
 		this->mWindow.BindContext();
+		this->mWindow.glVAO.Bind();
 		this->mWindow.BindShader();
 
 		this->mWindow.glIBO.Draw();
@@ -125,7 +209,7 @@ namespace OpenArabTools {
 		return this->mWindow.IsWindowOpen();
 	}
 	void Canvas::run() noexcept {
-		while (this->open()) { this->run(); }
+		while (this->open()) { this->update(); }
 	}
 
 	void Canvas::showWindow() noexcept {
@@ -135,19 +219,70 @@ namespace OpenArabTools {
 		this->mWindow.HideWindow();
 	}
 
-	void Canvas::setColor() noexcept {
-	
-	}
-
 	void Canvas::setTitle(const std::string& aTitle) noexcept {
 		this->mWindow.SetTitle(aTitle.c_str());
 	}
 
 	void Canvas::set(const uint64_t aWidth, const uint64_t aHeight, const std::string& aTitle) noexcept {
+		this->mWindow.SetTitle(aTitle.c_str());
+		this->mWindow.Resize(aWidth, aHeight);
+		this->mWindow.BindContext();
+		this->mWindow.BindShader();
+		glUniform2f(this->mWindow.glWindowResolutionUniform, aWidth, aHeight);
 
+		this->mWindow.SetBackground(0.5, 1.0); //LIGHTCOLOR_GRAY
+
+		this->mWindow.glVAO.Bind();
+
+		//setup VBO
+
+		this->mVBOData = (GLfloat*)malloc(csMaxDrawableObjects * 4 * csVertexSize * sizeof(GLfloat));
+		if (this->mVBOData == NULL) { Error::error("Matrix setup error: allocation of VBO array failed"); return; }
+
+		for (uint64_t i = 0; i < csMaxDrawableObjects * 4 * csVertexSize; i++) { this->mVBOData[i] = 0.0f; }
+		this->mWindow.glVBO.Set(this->mVBOData, csMaxDrawableObjects * 4, csVertexSize);
+		this->mWindow.glVBO.EnableAttribute(2, &this->mWindow.glVAO);
+		this->mWindow.glVBO.EnableAttribute(2, &this->mWindow.glVAO);
+		this->mWindow.glVBO.EnableAttribute(2, &this->mWindow.glVAO);
+		this->mWindow.glVBO.EnableAttribute(1, &this->mWindow.glVAO);
+		this->mWindow.glVBO.EnableAttribute(4, &this->mWindow.glVAO);
+
+		free(this->mVBOData);
+
+		//setup IBO
+
+		GLuint* IBOData = (GLuint*)malloc(csMaxDrawableObjects * 6 * sizeof(GLuint));
+		if (IBOData == NULL) { Error::error("Matrix setup error: allocation of IBO array failed"); return; }
+
+		//0, 1, 2
+		//2, 3, 0
+		for (uint64_t i = 0; i < csMaxDrawableObjects * 6; i+=6) {
+			IBOData[i + 0] = 0 + uint64_t(i / 6 * 4); IBOData[i + 1] = 1 + uint64_t(i / 6 * 4);	IBOData[i + 2] = 2 + uint64_t(i / 6 * 4);
+			IBOData[i + 3] = 2 + uint64_t(i / 6 * 4); IBOData[i + 4] = 3 + uint64_t(i / 6 * 4);	IBOData[i + 5] = 0 + uint64_t(i / 6 * 4);
+			/*
+			for (uint8_t j = 0; j < 6; j++) {
+				std::cout << IBOData[i + j] << ",";
+			}
+			std::cout << "\n"; //TODO REMOVE DEBUG
+			*/
+		}
+
+		this->mWindow.glIBO.Set(IBOData, csMaxDrawableObjects * 6); //IBO is set in stone - we always have X amount of objects and they have 4 vertices (2x triangle)
+		free(IBOData);
+
+		this->mWindow.ShowWindow();
+
+		this->mInit = true;
 	}
 	void Canvas::reset() noexcept {
+		if (!this->mInit) {
+			return;
+		}
 
+		this->mWindow.HideWindow();
+
+		this->mShapes.clear();
+		this->mInit = false;
 	}
 
 	void Canvas::showWindowAndRun() noexcept {
@@ -171,6 +306,57 @@ namespace OpenArabTools {
 	}
 
 	Canvas::~Canvas() noexcept {
-	
+		this->reset();
+	}
+
+	void Canvas::updateVBOData(const uint64_t aShapeId, const Shape& aShapeData) noexcept {
+		this->mWindow.BindContext();
+
+		this->mVBOData = (GLfloat*)glMapNamedBuffer(this->mWindow.glVBO.GetHandle(), GL_READ_WRITE);
+
+		//attributes for all vertices
+		//(x) * 2 - 1 converts [0, 1] UV to [-1, 1]
+		//normally OpenGL has Y = 0 at the bottom, we flip! (also we subtract Y instead of adding it)
+		for (uint8_t i = 0; i < 4; i++) {
+			//positions
+			this->mVBOData[(aShapeId * 4 + i) * csVertexSize + 0] = (((float(aShapeData.mX) + ((i == 1 || i == 2) ? aShapeData.mSizeX : 0.0)) / this->mWindow.SizeX()) * 2.0) - 1.0;
+			this->mVBOData[(aShapeId * 4 + i) * csVertexSize + 1] = (((float(this->mWindow.SizeY() - aShapeData.mY) - ((i == 2 || i == 3) ? aShapeData.mSizeY : 0.0)) / this->mWindow.SizeY()) * 2.0) - 1.0;
+			//top left							
+			this->mVBOData[(aShapeId * 4 + i) * csVertexSize + 2] = ((float(aShapeData.mX) / this->mWindow.SizeX()) * 2.0) - 1.0;
+			this->mVBOData[(aShapeId * 4 + i) * csVertexSize + 3] = ((float(this->mWindow.SizeY() - aShapeData.mY) / this->mWindow.SizeY()) * 2.0) - 1.0;
+			//size										
+			this->mVBOData[(aShapeId * 4 + i) * csVertexSize + 4] = float(aShapeData.mSizeX) / float(this->mWindow.SizeX());
+			this->mVBOData[(aShapeId * 4 + i) * csVertexSize + 5] = float(aShapeData.mSizeY) / float(this->mWindow.SizeY());
+			//outer opacity								
+			this->mVBOData[(aShapeId * 4 + i) * csVertexSize + 6] = float(!aShapeData.mUsesRoundedShader);
+			//color					 				
+			this->mVBOData[(aShapeId * 4 + i) * csVertexSize + 7] =  aShapeData.mColor.R;
+			this->mVBOData[(aShapeId * 4 + i) * csVertexSize + 8] =  aShapeData.mColor.G;
+			this->mVBOData[(aShapeId * 4 + i) * csVertexSize + 9] =  aShapeData.mColor.B;
+			this->mVBOData[(aShapeId * 4 + i) * csVertexSize + 10] = 1.0f;
+		}
+		
+		/*
+		for (uint64_t i = 0; i < csVertexSize * csMaxDrawableObjects * 4; i++) {
+			if (i % csVertexSize == 0) {
+				std::cout << "|";
+			}
+			if (i % (csVertexSize * 4) == 0) {
+				std::cout << "\n";
+			}
+			std::cout << this->mVBOData[i] << ",";
+		}*/
+		//TODO REMOVE DEBUG
+
+		glUnmapNamedBuffer(this->mWindow.glVBO.GetHandle());
+		this->mVBOData = nullptr;
+	}
+	void Canvas::eraseVBOData(const uint64_t aShapeId) noexcept {
+		this->mWindow.BindContext();
+
+		memmove_s(
+			&this->mVBOData[aShapeId * csVertexSize * 4], sizeof(float) * csVertexSize * 4 * (csMaxDrawableObjects - aShapeId - 1),  //dest
+			&this->mVBOData[(aShapeId + 1) * csVertexSize * 4], sizeof(float) * csVertexSize * 4 * (csMaxDrawableObjects - aShapeId - 1 - 1) //src, -1 as index adjustment and -1 for the now empty spot
+		);
 	}
 }

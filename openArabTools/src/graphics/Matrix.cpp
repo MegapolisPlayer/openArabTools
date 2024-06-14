@@ -242,7 +242,7 @@ namespace OpenArabTools {
 
 	bool Matrix::update() noexcept {
 		if (!this->mInit) { 
-			Error::warning("Updating dead Matrix object, consider checking return value.");
+			Error::warning("Updating dead Matrix object, consider checking return value of update().");
 			return false;
 		}
 		if (!this->mWindow.IsWindowOpen()) {

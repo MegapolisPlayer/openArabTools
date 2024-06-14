@@ -51,7 +51,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md" />
+    <None Include="docs\graphics\README.md" />
+    <None Include="docs\internal\README.md" />
     <None Include="docs\README.md" />
+    <None Include="docs\types\README.md" />
+    <None Include="docs\utils\README.md" />
     <None Include="src\event\README.md" />
     <None Include="CONTRIBUTING.md" />
     <None Include="src\graphics\README.md" />

@@ -415,19 +415,49 @@ namespace OpenArabTools {
 		}
 
 		// SHADER CODE
+		// Circle/non-circle - opacity of outer part (non-circle, for circles 0, for rects 1)
 
 		const char* const VertexPassSource =
 			"#version 460 core\n"
+			"layout(location = 0) in vec2 Position;\n"
+			"layout(location = 1) in vec2 TopLeft;\n"
+			"layout(location = 2) in vec2 Size;\n"
+			"layout(location = 3) in float OuterOpacity;\n"
+			"layout(location = 4) in vec4 Color;\n"
+			"out vec2 FragTopLeft;\n"
+			"out vec2 FragSize;\n"
+			"out float FragOuterOpacity;\n"
+			"out vec4 FragColor;\n"
+			"void main()\n"
+			"{\n"
+			"	gl_Position = vec4(Position.x, Position.y, 1.0, 1.0);\n"
+			"   FragTopLeft = TopLeft;\n"
+			"   FragSize = Size;\n"
+			"   FragOuterOpacity = OuterOpacity;\n"
+			"	FragColor = Color;\n"
+			"}\n"
 			;
 		const char* const FragmentPassSource = 
 			"#version 460 core\n"
-			;
-
-		const char* const VertexSimpleCircleSource =
-			"#version 460 core\n"
-			;
-		const char* const FragmentSimpleCircleSource =
-			"#version 460 core\n"
+			"in vec2 FragTopLeft;\n"
+			"in vec2 FragSize;\n"
+			"in float FragOuterOpacity;\n"
+			"in vec4 FragColor;\n"
+			"out vec4 OutColor;\n"
+			"uniform vec2 WindowResolution;\n"
+			"void main()\n"
+			"{\n"
+			"	vec2 UV = gl_FragCoord.xy / WindowResolution.xy;\n" //UV coords
+			"	UV = UV * 2.0 - 1.0;\n"
+			"   vec2 CenterPoint = vec2(FragTopLeft.x + FragSize.x, FragTopLeft.y - FragSize.y);\n"
+			"   float XDistance = abs(CenterPoint.x - UV.x);\n"
+			"   float YDistance = abs(CenterPoint.y - UV.y);\n"
+			//https://math.stackexchange.com/questions/771835/distance-point-on-ellipse-to-centre
+			//(x/a)2 + (y/b)2 = 1
+			//"	OutColor = FragColor * vec4(ResultCircle) + (OutColor * vec4(1.0 - ResultCircle) * vec4(FragOuterOpacity));\n"
+			//TODO: add to matrix shader!
+			"	OutColor = vec4(1.0) * 1.0 - step(1.0, pow(XDistance/(FragSize.x), 2) + pow(YDistance/(FragSize.y), 2));\n"
+			"}\n"
 			;
 
 		//Circles
@@ -481,7 +511,7 @@ namespace OpenArabTools {
 			"void main()\n"
 			"{\n"
 			"	vec2 UV = gl_FragCoord.xy / WindowResolution.xy; //UV coords\n"
-			"	UV = UV * 2.0 - 1.0;\n"
+			"	UV = UV * 2.0 - 1.0;\n" //move us coords
 			"	vec2 CenterPoint = vec2(FragTopLeft.x+(Size.x/2), FragTopLeft.y-(Size.y/2));\n"
 			"	float Aspect = WindowResolution.x / WindowResolution.y;\n"
 			"	UV.x *= Aspect;\n"

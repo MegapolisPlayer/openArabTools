@@ -8,18 +8,20 @@ namespace OpenArabTools {
 		//same as normal ArabTools
 		uint64_t GLWindow::msDefaultWindowSize = 650;
 
+		//default background: the purple debug one
+
 		GLWindow::GLWindow() noexcept 
-			: mWindow(nullptr), mWidth(msDefaultWindowSize), mHeight(msDefaultWindowSize), mFrameNo(0), mTitle("openArabTools") { 
+			: mWindow(nullptr), mWidth(msDefaultWindowSize), mHeight(msDefaultWindowSize), mFrameNo(0), mTitle("openArabTools"), mBGR(0.7), mBGG(0.0), mBGB(0.7), mBGA(1.0) {
 			this->CreateWindow();
 		}
 
 		GLWindow::GLWindow(const uint64_t aWidth, const uint64_t aHeight) noexcept
-			: mWindow(nullptr), mWidth(aWidth), mHeight(aHeight), mFrameNo(0), mTitle("openArabTools") {
+			: mWindow(nullptr), mWidth(aWidth), mHeight(aHeight), mFrameNo(0), mTitle("openArabTools"), mBGR(0.7), mBGG(0.0), mBGB(0.7), mBGA(1.0) {
 			this->CreateWindow();
 		}
 
 		GLWindow::GLWindow(const GLWindow& aOther) noexcept
-			: mWindow(nullptr), mWidth(msDefaultWindowSize), mHeight(msDefaultWindowSize), mFrameNo(0), mTitle("openArabTools") {
+			: mWindow(nullptr), mWidth(msDefaultWindowSize), mHeight(msDefaultWindowSize), mFrameNo(0), mTitle("openArabTools"), mBGR(0.7), mBGG(0.0), mBGB(0.7), mBGA(1.0) {
 			if (&aOther == this) {
 				Error::error("Self-assignment in GLWindow detected."); return;
 			}
@@ -126,15 +128,15 @@ namespace OpenArabTools {
 		}
 		void GLWindow::SetBackground(const double_t aAll) noexcept {
 			glClear(GL_COLOR_BUFFER_BIT);
-			glClearColor(aAll, aAll, aAll, aAll);
+			this->mBGR = aAll, this->mBGG = aAll, this->mBGB = aAll, this->mBGA = aAll;
 		}
 		void GLWindow::SetBackground(const double_t aRGB, const double_t aA) noexcept {
 			glClear(GL_COLOR_BUFFER_BIT);
-			glClearColor(aRGB, aRGB, aRGB, aA);
+			this->mBGR = aRGB, this->mBGG = aRGB, this->mBGB = aRGB, this->mBGA = aA;
 		}
 		void GLWindow::SetBackground(const double_t aR, const double_t aG, const double_t aB, const double_t aA) noexcept {
 			glClear(GL_COLOR_BUFFER_BIT);
-			glClearColor(aR, aG, aB, aA);
+			this->mBGR = aR, this->mBGG = aG, this->mBGB = aB, this->mBGA = aA;
 		}
 		void GLWindow::BindContext() const noexcept {
 			glfwMakeContextCurrent(NULL);
@@ -145,10 +147,7 @@ namespace OpenArabTools {
 			glfwPollEvents();
 			this->mFrameNo++;
 			glClear(GL_COLOR_BUFFER_BIT);
-#ifdef _DEBUG
-			//if debug set background to purple (noticable whe something wrong)
-			glClearColor(0.7f, 0.0f, 0.7f, 1.0f);
-#endif
+			glClearColor(this->mBGR, this->mBGG, this->mBGB, this->mBGA);
 		}
 		void GLWindow::Events() noexcept {
 			glfwPollEvents();
@@ -197,6 +196,10 @@ namespace OpenArabTools {
 
 		void GLWindow::CreateWindow() noexcept {
 			if (Error::noiniterror()) return;
+			if (this->mWindow != nullptr) {
+				Error::warning("Double create of GLWindow!");
+				this->Reset();
+			}
 
 			this->glVAO.Reset(); //new VAO per window
 
@@ -351,25 +354,23 @@ namespace OpenArabTools {
 		//GLPassthroughWindow
 		
 		GLPassthroughWindow::GLPassthroughWindow() noexcept
-			: GLWindow(), glShader(csGLInvalidHandle), glSimpleCircle(csGLInvalidHandle) {
+			: GLWindow(), glShader(csGLInvalidHandle) {
 			this->ShadersInit();
 		}
 		GLPassthroughWindow::GLPassthroughWindow(const uint64_t aWidth, const uint64_t aHeight) noexcept
-			: GLWindow(aWidth, aHeight), glShader(csGLInvalidHandle), glSimpleCircle(csGLInvalidHandle) {
+			: GLWindow(aWidth, aHeight), glShader(csGLInvalidHandle) {
 			this->ShadersInit();
 		}
 		GLPassthroughWindow::GLPassthroughWindow(const GLCircleWindow& aOther) noexcept 
-			: GLWindow(aOther), glShader(csGLInvalidHandle), glSimpleCircle(csGLInvalidHandle) {
+			: GLWindow(aOther), glShader(csGLInvalidHandle) {
 			this->BindContext();
 			this->ShadersDestroy();
 			this->ShadersInit();
 		}
 		GLPassthroughWindow::GLPassthroughWindow(GLPassthroughWindow&& aOther) noexcept 
-			: GLWindow(aOther), glShader(csGLInvalidHandle), glSimpleCircle(csGLInvalidHandle) {
+			: GLWindow(aOther), glShader(csGLInvalidHandle) {
 			this->glShader = aOther.glShader;
 			aOther.glShader = csGLInvalidHandle;
-			this->glSimpleCircle = aOther.glSimpleCircle;
-			aOther.glSimpleCircle = csGLInvalidHandle;
 		}
 		GLPassthroughWindow& GLPassthroughWindow::operator=(const GLPassthroughWindow& aOther) noexcept {
 			GLWindow::operator=(aOther);
@@ -382,8 +383,6 @@ namespace OpenArabTools {
 			GLWindow::operator=(std::move(aOther));
 			this->glShader = aOther.glShader;
 			aOther.glShader = csGLInvalidHandle;
-			this->glSimpleCircle = aOther.glSimpleCircle;
-			aOther.glSimpleCircle = csGLInvalidHandle;
 			return *this;
 		}
 
@@ -394,26 +393,20 @@ namespace OpenArabTools {
 		void GLPassthroughWindow::BindShader() const noexcept {
 			glUseProgram(this->glShader);
 		}
-		void GLPassthroughWindow::BindCircleShader() const noexcept {
-			glUseProgram(this->glSimpleCircle);
-		}
 		GLPassthroughWindow::~GLPassthroughWindow() noexcept {
 			this->Reset();
 		}
 
 		void GLPassthroughWindow::ShadersInit() noexcept {
-			this->glShader = Internal::MakeShader(Internal::VertexCircleSource, Internal::FragmentCircleSource);
-			this->glSimpleCircle = Internal::MakeShader(Internal::VertexCircleSource, Internal::FragmentCircleSource);
+			this->glShader = Internal::MakeShader(Internal::VertexPassSource, Internal::FragmentPassSource);
 			glUseProgram(this->glShader);
+			this->glWindowResolutionUniform = glGetUniformLocation(this->glShader, "WindowResolution");
 		}
 		void GLPassthroughWindow::ShadersDestroy() noexcept {
 			if (this->glShader != csGLInvalidHandle) {
 				glDeleteProgram(this->glShader);
 				this->glShader = csGLInvalidHandle;
-			}
-			if (this->glSimpleCircle != csGLInvalidHandle) {
-				glDeleteProgram(this->glSimpleCircle);
-				this->glSimpleCircle = csGLInvalidHandle;
+				this->glWindowResolutionUniform = csGLInvalidHandle;
 			}
 		}
 	}

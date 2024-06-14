@@ -72,6 +72,7 @@ namespace OpenArabTools {
 			uint64_t mWidth, mHeight;
 			uint64_t mFrameNo;
 			std::string mTitle;
+			double_t mBGR, mBGG, mBGB, mBGA;
 
 			static uint64_t msDefaultWindowSize;
 
@@ -131,15 +132,11 @@ namespace OpenArabTools {
 
 			virtual void Reset() noexcept override;
 			virtual void BindShader() const noexcept override;
-			void BindCircleShader() const noexcept;
 
 			~GLPassthroughWindow() noexcept;
 
-			//passthrough shader
-			GLHandle glShader;
-
-			//simple circle shader
-			GLHandle glSimpleCircle;
+			GLHandle glShader; //passthrough shader
+			GLHandle glWindowResolutionUniform;
 		protected:
 			void ShadersInit() noexcept override;
 			void ShadersDestroy() noexcept override;

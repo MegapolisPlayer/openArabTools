@@ -6,6 +6,7 @@ namespace OpenArabTools {
 	class OPENARABTOOLS_OBJ Canvas;
 
 	struct OPENARABTOOLS_OBJ Shape {
+		friend class OPENARABTOOLS_OBJ Canvas;
 	public:
 		Shape() noexcept;
 
@@ -23,10 +24,13 @@ namespace OpenArabTools {
 		virtual ~Shape() noexcept;
 	protected:
 		uint64_t mX, mY;
+		uint64_t mSizeX, mSizeY;
 		LightColor mColor;
+		bool mUsesRoundedShader;
 	};
 
 	struct OPENARABTOOLS_OBJ Square : public Shape {
+		friend class OPENARABTOOLS_OBJ Canvas;
 	public:
 		Square() noexcept;
 
@@ -35,9 +39,9 @@ namespace OpenArabTools {
 
 		~Square() noexcept;
 	protected:
-		uint64_t mSize;
 	};
 	struct OPENARABTOOLS_OBJ Circle : public Shape {
+		friend class OPENARABTOOLS_OBJ Canvas;
 	public:
 		Circle() noexcept;
 
@@ -46,10 +50,10 @@ namespace OpenArabTools {
 
 		~Circle() noexcept;
 	protected:
-		uint64_t mRadius;
 	};
 	//OpenArabTools extension, not in original
 	struct OPENARABTOOLS_OBJ Rectangle : public Shape {
+		friend class OPENARABTOOLS_OBJ Canvas;
 	public:
 		Rectangle() noexcept;
 
@@ -61,21 +65,26 @@ namespace OpenArabTools {
 
 		~Rectangle() noexcept;
 	protected:
-		uint64_t mSizeX, mSizeY;
 	};
 
-	//A canvas, possible to draw filled-in Squares and Circles
+	//A canvas, possible to draw filled-in shapes
 	class OPENARABTOOLS_OBJ Canvas {
 	public:
 		Canvas() noexcept;
 		Canvas(const std::string& aTitle) noexcept;
 		Canvas(const uint64_t aWidth, const uint64_t aHeight, const std::string& aTitle) noexcept;
 
+		Canvas(const Canvas& aOther) noexcept;
+		Canvas(Canvas&& aOther) noexcept;
+		Canvas& operator=(const Canvas& aOther) noexcept;
+		Canvas& operator=(Canvas&& aOther) noexcept;
+
 		uint64_t add(const Shape& aShape) noexcept; //returns shape id
+		uint64_t updateShape(const uint64_t aShapeId, const Shape& aNewData) noexcept;
 		void remove(const uint64_t aShapeId) noexcept;
 		void clear() noexcept;
 
-		void setBackground() noexcept;
+		void setBackground(const LightColor& aLC) noexcept;
 
 		//Same as update()
 		void paint() noexcept;
@@ -95,7 +104,6 @@ namespace OpenArabTools {
 		void showWindow() noexcept;
 		void hideWindow() noexcept;
 
-		void setColor() noexcept;
 		void setTitle(const std::string& aTitle) noexcept;
 
 		void set(const uint64_t aWidth, const uint64_t aHeight, const std::string& aTitle) noexcept;
@@ -108,6 +116,10 @@ namespace OpenArabTools {
 	private:
 		Internal::GLPassthroughWindow mWindow;
 		std::vector<Shape> mShapes;
-		LightColor mFG, mBG;
+		GLfloat* mVBOData;
+		bool mInit;
+
+		void updateVBOData(const uint64_t aShapeId, const Shape& aShapeData) noexcept;
+		void eraseVBOData(const uint64_t aShapeId) noexcept;
 	};
 }
