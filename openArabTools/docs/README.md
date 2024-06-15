@@ -146,9 +146,28 @@ int main() {
 ### Canvas
 
 ```cpp
+#include "OpenArabTools.hpp"
 
-TODO: actually finish canvas...
+int main() {
+	ArabTools::init();
 
+	ArabTools::Canvas c;
+
+	ArabTools::Rectangle r;
+	r.setColor(ArabTools::LIGHTCOLOR_RED);
+	r.setPosition(50, 50);
+	r.setWidth(100);
+	r.setHeight(200);
+	c.add(r);
+
+	ArabTools::Circle c2;
+	c2.setColor(ArabTools::LIGHTCOLOR_BLUE).setPosition(200, 200).setRadius(100);
+	c.add(c2);
+
+	c.showWindowAndRun();
+
+	ArabTools::terminate();
+}
 ```
 
 ### ScopedTimer

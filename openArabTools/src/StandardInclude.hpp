@@ -19,6 +19,9 @@
 //Uncomment this line to include full debug information, used when building OAT
 //#define OPENARABTOOLS_PRINT_DEBUG_INFO
 
+//Uncomment this line to ban syntax like Class.Method().Method() for inherited classes (daisy-chaining), used when building OAT
+//#define OPENARABTOOLS_NO_DAISYCHAIN
+
 #ifdef _WIN32
 
 #ifdef OPENARABTOOLS_BUILD_DLL

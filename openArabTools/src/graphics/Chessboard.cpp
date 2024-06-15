@@ -82,6 +82,7 @@ namespace OpenArabTools {
 		switch (aCS) {
 		case(CHESSBOARD_STYLE_WHITE_BLACK): this->applyChessboardStyle(LIGHTCOLOR_CHESSBOARD_WHITE, LIGHTCOLOR_CHESSBOARD_BLACK); return;
 		case(CHESSBOARD_STYLE_DEFAULT_WOOD): this->applyChessboardStyle(LIGHTCOLOR_CHESSBOARD_LIGHT, LIGHTCOLOR_CHESSBOARD_DARK); return;
+		default: Error::warning("Invalid Chessboard style, no changes made."); return;
 		}
 	}
 	void Chessboard::applyChessboardStyle(const LightColor& aLight, const LightColor& aDark) noexcept {

@@ -4,6 +4,30 @@ namespace OpenArabTools {
 	Shape::Shape() noexcept
 		: mX(0), mY(0), mSizeX(0), mSizeY(0), mColor(LIGHTCOLOR_BLACK), mUsesRoundedShader(false) {}
 
+#ifndef OPENARABTOOLS_NO_DAISYCHAIN
+	Shape& Shape::setX(const uint64_t aX) noexcept {
+		this->mX = aX;
+		return *this;
+	}
+	Shape& Shape::setY(const uint64_t aY) noexcept {
+		this->mY = aY;
+		return *this;
+	}
+	Shape& Shape::setPosition(const uint64_t aX, const uint64_t aY) noexcept {
+		this->mX = aX;
+		this->mY = aY;
+		return *this;
+	}
+
+	Shape& Shape::setColor(const LightColor& aColor) noexcept {
+		this->mColor = aColor;
+		return *this;
+	}
+	Shape& Shape::resetColor() noexcept {
+		this->mColor = LIGHTCOLOR_BLACK;
+		return *this;
+	}
+#else
 	void Shape::setX(const uint64_t aX) noexcept {
 		this->mX = aX;
 	}
@@ -21,6 +45,7 @@ namespace OpenArabTools {
 	void Shape::resetColor() noexcept {
 		this->mColor = LIGHTCOLOR_BLACK;
 	}
+#endif
 
 	uint64_t Shape::getX() const noexcept {
 		return this->mX;
@@ -40,8 +65,30 @@ namespace OpenArabTools {
 		this->mSizeY = 10;
 	}
 
-	void Square::setWidth(const uint64_t aWidth) noexcept {
+	//we duplicate methods in children to override their return type from Shape& to the type of the child
+
+#ifndef OPENARABTOOLS_NO_DAISYCHAIN
+	Square& Square::setX(const uint64_t aX) noexcept {
+		return (Square&)Shape::setX(aX);
+	}
+	Square& Square::setY(const uint64_t aY) noexcept {
+		return (Square&)Shape::setY(aY);
+	}
+	Square& Square::setPosition(const uint64_t aX, const uint64_t aY) noexcept {
+		return (Square&)Shape::setPosition(aX, aY);
+	}
+
+	Square& Square::setColor(const LightColor& aColor) noexcept {
+		return (Square&)Shape::setColor(aColor);
+	}
+	Square& Square::resetColor() noexcept {
+		return (Square&)Shape::resetColor();
+	}
+#endif
+
+	Square& Square::setWidth(const uint64_t aWidth) noexcept {
 		this->mSizeX = aWidth; this->mSizeY = aWidth;
+		return *this;
 	}
 	uint64_t Square::getWidth() const noexcept {
 		return this->mSizeX;
@@ -56,8 +103,28 @@ namespace OpenArabTools {
 		this->mUsesRoundedShader = true;
 	}
 
-	void Circle::setRadius(const uint64_t aRadius) noexcept {
-		this->mSizeX = aRadius; this->mSizeY = aRadius;
+#ifndef OPENARABTOOLS_NO_DAISYCHAIN
+	Circle& Circle::setX(const uint64_t aX) noexcept {
+		return (Circle&)Shape::setX(aX);
+	}
+	Circle& Circle::setY(const uint64_t aY) noexcept {
+		return (Circle&)Shape::setY(aY);
+	}
+	Circle& Circle::setPosition(const uint64_t aX, const uint64_t aY) noexcept {
+		return (Circle&)Shape::setPosition(aX, aY);
+	}
+
+	Circle& Circle::setColor(const LightColor& aColor) noexcept {
+		return (Circle&)Shape::setColor(aColor);
+	}
+	Circle& Circle::resetColor() noexcept {
+		return (Circle&)Shape::resetColor();
+	}
+#endif
+
+	Circle& Circle::setRadius(const uint64_t aRadius) noexcept {
+		this->mSizeX = aRadius*2; this->mSizeY = aRadius*2; //change radius to diameter
+		return *this;
 	}
 	uint64_t Circle::getRadius() const noexcept {
 		return this->mSizeX;
@@ -71,11 +138,32 @@ namespace OpenArabTools {
 		this->mSizeY = 10;
 	}
 
-	void Rectangle::setWidth(const uint64_t aWidth) noexcept {
-		this->mSizeX = aWidth;
+#ifndef OPENARABTOOLS_NO_DAISYCHAIN
+	Rectangle& Rectangle::setX(const uint64_t aX) noexcept {
+		return (Rectangle&)Shape::setX(aX);
 	}
-	void Rectangle::setHeight(const uint64_t aHeight) noexcept {
+	Rectangle& Rectangle::setY(const uint64_t aY) noexcept {
+		return (Rectangle&)Shape::setY(aY);
+	}
+	Rectangle& Rectangle::setPosition(const uint64_t aX, const uint64_t aY) noexcept {
+		return (Rectangle&)Shape::setPosition(aX, aY);
+	}
+
+	Rectangle& Rectangle::setColor(const LightColor& aColor) noexcept {
+		return (Rectangle&)Shape::setColor(aColor);
+	}
+	Rectangle& Rectangle::resetColor() noexcept {
+		return (Rectangle&)Shape::resetColor();
+	}
+#endif
+
+	Rectangle& Rectangle::setWidth(const uint64_t aWidth) noexcept {
+		this->mSizeX = aWidth;
+		return *this;
+	}
+	Rectangle& Rectangle::setHeight(const uint64_t aHeight) noexcept {
 		this->mSizeY = aHeight;
+		return *this;
 	}
 
 	uint64_t Rectangle::getWidth() const noexcept {
@@ -158,6 +246,9 @@ namespace OpenArabTools {
 		return ShapeId; //id of shape
 	}
 	uint64_t Canvas::updateShape(const uint64_t aShapeId, const Shape& aNewData) noexcept {
+		if (aShapeId >= this->mShapes.size()) {
+			Error::error("Requested ID is out of range!"); return INT64_MAX;
+		}
 		this->mShapes[aShapeId] = aNewData;
 		this->updateVBOData(aShapeId, aNewData);
 		return aShapeId;
@@ -170,6 +261,7 @@ namespace OpenArabTools {
 				return;
 			}
 		}
+		Error::warning("Requested shape not found!");
 	}
 	void Canvas::clear() noexcept {
 		this->mShapes.clear();
@@ -259,12 +351,6 @@ namespace OpenArabTools {
 		for (uint64_t i = 0; i < csMaxDrawableObjects * 6; i+=6) {
 			IBOData[i + 0] = 0 + uint64_t(i / 6 * 4); IBOData[i + 1] = 1 + uint64_t(i / 6 * 4);	IBOData[i + 2] = 2 + uint64_t(i / 6 * 4);
 			IBOData[i + 3] = 2 + uint64_t(i / 6 * 4); IBOData[i + 4] = 3 + uint64_t(i / 6 * 4);	IBOData[i + 5] = 0 + uint64_t(i / 6 * 4);
-			/*
-			for (uint8_t j = 0; j < 6; j++) {
-				std::cout << IBOData[i + j] << ",";
-			}
-			std::cout << "\n"; //TODO REMOVE DEBUG
-			*/
 		}
 
 		this->mWindow.glIBO.Set(IBOData, csMaxDrawableObjects * 6); //IBO is set in stone - we always have X amount of objects and they have 4 vertices (2x triangle)
@@ -335,28 +421,21 @@ namespace OpenArabTools {
 			this->mVBOData[(aShapeId * 4 + i) * csVertexSize + 9] =  aShapeData.mColor.B;
 			this->mVBOData[(aShapeId * 4 + i) * csVertexSize + 10] = 1.0f;
 		}
-		
-		/*
-		for (uint64_t i = 0; i < csVertexSize * csMaxDrawableObjects * 4; i++) {
-			if (i % csVertexSize == 0) {
-				std::cout << "|";
-			}
-			if (i % (csVertexSize * 4) == 0) {
-				std::cout << "\n";
-			}
-			std::cout << this->mVBOData[i] << ",";
-		}*/
-		//TODO REMOVE DEBUG
 
 		glUnmapNamedBuffer(this->mWindow.glVBO.GetHandle());
 		this->mVBOData = nullptr;
 	}
 	void Canvas::eraseVBOData(const uint64_t aShapeId) noexcept {
 		this->mWindow.BindContext();
+		this->mVBOData = (GLfloat*)glMapNamedBuffer(this->mWindow.glVBO.GetHandle(), GL_READ_WRITE);
 
+		//move everything 1 step back
 		memmove_s(
 			&this->mVBOData[aShapeId * csVertexSize * 4], sizeof(float) * csVertexSize * 4 * (csMaxDrawableObjects - aShapeId - 1),  //dest
 			&this->mVBOData[(aShapeId + 1) * csVertexSize * 4], sizeof(float) * csVertexSize * 4 * (csMaxDrawableObjects - aShapeId - 1 - 1) //src, -1 as index adjustment and -1 for the now empty spot
 		);
+
+		glUnmapNamedBuffer(this->mWindow.glVBO.GetHandle());
+		this->mVBOData = nullptr;
 	}
 }

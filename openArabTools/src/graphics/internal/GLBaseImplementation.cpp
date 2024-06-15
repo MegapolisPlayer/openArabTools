@@ -437,7 +437,7 @@ namespace OpenArabTools {
 			"	FragColor = Color;\n"
 			"}\n"
 			;
-		const char* const FragmentPassSource = 
+		const char* const FragmentPassSource =
 			"#version 460 core\n"
 			"in vec2 FragTopLeft;\n"
 			"in vec2 FragSize;\n"
@@ -452,11 +452,10 @@ namespace OpenArabTools {
 			"   vec2 CenterPoint = vec2(FragTopLeft.x + FragSize.x, FragTopLeft.y - FragSize.y);\n"
 			"   float XDistance = abs(CenterPoint.x - UV.x);\n"
 			"   float YDistance = abs(CenterPoint.y - UV.y);\n"
+			"	float ResultCircle = step(pow(XDistance / FragSize.x, 2) + pow(YDistance / FragSize.y, 2), 1.01);\n"
 			//https://math.stackexchange.com/questions/771835/distance-point-on-ellipse-to-centre
-			//(x/a)2 + (y/b)2 = 1
-			//"	OutColor = FragColor * vec4(ResultCircle) + (OutColor * vec4(1.0 - ResultCircle) * vec4(FragOuterOpacity));\n"
-			//TODO: add to matrix shader!
-			"	OutColor = vec4(1.0) * 1.0 - step(1.0, pow(XDistance/(FragSize.x), 2) + pow(YDistance/(FragSize.y), 2));\n"
+			//(x/a)2 + (y/b)2 = 1 for each point on ellipse (math notation for x = a and y = b) - we take if value <=1 (in ellipse)
+			"	OutColor = FragColor * vec4(ResultCircle) + (FragColor * vec4(1.0 - ResultCircle) * vec4(FragOuterOpacity));\n"
 			"}\n"
 			;
 
@@ -476,6 +475,8 @@ namespace OpenArabTools {
 			"	FragTopLeft = TopLeft;\n"
 			"}\n"
 			;
+
+		//this shader is (peformance-wise and syntactically) worse than the passthrough one, this isnt easy to fix though
 		const char* const FragmentCircleSource =
 			"#version 460 core\n"
 			"struct ColorInfo {\n"

@@ -67,10 +67,11 @@ namespace OpenArabTools {
 	static constexpr const uint64_t csCrossingStandardSizeX = 30;
 	static constexpr const uint64_t csCrossingStandardSizeY = 30;
 
+	//to avoid issues with semaphore in the middle
 	static_assert(csCrossingStandardSizeX % 2 == 0, "Crossing X size must be even!");
 	static_assert(csCrossingStandardSizeY % 2 == 0, "Crossing Y size must be even!");
 
-	// TODO: add more colors (lowercase letters correspond to LightColorD colors)
+	// TODO: add more colors (lowercase letters correspond to LightColorD colors), issue #32
 
 	const char* DefaultCrossingStyle =
 		"GGGGGGGGGGGGGPRRPGGGGGGGGGGGGG"
