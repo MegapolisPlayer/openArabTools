@@ -38,7 +38,7 @@ namespace OpenArabTools {
 			BufferCopy(aOther, *this);
 		}
 		GLWindow::GLWindow(GLWindow&& aOther) noexcept
-			: mWindow(nullptr), mWidth(msDefaultWindowSize), mHeight(msDefaultWindowSize), mFrameNo(0), mTitle("openArabTools") {
+			: mWindow(nullptr), mWidth(msDefaultWindowSize), mHeight(msDefaultWindowSize), mFrameNo(0), mTitle("openArabTools"), mBGR(0.7), mBGG(0.0), mBGB(0.7), mBGA(1.0) {
 			if (&aOther == this) {
 				Error::error("Self-assignment in GLWindow detected."); return;
 			}
@@ -371,9 +371,11 @@ namespace OpenArabTools {
 			: GLWindow(aOther), glShader(csGLInvalidHandle) {
 			this->glShader = aOther.glShader;
 			aOther.glShader = csGLInvalidHandle;
+			this->glWindowResolutionUniform = aOther.glWindowResolutionUniform;
+			aOther.glWindowResolutionUniform = csGLInvalidHandle;
 		}
 		GLPassthroughWindow& GLPassthroughWindow::operator=(const GLPassthroughWindow& aOther) noexcept {
-			GLWindow::operator=(aOther);
+			GLWindow:: operator=(aOther);
 			this->BindContext();
 			this->ShadersDestroy();
 			this->ShadersInit();
@@ -383,6 +385,8 @@ namespace OpenArabTools {
 			GLWindow::operator=(std::move(aOther));
 			this->glShader = aOther.glShader;
 			aOther.glShader = csGLInvalidHandle;
+			this->glWindowResolutionUniform = aOther.glWindowResolutionUniform;
+			aOther.glWindowResolutionUniform = csGLInvalidHandle;
 			return *this;
 		}
 

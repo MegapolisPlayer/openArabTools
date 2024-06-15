@@ -59,4 +59,21 @@ Enum, contains some additional colors
   - `LightColor& Lighten() noexcept;`
 	- Lightens the saved color
   - Assignment operator, equality operator
-  - Destructor
+
+### ChessboardStyle
+Contains styles (colors) of the chessboard
+- CHESSBOARD_STYLE_WHITE_BLACK
+- CHESSBOARD_STYLE_DEFAULT_WOOD
+
+### PieceColor
+Contains information about the piece color of the chessboard
+- CHESSBOARD_PIECE_NONE
+- CHESSBOARD_PIECE_WHITE
+- CHESSBOARD_PIECE_BLACK
+
+### SemaphoreOrientation
+Orientation or semaphore
+- NORMAL = UPSIDEUP
+- UPSIDEDOWN
+- UPSIDELEFT
+- UPSIDERIGHT

@@ -237,7 +237,7 @@ namespace OpenArabTools {
 			uint64_t VerticesAmount = aCircleAmountX * aCircleAmountY * 4;
 
 			*aprBuffer = (GLfloat*)malloc(sizeof(GLfloat) * VerticesAmount * csVertexSize);
-			if (*aprBuffer == nullptr) {
+			if (*aprBuffer == NULL) {
 				Error::error("Vertex Generation error: allocation failed");
 				return INT_MAX;
 			}
@@ -255,9 +255,9 @@ namespace OpenArabTools {
 				//for each vertex in object
 				for (uint64_t j = 0; j < 4; j++) {
 					//size * id of column + if on right - offset
-					(*aprBuffer)[(i + j) * csVertexSize + 0] = (CircleSizeX * (int(i / csVertexSize) % aCircleAmountX) + ((j == 1 || j == 2) ? CircleSizeX : 0)) - 1.0;
+					(*aprBuffer)[(i + j) * csVertexSize + 0] = (CircleSizeX * (int(i / float(csVertexSize)) % aCircleAmountX) + ((j == 1 || j == 2) ? CircleSizeX : 0)) - 1.0;
 					//size * id of row + if on bottom - offset
-					(*aprBuffer)[(i + j) * csVertexSize + 1] = -((CircleSizeY * int(i / csVertexSize / aCircleAmountX) + ((j == 2 || j == 3) ? CircleSizeY : 0)) - 1.0);
+					(*aprBuffer)[(i + j) * csVertexSize + 1] = -((CircleSizeY * int(i / float(csVertexSize) / aCircleAmountX) + ((j == 2 || j == 3) ? CircleSizeY : 0)) - 1.0);
 					
 					//top left coords
 					(*aprBuffer)[(i + j) * csVertexSize + 2] = (*aprBuffer)[i * csVertexSize + 0];

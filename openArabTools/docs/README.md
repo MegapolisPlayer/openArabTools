@@ -5,7 +5,7 @@ This file contains a general overview and some code examples.
 In order to access documentation for sections of oAT, check the README files in the folders.
 
 - graphics/ - information for graphical tools
-- types/ - LightColor information
+- types/ - LightColor and enums information
 - utils/ - information about Utils namespace and other utilities
 - internal/ - Internal documentation, not yet completed.
 
@@ -87,7 +87,7 @@ int main() {
 	uint64_t Counter = 0;
 	while(d.update()) {
 		d.setValue(Counter % 10); //modulo 10, remainder
-		d.sleep(500); //sleep for 500ms
+		if(!d.sleep(500)) { break; } //sleep for 500ms
 		Counter++;
 	}
 	ArabTools::terminate();

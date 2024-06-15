@@ -176,7 +176,7 @@ namespace OpenArabTools {
 	Rectangle::~Rectangle() noexcept {}
 
 	//Canvas
-	static constexpr uint64_t csMaxDrawableObjects = 2048;
+	static constexpr uint64_t csMaxDrawableObjects = 3000;
 	static constexpr uint64_t csVertexSize = 11; //2 for pos, 2 for top left, 1 for outer opacity, 4 color
 
 	Canvas::Canvas() noexcept
@@ -238,6 +238,10 @@ namespace OpenArabTools {
 	}
 
 	uint64_t Canvas::add(const Shape& aShape) noexcept {
+		if (this->mShapes.size() == csMaxDrawableObjects) {
+			Error::error("Too many objects in Canvas. Maximum is 3000.");
+			return UINT64_MAX;
+		}
 		this->mShapes.push_back(aShape);
 		uint64_t ShapeId = this->mShapes.size() - 1;
 
@@ -247,7 +251,7 @@ namespace OpenArabTools {
 	}
 	uint64_t Canvas::updateShape(const uint64_t aShapeId, const Shape& aNewData) noexcept {
 		if (aShapeId >= this->mShapes.size()) {
-			Error::error("Requested ID is out of range!"); return INT64_MAX;
+			Error::error("Requested ID is out of range!"); return UINT64_MAX;
 		}
 		this->mShapes[aShapeId] = aNewData;
 		this->updateVBOData(aShapeId, aNewData);
@@ -265,6 +269,15 @@ namespace OpenArabTools {
 	}
 	void Canvas::clear() noexcept {
 		this->mShapes.clear();
+
+		this->mWindow.HideWindow();
+
+		//reset VBO data
+		this->mVBOData = (GLfloat*)glMapNamedBuffer(this->mWindow.glVBO.GetHandle(), GL_READ_WRITE);
+		for (uint64_t i = 0; i < csMaxDrawableObjects * 4 * csVertexSize; i++) { this->mVBOData[i] = 0.0f; }
+		glUnmapNamedBuffer(this->mWindow.glVBO.GetHandle());
+		this->mVBOData = nullptr;
+
 		this->update();
 	}
 

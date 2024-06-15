@@ -508,10 +508,10 @@ namespace OpenArabTools {
 		}
 	}
 	void Matrix::CheckRangeCR(const uint64_t aCol, const uint64_t aRow) const noexcept {
-		if (aRow >= this->mSizeX) {
+		if (aRow >= this->mSizeY) {
 			Error::error("Matrix row value is out of range"); return;
 		}
-		if (aCol >= this->mSizeY) {
+		if (aCol >= this->mSizeX) {
 			Error::error("Matrix column value is out of range"); return;
 		}
 	}

@@ -36,9 +36,9 @@ namespace OpenArabTools {
 			Error::error("Value in Dice is out of range. (Value must be in range 0-9)");
 		}
 
-		this->mValue = aValue;
-
 		this->disableAll(); //reset
+
+		this->mValue = aValue;
 		if (this->mValue == 0) { return; } //we already disabled all
 		if (this->mValue == 9) { this->enableAll(); return; } //just enable everything and dont bother
 
@@ -77,6 +77,7 @@ namespace OpenArabTools {
 		for (uint64_t i = 0; i < this->mMatrix.getSize(); i++) {
 			this->mMatrix.setOff(i);
 		}
+		this->mValue = 0;
 	}
 	void Dice::enableAll() noexcept {
 		for (uint64_t row = 0; row < 3; row++) {
@@ -87,6 +88,7 @@ namespace OpenArabTools {
 				);
 			}
 		}
+		this->mValue = 9;
 	}
 
 	void Dice::setTitle(const std::string& aTitle) noexcept {
