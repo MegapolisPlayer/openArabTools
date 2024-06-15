@@ -37,16 +37,15 @@ namespace OpenArabTools {
 
 	//increment build for each update, major or minor
 
-	constexpr const char* Version() noexcept {
+	constexpr const char* version() noexcept {
 		return
-			"OpenArabTools version 0.1.0 build 0, (C) Copyright 2023-2024 Martin/MegapolisPlayer and contributors.\n"
+			"OpenArabTools version 0.1.0 build 1, (C) Copyright 2023-2024 Martin/MegapolisPlayer and contributors.\n"
 			"Licensed under the Creative Commons CC-BY 4.0 license.\n"
 			"Based on ArabTools 1.5.37 (19.03.2020), (C) Copyright 2014-2020 Ing. Daniel Kahoun. All rights reserved.\n";
 	}
 
 	constexpr uint64_t buildID() noexcept {
-		return 0;
-		//0.1.0 in development -> builds 0-
-		//0.1.0 release        -> build  
+		return 1;
+		//0.1.0 release        -> build 1
 	}
 }

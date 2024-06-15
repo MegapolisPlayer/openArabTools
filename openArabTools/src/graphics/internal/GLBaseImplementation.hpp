@@ -182,8 +182,6 @@ namespace OpenArabTools {
 		OPENARABTOOLS_OBJ extern const char* const VertexCircleSource;
 		OPENARABTOOLS_OBJ extern const char* const FragmentCircleSource;
 
-		OPENARABTOOLS_OBJ GLHandle GetUniform(const GLHandle aShader, const char* aName) noexcept;
-
 		//SSBO
 
 		template<typename DataType, uint64_t Multiplier = 1>

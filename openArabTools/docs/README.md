@@ -1,7 +1,21 @@
 # Documentation
 
 The documentation for openArabTools is contained in this directory.
-This file contains a general overview, a reference of all of the classes and some code examples.
+This file contains a general overview and some code examples.
+In order to access documentation for sections of oAT, check the README files in the folders.
+
+- graphics/ - information for graphical tools
+- types/ - LightColor information
+- utils/ - information about Utils namespace and other utilities
+- internal/ - Internal documentation, not yet completed.
+
+### Namespaces assigned to oAT
+OpenArabTools, ArabTools, oAT, AT
+This can be disabled with the `OPENARABTOOLS_NO_NAMESPACE_OVERRIDE` macro (leaves only OpenArabTools)
+
+### Includes
+OpenArabTools includes many headers from the C++ standard library.
+If you are importing them on your own, you may disable oAT's imports with the `OPENARABTOOLS_NO_STANDARD_INCLUDE` macro.
 
 # Code examples
 ### runConcurrently
