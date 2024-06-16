@@ -13,3 +13,5 @@
 *.vcxproj.user
 Debug/
 Release/
+build/
+*.kdev4

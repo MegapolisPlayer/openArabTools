@@ -3,13 +3,16 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <iomanip>
 #include <string>
+#include <cstring>
 #include <vector>
 #include <thread>
 #include <chrono>
 #include <atomic>
 #include <mutex>
 #include <numeric>
+#include <climits>
 #include <array>
 #include <fstream>
 #include <random>

@@ -443,8 +443,8 @@ namespace OpenArabTools {
 		this->mVBOData = (GLfloat*)glMapNamedBuffer(this->mWindow.glVBO.GetHandle(), GL_READ_WRITE);
 
 		//move everything 1 step back
-		memmove_s(
-			&this->mVBOData[aShapeId * csVertexSize * 4], sizeof(float) * csVertexSize * 4 * (csMaxDrawableObjects - aShapeId - 1),  //dest
+		memmove(
+			&this->mVBOData[aShapeId * csVertexSize * 4], //not using memmove_s, uncompatible with linux
 			&this->mVBOData[(aShapeId + 1) * csVertexSize * 4], sizeof(float) * csVertexSize * 4 * (csMaxDrawableObjects - aShapeId - 1 - 1) //src, -1 as index adjustment and -1 for the now empty spot
 		);
 

@@ -140,7 +140,7 @@ namespace OpenArabTools {
 		}
 
 		//remove newlines
-		std::erase(FileContents, '\n');
+		FileContents.erase(std::remove(FileContents.begin(), FileContents.end(), '\n'), FileContents.end());
 
 		this->validateString(FileContents); //validateString throws its own errors into the error handling system
 		this->drawFromString(FileContents);

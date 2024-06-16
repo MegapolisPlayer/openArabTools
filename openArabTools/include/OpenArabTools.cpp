@@ -21,7 +21,9 @@ namespace OpenArabTools {
 		//GLEW validation - create fake 1x1 window
 		GLFWwindow* FakeWindow = glfwCreateWindow(1, 1, "temp", NULL, NULL);
 		glfwMakeContextCurrent(FakeWindow);
-		if (glewInit()) {
+		GLenum GLFWInitializationError = glewInit();
+		if (!GLFWInitializationError) {
+			std::cerr << glewGetErrorString(GLFWInitializationError) << " (" << GLFWInitializationError << ")\n";
 			Error::error("GLEW OpenGL loading library initialization failed.");
 			return;
 		}

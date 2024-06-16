@@ -2,6 +2,9 @@
 #include "Semaphore.hpp"
 
 namespace OpenArabTools {
+	//Forward declaration
+	OPENARABTOOLS_OBJ class Crossing;
+
 	constexpr uint64_t SEMAPHOREID_A = 0;
 	constexpr uint64_t SEMAPHOREID_B = 1;
 	constexpr uint64_t SEMAPHOREID_C = 2;

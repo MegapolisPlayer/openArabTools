@@ -11,7 +11,7 @@ namespace OpenArabTools {
 		template<typename DataType, uint64_t Multiplier>
 		GLShaderBuffer<DataType, Multiplier>::GLShaderBuffer(DataType* aData, const uint64_t aAmount, GLVertexArray* const aArray) noexcept {
 			aArray->Counter++;
-			this->Set<DataType>(aData, aAmount, aArray);
+			this->Set(aData, aAmount, aArray);
 		}
 
 		template<typename DataType, uint64_t Multiplier>
